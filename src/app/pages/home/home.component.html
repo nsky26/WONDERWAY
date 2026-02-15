@@ -1,0 +1,166 @@
+<!-- WonderWay Premium Travel Portal -->
+<app-navbar></app-navbar>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" (click)="toggleTheme()">
+  <span class="theme-icon">{{ isDarkMode ? '☀️' : '🌙' }}</span>
+</button>
+
+<!-- Hero Section with Traveling Effect -->
+<section class="hero-section">
+  <!-- Animated Travel Background -->
+  <div class="travel-background">
+    <div class="plane">✈️</div>
+    <div class="cloud cloud-1">☁️</div>
+    <div class="cloud cloud-2">☁️</div>
+    <div class="cloud cloud-3">☁️</div>
+    <div class="hot-air-balloon">🎈</div>
+    <div class="helicopter">🚁</div>
+  </div>
+
+  <!-- Hero Content Glass Card -->
+  <div class="hero-glass-container">
+    <div class="hero-badge">✈️ Explore the World with WonderWay</div>
+    <h1 class="hero-title">Your Journey Begins Here</h1>
+    <p class="hero-subtitle">Discover amazing destinations and create unforgettable memories</p>
+
+    <!-- Booking Information Glass Card -->
+    <div class="booking-glass-card">
+      <div class="booking-tabs">
+        <button 
+          *ngFor="let tab of bookingTabs" 
+          class="booking-tab"
+          [class.active]="activeTab === tab"
+          (click)="activeTab = tab">
+          {{ tab }}
+        </button>
+      </div>
+
+      <form class="booking-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>From</label>
+            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="from">
+          </div>
+          <div class="form-group">
+            <label>To</label>
+            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="to">
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" [(ngModel)]="bookingForm.date" name="date">
+          </div>
+          <div class="form-group">
+            <label>Travelers</label>
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="travelers">
+          </div>
+        </div>
+        <button type="button" class="search-button" (click)="searchBooking()">
+          <span>Search</span>
+          <span class="arrow">→</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Destinations with Auto Scroll -->
+<section class="destinations-section">
+  <div class="section-header">
+    <h2 class="section-title">Popular Destinations</h2>
+    <p class="section-subtitle">Explore the world's most beautiful places</p>
+  </div>
+
+  <div class="auto-scroll-container" #destinationsScroll>
+    <div class="scroll-track">
+      <div class="destination-glass-card" 
+           *ngFor="let destination of destinations$ | async"
+           (click)="viewDestination(destination)">
+        <div class="card-image-wrapper">
+          <img [src]="destination.imageUrl" [alt]="destination.name">
+          <div class="card-overlay"></div>
+          <div class="card-badge">{{ destination.category }}</div>
+        </div>
+        <div class="card-info">
+          <h3>{{ destination.name }}</h3>
+          <p class="location">📍 {{ destination.country }}</p>
+          <div class="card-meta">
+            <span class="rating">⭐ {{ destination.rating }}</span>
+            <span class="price">From ${{ destination.price }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Special Offers -->
+<section class="offers-section">
+  <div class="section-header">
+    <h2 class="section-title">Special Offers</h2>
+    <p class="section-subtitle">Limited time deals you don't want to miss</p>
+  </div>
+
+  <div class="offers-grid">
+    <div class="offer-glass-card" *ngFor="let offer of offers$ | async">
+      <div class="offer-badge">-{{ offer.discount }}%</div>
+      <div class="offer-image">
+        <img [src]="offer.imageUrl" [alt]="offer.title">
+      </div>
+      <div class="offer-content">
+        <h3>{{ offer.title }}</h3>
+        <p>{{ offer.description }}</p>
+        <div class="offer-pricing">
+          <span class="old-price">${{ offer.originalPrice }}</span>
+          <span class="new-price">${{ offer.discountedPrice }}</span>
+        </div>
+        <div class="offer-validity">Valid until {{ offer.validUntil | date }}</div>
+        <button class="offer-button">Book Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="features-section">
+  <div class="section-header">
+    <h2 class="section-title">Why Choose WonderWay</h2>
+    <p class="section-subtitle">Your trusted travel companion</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-glass-card" *ngFor="let feature of features">
+      <div class="feature-icon">{{ feature.icon }}</div>
+      <h3>{{ feature.title }}</h3>
+      <p>{{ feature.description }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- Reviews/Testimonials -->
+<section class="reviews-section">
+  <div class="section-header">
+    <h2 class="section-title">Traveler Reviews</h2>
+    <p class="section-subtitle">What our customers say about us</p>
+  </div>
+
+  <div class="reviews-container">
+    <div class="review-glass-card" *ngFor="let review of testimonials$ | async">
+      <div class="quote-icon">"</div>
+      <div class="review-header">
+        <img [src]="review.imageUrl" [alt]="review.name" class="reviewer-avatar">
+        <div class="reviewer-info">
+          <h4>{{ review.name }}</h4>
+          <p>{{ review.location }}</p>
+        </div>
+      </div>
+      <div class="review-rating">
+        <span *ngFor="let star of getStars(review.rating)" class="star">⭐</span>
+      </div>
+      <p class="review-text">{{ review.comment }}</p>
+      <div class="review-destination">Trip to {{ review.destination }}</div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

@@ -1,0 +1,219 @@
+<!-- Booking Page -->
+<app-navbar></app-navbar>
+
+<div class="booking-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Book Your Trip</h1>
+      <p>Fill in the details below to complete your booking</p>
+    </div>
+  </section>
+
+  <!-- Booking Form -->
+  <section class="booking-content">
+    <div class="container">
+      <div class="booking-grid">
+        <!-- Form Section -->
+        <div class="form-section">
+          <div class="form-card">
+            <h2>Booking Details</h2>
+
+            <!-- Success Message -->
+            <div *ngIf="bookingSuccess" class="success-message">
+              <span class="success-icon">✓</span>
+              <div>
+                <h3>Booking Successful!</h3>
+                <p>Your booking has been confirmed. We'll send you a confirmation email shortly.</p>
+              </div>
+            </div>
+
+            <form (ngSubmit)="onSubmit()" #bookingFormRef="ngForm">
+              <!-- Destination -->
+              <div class="form-group">
+                <label for="destinationName">Destination *</label>
+                <input 
+                  type="text" 
+                  id="destinationName"
+                  [(ngModel)]="bookingForm.destinationName" 
+                  name="destinationName"
+                  placeholder="Enter destination"
+                  required>
+              </div>
+
+              <!-- Booking Type -->
+              <div class="form-group">
+                <label for="bookingType">Booking Type *</label>
+                <select 
+                  id="bookingType"
+                  [(ngModel)]="bookingForm.bookingType" 
+                  name="bookingType"
+                  required>
+                  <option value="flight">Flight Only</option>
+                  <option value="hotel">Hotel Only</option>
+                  <option value="package">Complete Package</option>
+                </select>
+              </div>
+
+              <!-- Personal Information -->
+              <div class="form-section-title">Personal Information</div>
+
+              <div class="form-group">
+                <label for="customerName">Full Name *</label>
+                <input 
+                  type="text" 
+                  id="customerName"
+                  [(ngModel)]="bookingForm.customerName" 
+                  name="customerName"
+                  placeholder="Enter your full name"
+                  required>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email">Email *</label>
+                  <input 
+                    type="email" 
+                    id="email"
+                    [(ngModel)]="bookingForm.email" 
+                    name="email"
+                    placeholder="your@email.com"
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Phone *</label>
+                  <input 
+                    type="tel" 
+                    id="phone"
+                    [(ngModel)]="bookingForm.phone" 
+                    name="phone"
+                    placeholder="+1 (555) 123-4567"
+                    required>
+                </div>
+              </div>
+
+              <!-- Travel Dates -->
+              <div class="form-section-title">Travel Dates</div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="checkInDate">Check-in Date *</label>
+                  <input 
+                    type="date" 
+                    id="checkInDate"
+                    [(ngModel)]="bookingForm.checkInDate" 
+                    name="checkInDate"
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label for="checkOutDate">Check-out Date *</label>
+                  <input 
+                    type="date" 
+                    id="checkOutDate"
+                    [(ngModel)]="bookingForm.checkOutDate" 
+                    name="checkOutDate"
+                    required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="guests">Number of Guests *</label>
+                <input 
+                  type="number" 
+                  id="guests"
+                  [(ngModel)]="bookingForm.guests" 
+                  name="guests"
+                  min="1"
+                  max="10"
+                  required>
+              </div>
+
+              <!-- Special Requests -->
+              <div class="form-group">
+                <label for="specialRequests">Special Requests (Optional)</label>
+                <textarea 
+                  id="specialRequests"
+                  [(ngModel)]="bookingForm.specialRequests" 
+                  name="specialRequests"
+                  rows="4"
+                  placeholder="Any special requirements or requests..."></textarea>
+              </div>
+
+              <!-- Submit Button -->
+              <button 
+                type="submit" 
+                class="btn-submit"
+                [disabled]="!bookingFormRef.valid || (loading$ | async)">
+                <span *ngIf="!(loading$ | async)">Complete Booking</span>
+                <span *ngIf="loading$ | async">Processing...</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+          <div class="summary-card">
+            <h3>Booking Summary</h3>
+            
+            <div class="summary-item">
+              <span class="label">Destination:</span>
+              <span class="value">{{bookingForm.destinationName || 'Not selected'}}</span>
+            </div>
+
+            <div class="summary-item">
+              <span class="label">Booking Type:</span>
+              <span class="value">{{bookingForm.bookingType | titlecase}}</span>
+            </div>
+
+            <div class="summary-item">
+              <span class="label">Check-in:</span>
+              <span class="value">{{bookingForm.checkInDate || 'Not selected'}}</span>
+            </div>
+
+            <div class="summary-item">
+              <span class="label">Check-out:</span>
+              <span class="value">{{bookingForm.checkOutDate || 'Not selected'}}</span>
+            </div>
+
+            <div class="summary-item">
+              <span class="label">Guests:</span>
+              <span class="value">{{bookingForm.guests}}</span>
+            </div>
+
+            <div class="summary-item" *ngIf="bookingForm.checkInDate && bookingForm.checkOutDate">
+              <span class="label">Duration:</span>
+              <span class="value">{{getDaysDifference()}} days</span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-total">
+              <span class="label">Estimated Total:</span>
+              <span class="value">${{calculatePrice()}}</span>
+            </div>
+
+            <div class="summary-note">
+              <p>* Final price will be confirmed after booking</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h4>Why Book With Us?</h4>
+            <ul class="benefits-list">
+              <li>✓ Best price guarantee</li>
+              <li>✓ Free cancellation up to 24 hours</li>
+              <li>✓ Instant confirmation</li>
+              <li>✓ 24/7 customer support</li>
+              <li>✓ Secure payment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>

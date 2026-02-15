@@ -1,0 +1,160 @@
+<!-- Contact Page -->
+<app-navbar></app-navbar>
+
+<div class="contact-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>We're here to help with your travel needs</p>
+    </div>
+  </section>
+
+  <!-- Contact Content -->
+  <section class="contact-content">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Contact Form -->
+        <div class="form-section">
+          <div class="form-card">
+            <h2>Send Us a Message</h2>
+
+            <!-- Success Message -->
+            <div *ngIf="submitted" class="success-message">
+              <span class="success-icon">✓</span>
+              <div>
+                <h3>Message Sent!</h3>
+                <p>Thank you for contacting us. We'll get back to you soon.</p>
+              </div>
+            </div>
+
+            <form (ngSubmit)="onSubmit()" #contactFormRef="ngForm">
+              <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input 
+                  type="text" 
+                  id="name"
+                  [(ngModel)]="contactForm.name" 
+                  name="name"
+                  placeholder="Enter your name"
+                  required>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email">Email *</label>
+                  <input 
+                    type="email" 
+                    id="email"
+                    [(ngModel)]="contactForm.email" 
+                    name="email"
+                    placeholder="your@email.com"
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Phone</label>
+                  <input 
+                    type="tel" 
+                    id="phone"
+                    [(ngModel)]="contactForm.phone" 
+                    name="phone"
+                    placeholder="+1 (555) 123-4567">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="subject">Subject *</label>
+                <input 
+                  type="text" 
+                  id="subject"
+                  [(ngModel)]="contactForm.subject" 
+                  name="subject"
+                  placeholder="What is this regarding?"
+                  required>
+              </div>
+
+              <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea 
+                  id="message"
+                  [(ngModel)]="contactForm.message" 
+                  name="message"
+                  rows="6"
+                  placeholder="Tell us how we can help you..."
+                  required></textarea>
+              </div>
+
+              <button 
+                type="submit" 
+                class="btn-submit"
+                [disabled]="!contactFormRef.valid">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="info-section">
+          <div class="info-card">
+            <h3>Get In Touch</h3>
+            <p>Have questions? We're here to help you plan your perfect trip.</p>
+
+            <div class="contact-methods">
+              <div class="contact-method">
+                <div class="method-icon">📍</div>
+                <div class="method-content">
+                  <h4>Visit Us</h4>
+                  <p>123 Travel Street<br>Tourism City, TC 12345</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <div class="method-icon">📞</div>
+                <div class="method-content">
+                  <h4>Call Us</h4>
+                  <p>+1 (555) 123-4567<br>Mon - Fri: 9AM - 6PM</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <div class="method-icon">✉️</div>
+                <div class="method-content">
+                  <h4>Email Us</h4>
+                  <p>info&#64;wonderwaytech.com<br>support&#64;wonderwaytech.com</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <div class="method-icon">💬</div>
+                <div class="method-content">
+                  <h4>Live Chat</h4>
+                  <p>Available 24/7<br>Instant support</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-card">
+            <h3>Quick Help</h3>
+            <div class="faq-item">
+              <h4>How do I book a trip?</h4>
+              <p>Browse destinations, select your preferred package, and complete the booking form.</p>
+            </div>
+            <div class="faq-item">
+              <h4>What's your cancellation policy?</h4>
+              <p>Free cancellation up to 24 hours before departure for most bookings.</p>
+            </div>
+            <div class="faq-item">
+              <h4>Do you offer travel insurance?</h4>
+              <p>Yes, we offer comprehensive travel insurance options during booking.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>

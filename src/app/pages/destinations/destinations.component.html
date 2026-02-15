@@ -1,0 +1,62 @@
+<!-- Destinations Page -->
+<app-navbar></app-navbar>
+
+<div class="destinations-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Explore Destinations</h1>
+      <p>Discover amazing places around the world</p>
+    </div>
+  </section>
+
+  <!-- Destinations Content -->
+  <section class="destinations-content">
+    <div class="container">
+      <div *ngIf="loading" class="loading-container">
+        <app-loading-spinner></app-loading-spinner>
+      </div>
+
+      <div class="destinations-grid">
+        <div 
+          *ngFor="let destination of destinations$ | async" 
+          class="destination-card"
+          (click)="viewDestination(destination)">
+          <div class="destination-image">
+            <img [src]="destination.imageUrl" [alt]="destination.name">
+            <div class="destination-badge" *ngIf="destination.isPopular">Popular</div>
+          </div>
+          <div class="destination-content">
+            <div class="destination-header">
+              <h3>{{destination.name}}</h3>
+              <span class="destination-country">{{destination.country}}</span>
+            </div>
+            <p class="destination-description">{{destination.shortDescription}}</p>
+            <div class="destination-meta">
+              <span class="meta-item">
+                <span class="icon">⏱️</span>
+                {{destination.duration}}
+              </span>
+              <span class="meta-item">
+                <span class="icon">🏷️</span>
+                {{destination.category}}
+              </span>
+            </div>
+            <div class="destination-footer">
+              <div class="rating">
+                <span *ngFor="let star of getStars(destination.rating)" class="star">⭐</span>
+                <span class="rating-text">{{destination.rating}}</span>
+              </div>
+              <div class="price">
+                <span class="price-label">From</span>
+                <span class="price-value">${{destination.price}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>

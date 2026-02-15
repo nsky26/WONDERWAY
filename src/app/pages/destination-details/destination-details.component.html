@@ -1,0 +1,109 @@
+<!-- Destination Details Page -->
+<app-navbar></app-navbar>
+
+<div class="destination-details-page" *ngIf="destination$ | async as destination">
+  <!-- Hero Section -->
+  <section class="details-hero" [style.background-image]="'url(' + destination.imageUrl + ')'">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="container">
+        <h1>{{destination.name}}, {{destination.country}}</h1>
+        <div class="hero-meta">
+          <div class="rating">
+            <span *ngFor="let star of getStars(destination.rating)" class="star">⭐</span>
+            <span class="rating-text">{{destination.rating}} ({{destination.reviews}} reviews)</span>
+          </div>
+          <div class="category">{{destination.category}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Details Content -->
+  <section class="details-content">
+    <div class="container">
+      <div class="content-grid">
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="section">
+            <h2>About This Destination</h2>
+            <p class="description">{{destination.description}}</p>
+          </div>
+
+          <div class="section">
+            <h2>Highlights</h2>
+            <ul class="highlights-list">
+              <li *ngFor="let highlight of destination.highlights">
+                <span class="check-icon">✓</span>
+                {{highlight}}
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h2>Travel Information</h2>
+            <div class="info-grid">
+              <div class="info-card">
+                <div class="info-icon">🗓️</div>
+                <div class="info-content">
+                  <h4>Best Time to Visit</h4>
+                  <p>{{destination.bestTimeToVisit}}</p>
+                </div>
+              </div>
+              <div class="info-card">
+                <div class="info-icon">⏱️</div>
+                <div class="info-content">
+                  <h4>Recommended Duration</h4>
+                  <p>{{destination.duration}}</p>
+                </div>
+              </div>
+              <div class="info-card">
+                <div class="info-icon">🏷️</div>
+                <div class="info-content">
+                  <h4>Category</h4>
+                  <p>{{destination.category}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="booking-card">
+            <div class="price-section">
+              <span class="price-label">Starting from</span>
+              <span class="price-value">${{destination.price}}</span>
+              <span class="price-note">per person</span>
+            </div>
+            <button class="btn-book-now" (click)="bookNow(destination)">
+              Book Now
+            </button>
+            <div class="booking-features">
+              <div class="feature">
+                <span class="feature-icon">✓</span>
+                <span>Free cancellation</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">✓</span>
+                <span>Best price guarantee</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">✓</span>
+                <span>24/7 customer support</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-card">
+            <h3>Need Help?</h3>
+            <p>Our travel experts are here to assist you</p>
+            <button class="btn-contact" routerLink="/contact">Contact Us</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,49 @@
+<!-- Sticky Navigation Bar -->
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-logo">
+      <a routerLink="/" class="logo-link">
+        <span class="logo-icon">✈️</span>
+        <span class="logo-text">WonderWayTech</span>
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <ul class="navbar-menu">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+      <li><a routerLink="/destinations" routerLinkActive="active">Destinations</a></li>
+      <li><a routerLink="/booking" routerLinkActive="active">Booking</a></li>
+      <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+    </ul>
+
+    <!-- Auth Buttons -->
+    <div class="navbar-actions">
+      <button class="btn-login">Login</button>
+      <button class="btn-signup">Sign Up</button>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.active]="isMenuOpen">
+    <ul>
+      <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
+      <li><a routerLink="/destinations" (click)="closeMenu()">Destinations</a></li>
+      <li><a routerLink="/booking" (click)="closeMenu()">Booking</a></li>
+      <li><a routerLink="/about" (click)="closeMenu()">About</a></li>
+      <li><a routerLink="/contact" (click)="closeMenu()">Contact</a></li>
+      <li class="mobile-auth">
+        <button class="btn-login">Login</button>
+        <button class="btn-signup">Sign Up</button>
+      </li>
+    </ul>
+  </div>
+</nav>
