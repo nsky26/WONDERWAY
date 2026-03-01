@@ -1,14 +1,10 @@
 <!-- Contact Page -->
-<app-navbar></app-navbar>
+<app-page-header 
+  title="Contact Us" 
+  subtitle="We're here to help with your travel needs">
+</app-page-header>
 
 <div class="contact-page">
-  <!-- Page Header -->
-  <section class="page-header">
-    <div class="container">
-      <h1>Contact Us</h1>
-      <p>We're here to help with your travel needs</p>
-    </div>
-  </section>
 
   <!-- Contact Content -->
   <section class="contact-content">
@@ -19,14 +15,11 @@
           <div class="form-card">
             <h2>Send Us a Message</h2>
 
-            <!-- Success Message -->
-            <div *ngIf="submitted" class="success-message">
-              <span class="success-icon">✓</span>
-              <div>
-                <h3>Message Sent!</h3>
-                <p>Thank you for contacting us. We'll get back to you soon.</p>
-              </div>
-            </div>
+            <app-success-message 
+              [show]="submitted" 
+              title="Message Sent!" 
+              message="Thank you for contacting us. We'll get back to you soon.">
+            </app-success-message>
 
             <form (ngSubmit)="onSubmit()" #contactFormRef="ngForm">
               <div class="form-group">
@@ -156,5 +149,3 @@
     </div>
   </section>
 </div>
-
-<app-footer></app-footer>

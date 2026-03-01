@@ -1,104 +1,737 @@
-<!-- Destination Details Page -->
-<app-navbar></app-navbar>
+<!-- Modern Destination Details Page -->
 
-<div class="destination-details-page" *ngIf="destination$ | async as destination">
-  <!-- Hero Section -->
-  <section class="details-hero" [style.background-image]="'url(' + destination.imageUrl + ')'">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <div class="container">
-        <h1>{{destination.name}}, {{destination.country}}</h1>
-        <div class="hero-meta">
-          <div class="rating">
-            <span *ngFor="let star of getStars(destination.rating)" class="star">⭐</span>
-            <span class="rating-text">{{destination.rating}} ({{destination.reviews}} reviews)</span>
+<!-- Loading State -->
+<div *ngIf="!destination" class="loading-state">
+  <div class="loading-spinner-modern">⏳</div>
+  <p>Loading destination...</p>
+</div>
+
+<!-- Destination Content -->
+<div class="destination-details-modern" *ngIf="destination">
+  
+  <!-- Hero Section with Parallax -->
+  <section class="hero-details" [style.background-image]="getSafeBackgroundImage(destination.imageUrl)">>
+    <div class="hero-overlay-gradient"></div>
+    <div class="hero-content-details">
+      <div class="container-details">
+        <nav class="breadcrumb-modern">
+          <a routerLink="/destinations" class="breadcrumb-link">Destinations</a>
+          <span class="breadcrumb-separator">›</span>
+          <span class="breadcrumb-current">{{destination.name}}</span>
+        </nav>
+        
+        <div class="hero-badges-row">
+          <span class="hero-badge badge-popular" *ngIf="destination.isPopular">🔥 Popular</span>
+          <span class="hero-badge badge-new" *ngIf="destination.isNew">✨ New</span>
+          <span class="hero-badge badge-trending" *ngIf="destination.isTrending">📈 Trending</span>
+        </div>
+        
+        <h1 class="hero-title-details">{{destination.name}}</h1>
+        <p class="hero-location-details">
+          <span class="location-icon-hero">📍</span>
+          {{destination.country}}
+        </p>
+        
+        <div class="hero-meta-row">
+          <div class="hero-meta-item">
+            <span class="meta-icon-hero">⭐</span>
+            <span class="meta-value-hero">{{destination.rating.toFixed(1)}}</span>
+            <span class="meta-label-hero">(All {{destination.reviews}} reviews)</span>
           </div>
-          <div class="category">{{destination.category}}</div>
+          <div class="hero-meta-item">
+            <span class="meta-icon-hero">⏱️</span>
+            <span class="meta-value-hero">{{destination.duration}}</span>
+          </div>
+          <div class="hero-meta-item">
+            <span class="meta-icon-hero">🏷️</span>
+            <span class="meta-value-hero">{{destination.category}}</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Details Content -->
-  <section class="details-content">
-    <div class="container">
-      <div class="content-grid">
-        <!-- Main Content -->
-        <div class="main-content">
-          <div class="section">
-            <h2>About This Destination</h2>
-            <p class="description">{{destination.description}}</p>
+  <!-- Main Content Grid -->
+  <section class="content-section-modern">
+    <div class="container-details">
+      <div class="content-grid-modern">
+        
+        <!-- Left Column - Scrollable Content -->
+        <div class="content-main-scroll">
+          
+          <!-- Quick Info Cards -->
+          <div class="quick-info-grid">
+            <div class="info-card-modern">
+              <span class="info-card-icon">🗓️</span>
+              <div class="info-card-content">
+                <span class="info-card-label">Best Time</span>
+                <span class="info-card-value">{{destination.bestTimeToVisit}}</span>
+              </div>
+            </div>
+            <div class="info-card-modern">
+              <span class="info-card-icon">💰</span>
+              <div class="info-card-content">
+                <span class="info-card-label">Starting From</span>
+                <span class="info-card-value">${{destination.price}}</span>
+              </div>
+            </div>
+            <div class="info-card-modern">
+              <span class="info-card-icon">🌍</span>
+              <div class="info-card-content">
+                <span class="info-card-label">Region</span>
+                <span class="info-card-value">{{destination.region}}</span>
+              </div>
+            </div>
           </div>
 
-          <div class="section">
-            <h2>Highlights</h2>
-            <ul class="highlights-list">
-              <li *ngFor="let highlight of destination.highlights">
-                <span class="check-icon">✓</span>
-                {{highlight}}
-              </li>
-            </ul>
+          <!-- About Section -->
+          <div class="section-modern">
+            <h2 class="section-title-modern">
+              <span class="section-icon">📖</span>
+              About This Destination
+            </h2>
+            <p class="section-text">{{destination.description}}</p>
+            <p class="section-text-secondary">
+              Experience the perfect blend of culture, adventure, and relaxation in {{destination.name}}. 
+              Whether you're seeking historical landmarks, natural beauty, or vibrant local life, 
+              this destination offers something special for every traveler.
+            </p>
           </div>
 
-          <div class="section">
-            <h2>Travel Information</h2>
-            <div class="info-grid">
-              <div class="info-card">
-                <div class="info-icon">🗓️</div>
-                <div class="info-content">
-                  <h4>Best Time to Visit</h4>
-                  <p>{{destination.bestTimeToVisit}}</p>
+          <!-- Highlights Grid -->
+          <div class="section-modern">
+            <h2 class="section-title-modern">
+              <span class="section-icon">✨</span>
+              Top Highlights
+            </h2>
+            <div class="highlights-grid-modern">
+              <div *ngFor="let highlight of destination.highlights" class="highlight-item-modern">
+                <span class="highlight-check">✓</span>
+                <span class="highlight-text">{{highlight}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Services & Information Section -->
+          <div class="section-modern services-unified-section">
+            <h2 class="section-title-modern">
+              <span class="section-icon">🎯</span>
+              Complete Travel Services & Information
+            </h2>
+            <p class="section-subtitle-modern">Everything you need for an amazing journey - guides, transport, partners, and local experiences</p>
+            
+            <!-- What to Expect -->
+            <div class="subsection-container">
+              <h3 class="subsection-title-inline">
+                <span class="subsection-icon-inline">✨</span>
+                What to Expect
+              </h3>
+              <div class="expect-grid-modern">
+                <div class="expect-card-modern">
+                  <div class="expect-icon-modern">🏛️</div>
+                  <h4>Cultural Experience</h4>
+                  <p>Immerse in rich traditions</p>
+                </div>
+                <div class="expect-card-modern">
+                  <div class="expect-icon-modern">🍽️</div>
+                  <h4>Local Cuisine</h4>
+                  <p>Savor authentic flavors</p>
+                </div>
+                <div class="expect-card-modern">
+                  <div class="expect-icon-modern">�</div>
+                  <h4>Photo Spots</h4>
+                  <p>Capture stunning moments</p>
+                </div>
+                <div class="expect-card-modern">
+                  <div class="expect-icon-modern">🚶</div>
+                  <h4>Guided Tours</h4>
+                  <p>Expert local guides</p>
                 </div>
               </div>
-              <div class="info-card">
-                <div class="info-icon">⏱️</div>
-                <div class="info-content">
-                  <h4>Recommended Duration</h4>
-                  <p>{{destination.duration}}</p>
+            </div>
+
+            <!-- Tourist Guide Companies -->
+            <div class="subsection-container">
+              <h3 class="subsection-title-inline">
+                <span class="subsection-icon-inline">👨‍🏫</span>
+                Tourist Guide Companies
+              </h3>
+              <div class="companies-grid">
+                <div *ngFor="let company of guideCompanies" class="company-card">
+                  <div class="company-header">
+                    <div class="company-icon">{{company.icon}}</div>
+                    <div class="company-rating">
+                      <span class="rating-stars">⭐ {{company.rating}}</span>
+                      <span class="rating-count">({{company.reviewsCount}} reviews)</span>
+                    </div>
+                  </div>
+                  
+                  <h3 class="company-name">{{company.name}}</h3>
+                  <p class="company-specialization">{{company.specialization}}</p>
+                  <p class="company-description">{{company.description}}</p>
+                  
+                  <div class="company-meta">
+                    <div class="meta-item">
+                      <span class="meta-icon">📅</span>
+                      <span>Est. {{company.established}}</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-icon">👨‍🏫</span>
+                      <span>{{company.guides.length}} Expert Guides</span>
+                    </div>
+                  </div>
+                  
+                  <button class="btn-view-company" (click)="selectCompany(company)">
+                    View Guides & Details
+                  </button>
                 </div>
               </div>
-              <div class="info-card">
-                <div class="info-icon">🏷️</div>
-                <div class="info-content">
-                  <h4>Category</h4>
-                  <p>{{destination.category}}</p>
+            </div>
+
+            <!-- Transportation Providers -->
+            <div class="subsection-container">
+              <h3 class="subsection-title-inline">
+                <span class="subsection-icon-inline">🚗</span>
+                Transportation Providers
+              </h3>
+              <div class="providers-grid">
+                <div *ngFor="let provider of transportProviders" class="provider-card">
+                  <div class="provider-header">
+                    <div class="provider-icon">{{provider.icon}}</div>
+                    <div class="provider-rating">
+                      <span class="rating-stars">⭐ {{provider.rating}}</span>
+                      <span class="rating-count">({{provider.reviewsCount}} reviews)</span>
+                    </div>
+                  </div>
+                  
+                  <h3 class="provider-name">{{provider.name}}</h3>
+                  <p class="provider-specialization">{{provider.specialization}}</p>
+                  <p class="provider-description">{{provider.description}}</p>
+                  
+                  <div class="provider-meta">
+                    <div class="meta-item">
+                      <span class="meta-icon">📅</span>
+                      <span>Est. {{provider.established}}</span>
+                    </div>
+                    <div class="meta-item">
+                      <span class="meta-icon">🚗</span>
+                      <span>{{provider.packages.length}} Vehicle Options</span>
+                    </div>
+                  </div>
+                  
+                  <div class="provider-contact-info">
+                    <a [href]="'tel:' + provider.contact" class="contact-link">
+                      <span>📞</span> {{provider.contact}}
+                    </a>
+                    <a [href]="'mailto:' + provider.email" class="contact-link">
+                      <span>📧</span> {{provider.email}}
+                    </a>
+                  </div>
+                  
+                  <button class="btn-view-provider" (click)="selectProvider(provider)">
+                    View Vehicles & Pricing
+                  </button>
                 </div>
               </div>
+            </div>
+
+            <!-- Hotels & Restaurants Combined -->
+            <div class="subsection-container">
+              <h3 class="subsection-title-inline">
+                <span class="subsection-icon-inline">🏨</span>
+                Hotels & Dining
+              </h3>
+              <p class="subsection-description">Comfortable accommodations and delicious dining options for your stay</p>
+              
+              <!-- Hotels -->
+              <h4 class="category-title">🏨 Accommodations</h4>
+              <div class="hotels-grid">
+                <div *ngFor="let hotel of hotels" class="hotel-card" (click)="selectHotel(hotel)">
+                  <div class="hotel-image">
+                    <img [src]="hotel.images" [alt]="hotel.name" (error)="onImageError($event)">
+                    <div class="hotel-category-badge">{{hotel.category}}</div>
+                  </div>
+                  <div class="hotel-content">
+                    <div class="hotel-header">
+                      <div class="hotel-icon">{{hotel.icon}}</div>
+                      <div class="hotel-rating">
+                        <span class="rating-stars">⭐ {{hotel.rating}}</span>
+                        <span class="rating-count">({{hotel.reviewsCount}} reviews)</span>
+                      </div>
+                    </div>
+                    <h4 class="hotel-name">{{hotel.name}}</h4>
+                    <div class="hotel-price">
+                      <span class="price-label">From</span>
+                      <span class="price-value">₹{{hotel.pricePerNight}}</span>
+                      <span class="price-unit">/night</span>
+                    </div>
+                    <div class="hotel-click-hint">Click for details & booking</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Restaurants -->
+              <h4 class="category-title">🍽️ Restaurants & Dining</h4>
+              <div class="restaurants-grid">
+                <div *ngFor="let restaurant of restaurants" class="restaurant-card" (click)="selectRestaurant(restaurant)">
+                  <div class="restaurant-image">
+                    <img [src]="restaurant.images" [alt]="restaurant.name" (error)="onImageError($event)">
+                    <div class="restaurant-price-badge">{{restaurant.priceRange}}</div>
+                  </div>
+                  <div class="restaurant-content">
+                    <div class="restaurant-header">
+                      <div class="restaurant-icon">{{restaurant.icon}}</div>
+                      <div class="restaurant-rating">
+                        <span class="rating-stars">⭐ {{restaurant.rating}}</span>
+                        <span class="rating-count">({{restaurant.reviewsCount}} reviews)</span>
+                      </div>
+                    </div>
+                    <h4 class="restaurant-name">{{restaurant.name}}</h4>
+                    <p class="restaurant-cuisine">{{restaurant.cuisine}}</p>
+                    <div class="restaurant-cost">
+                      <span class="cost-label">Avg for two:</span>
+                      <span class="cost-value">₹{{restaurant.avgCostForTwo}}</span>
+                    </div>
+                    <div class="restaurant-timings">
+                      <span class="timings-icon">🕐</span>
+                      <span>{{restaurant.timings}}</span>
+                    </div>
+                    <div class="restaurant-click-hint">Click for menu & reservations</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Local Photographers -->
+            <div class="subsection-container">
+              <h3 class="subsection-title-inline">
+                <span class="subsection-icon-inline">📸</span>
+                Local Photographers
+              </h3>
+              <p class="subsection-description">Capture your memories with professional local photographers</p>
+              <div class="photographers-grid">
+                <div *ngFor="let photographer of photographers" class="photographer-card" (click)="selectPhotographer(photographer)">
+                  <div class="photographer-image">
+                    <img [src]="photographer.images" [alt]="photographer.name">
+                    <div class="photographer-icon-badge">{{photographer.icon}}</div>
+                  </div>
+                  <div class="photographer-content">
+                    <div class="photographer-header">
+                      <h4 class="photographer-name">{{photographer.name}}</h4>
+                      <div class="photographer-rating">
+                        <span class="rating-stars">⭐ {{photographer.rating}}</span>
+                        <span class="rating-count">({{photographer.reviewsCount}})</span>
+                      </div>
+                    </div>
+                    <p class="photographer-specialization">{{photographer.specialization}}</p>
+                    <p class="photographer-experience">{{photographer.experience}} experience</p>
+                    <div class="photographer-pricing">
+                      <div class="pricing-option">
+                        <span class="pricing-label">Hourly:</span>
+                        <span class="pricing-value">₹{{photographer.pricePerHour}}</span>
+                      </div>
+                      <div class="pricing-option">
+                        <span class="pricing-label">Full Day:</span>
+                        <span class="pricing-value">₹{{photographer.pricePerDay}}</span>
+                      </div>
+                    </div>
+                    <div class="photographer-click-hint">Click for details & contact</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column - Scrollable Booking Sidebar -->
+        <aside class="sidebar-scrollable-modern">
+          <div class="booking-card-modern">
+            <div class="booking-price-section">
+              <span class="price-label-modern">From</span>
+              <div class="price-display-modern">
+                <span class="price-amount-modern">${{destination.price}}</span>
+                <span class="price-per-modern">per person</span>
+              </div>
+              <div class="discount-info-modern" *ngIf="destination.discount">
+                <span class="original-price-modern">${{ (destination.price / (1 - destination.discount / 100)).toFixed(0) }}</span>
+                <span class="save-amount-modern">Save {{destination.discount}}%</span>
+              </div>
+            </div>
+            
+            <button class="btn-book-modern" (click)="bookNow(destination)">
+              <span class="btn-icon-book">🎫</span>
+              <span>Book Now</span>
+            </button>
+            
+            <div class="booking-features-modern">
+              <div class="feature-modern">
+                <span class="feature-icon-modern">✓</span>
+                <span>Free cancellation up to 24 hours</span>
+              </div>
+              <div class="feature-modern">
+                <span class="feature-icon-modern">✓</span>
+                <span>Best price guarantee</span>
+              </div>
+              <div class="feature-modern">
+                <span class="feature-icon-modern">✓</span>
+                <span>24/7 customer support</span>
+              </div>
+              <div class="feature-modern">
+                <span class="feature-icon-modern">✓</span>
+                <span>Instant confirmation</span>
+              </div>
+              <div class="feature-modern">
+                <span class="feature-icon-modern">✓</span>
+                <span>Secure payment</span>
+              </div>
+            </div>
+            
+            <div class="trust-badges-modern">
+              <div class="trust-badge-modern">
+                <span class="trust-icon">🏆</span>
+                <span>Best Deals</span>
+              </div>
+              <div class="trust-badge-modern">
+                <span class="trust-icon">🛡️</span>
+                <span>Secure</span>
+              </div>
+              <div class="trust-badge-modern">
+                <span class="trust-icon">⭐</span>
+                <span>Top Rated</span>
+              </div>
+            </div>
+            
+            <button class="btn-contact-modern" routerLink="/contact">
+              <span>📞</span>
+              Need Help? Contact Us
+            </button>
+          </div>
+          
+          <!-- Why Book With Us -->
+          <div class="sidebar-section-modern">
+            <h3 class="sidebar-title-modern">
+              <span>💎</span>
+              Why Book With Us?
+            </h3>
+            <div class="why-book-list">
+              <div class="why-book-item">
+                <span class="why-icon-modern">✓</span>
+                <div class="why-content">
+                  <h5>Lowest Price Guarantee</h5>
+                  <p>Find a lower price? We'll match it</p>
+                </div>
+              </div>
+              <div class="why-book-item">
+                <span class="why-icon-modern">✓</span>
+                <div class="why-content">
+                  <h5>Flexible Booking</h5>
+                  <p>Free cancellation on most bookings</p>
+                </div>
+              </div>
+              <div class="why-book-item">
+                <span class="why-icon-modern">✓</span>
+                <div class="why-content">
+                  <h5>Expert Support</h5>
+                  <p>24/7 customer service team</p>
+                </div>
+              </div>
+              <div class="why-book-item">
+                <span class="why-icon-modern">✓</span>
+                <div class="why-content">
+                  <h5>Trusted Platform</h5>
+                  <p>10,000+ happy travelers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Facts -->
+          <div class="sidebar-section-modern">
+            <h3 class="sidebar-title-modern">
+              <span>📋</span>
+              Quick Facts
+            </h3>
+            <div class="quick-facts-list">
+              <div class="quick-fact-item">
+                <span class="fact-label">Best Time:</span>
+                <span class="fact-value">{{destination.bestTimeToVisit}}</span>
+              </div>
+              <div class="quick-fact-item">
+                <span class="fact-label">Duration:</span>
+                <span class="fact-value">{{destination.duration}}</span>
+              </div>
+              <div class="quick-fact-item">
+                <span class="fact-label">Category:</span>
+                <span class="fact-value">{{destination.category}}</span>
+              </div>
+              <div class="quick-fact-item">
+                <span class="fact-label">Region:</span>
+                <span class="fact-value">{{destination.region}}</span>
+              </div>
+              <div class="quick-fact-item">
+                <span class="fact-label">Rating:</span>
+                <span class="fact-value">⭐ {{destination.rating.toFixed(1)}}/5</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Share This -->
+          <div class="sidebar-section-modern">
+            <h3 class="sidebar-title-modern">
+              <span>📤</span>
+              Share This
+            </h3>
+            <div class="share-buttons">
+              <button class="share-btn share-facebook">📘 Facebook</button>
+              <button class="share-btn share-twitter">🐦 Twitter</button>
+              <button class="share-btn share-whatsapp">💬 WhatsApp</button>
+              <button class="share-btn share-email">✉️ Email</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Sample Itinerary Section -->
+  <section class="itinerary-section">
+    <div class="container-details">
+      <h2 class="section-title-modern">
+        <span class="section-icon">🗺️</span>
+        Sample Itinerary
+      </h2>
+      <p class="section-subtitle-modern">A suggested day-by-day plan for your perfect trip</p>
+      
+      <div class="itinerary-timeline">
+        <div class="itinerary-day">
+          <div class="day-number">Day 1</div>
+          <div class="day-content">
+            <h4>Arrival & City Exploration</h4>
+            <p>Arrive at {{destination.name}}, check into your hotel, and take a leisurely walk through the main attractions. Visit local markets and enjoy authentic cuisine.</p>
+            <div class="day-highlights">
+              <span class="day-highlight">🏨 Hotel Check-in</span>
+              <span class="day-highlight">🚶 City Walk</span>
+              <span class="day-highlight">🍽️ Local Dinner</span>
             </div>
           </div>
         </div>
-
-        <!-- Sidebar -->
-        <div class="sidebar">
-          <div class="booking-card">
-            <div class="price-section">
-              <span class="price-label">Starting from</span>
-              <span class="price-value">${{destination.price}}</span>
-              <span class="price-note">per person</span>
-            </div>
-            <button class="btn-book-now" (click)="bookNow(destination)">
-              Book Now
-            </button>
-            <div class="booking-features">
-              <div class="feature">
-                <span class="feature-icon">✓</span>
-                <span>Free cancellation</span>
-              </div>
-              <div class="feature">
-                <span class="feature-icon">✓</span>
-                <span>Best price guarantee</span>
-              </div>
-              <div class="feature">
-                <span class="feature-icon">✓</span>
-                <span>24/7 customer support</span>
-              </div>
+        
+        <div class="itinerary-day">
+          <div class="day-number">Day 2</div>
+          <div class="day-content">
+            <h4>Major Attractions Tour</h4>
+            <p>Full day guided tour of the most iconic landmarks and historical sites. Learn about the rich culture and history from expert local guides.</p>
+            <div class="day-highlights">
+              <span class="day-highlight">🏛️ Historical Sites</span>
+              <span class="day-highlight">📸 Photo Stops</span>
+              <span class="day-highlight">🎭 Cultural Show</span>
             </div>
           </div>
+        </div>
+        
+        <div class="itinerary-day">
+          <div class="day-number">Day 3</div>
+          <div class="day-content">
+            <h4>Adventure & Activities</h4>
+            <p>Experience thrilling activities and outdoor adventures. Choose from various options based on your interests and fitness level.</p>
+            <div class="day-highlights">
+              <span class="day-highlight">🎢 Adventure Sports</span>
+              <span class="day-highlight">🌄 Nature Trails</span>
+              <span class="day-highlight">🎨 Local Crafts</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="itinerary-day">
+          <div class="day-number">Day 4</div>
+          <div class="day-content">
+            <h4>Leisure & Shopping</h4>
+            <p>Relax and explore at your own pace. Visit local shops, cafes, and hidden gems. Perfect day for souvenir shopping and trying street food.</p>
+            <div class="day-highlights">
+              <span class="day-highlight">🛍️ Shopping</span>
+              <span class="day-highlight">☕ Cafes</span>
+              <span class="day-highlight">🎁 Souvenirs</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="itinerary-day">
+          <div class="day-number">Day 5</div>
+          <div class="day-content">
+            <h4>Departure</h4>
+            <p>Enjoy a leisurely breakfast, last-minute shopping, and transfer to the airport. Take home wonderful memories and experiences.</p>
+            <div class="day-highlights">
+              <span class="day-highlight">🍳 Breakfast</span>
+              <span class="day-highlight">✈️ Airport Transfer</span>
+              <span class="day-highlight">👋 Goodbye</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- FAQs Section -->
+  <section class="faq-section">
+    <div class="container-details">
+      <h2 class="section-title-modern">
+        <span class="section-icon">❓</span>
+        Frequently Asked Questions
+      </h2>
+      <p class="section-subtitle-modern">Everything you need to know about visiting {{destination.name}}</p>
+      
+      <div class="faq-grid">
+        <div class="faq-item" [class.expanded]="isFAQExpanded(0)" (click)="toggleFAQ(0)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">What is the best time to visit?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(0) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(0)">
+            <p>The best time to visit {{destination.name}} is during {{destination.bestTimeToVisit}}. The weather is pleasant, and you can enjoy all outdoor activities comfortably.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(1)" (click)="toggleFAQ(1)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">How many days should I spend here?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(1) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(1)">
+            <p>We recommend spending {{destination.duration}} to fully experience all the major attractions and activities. However, you can customize based on your interests.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(2)" (click)="toggleFAQ(2)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">What should I pack?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(2) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(2)">
+            <p>Pack comfortable walking shoes, light clothing, sunscreen, a hat, and a camera. Don't forget any necessary medications and travel documents.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(3)" (click)="toggleFAQ(3)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">Is it safe for solo travelers?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(3) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(3)">
+            <p>Yes, {{destination.name}} is generally safe for solo travelers. However, always follow standard safety precautions and stay aware of your surroundings.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(4)" (click)="toggleFAQ(4)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">What currency is used?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(4) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(4)">
+            <p>The local currency is widely accepted. Credit cards are accepted at most hotels and restaurants. ATMs are readily available throughout the city.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(5)" (click)="toggleFAQ(5)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">Do I need a visa?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(5) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(5)">
+            <p>Visa requirements vary by nationality. Please check with your local embassy or consulate for the most up-to-date visa information.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(6)" (click)="toggleFAQ(6)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">What language is spoken?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(6) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(6)">
+            <p>The local language is primarily spoken, but English is widely understood in tourist areas. Learning a few basic phrases can enhance your experience.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" [class.expanded]="isFAQExpanded(7)" (click)="toggleFAQ(7)">
+          <div class="faq-question-header">
+            <h4 class="faq-question">Are there vegetarian food options?</h4>
+            <span class="faq-toggle-icon">{{isFAQExpanded(7) ? '▲' : '▼'}}</span>
+          </div>
+          <div class="faq-answer" [class.visible]="isFAQExpanded(7)">
+            <p>Yes, there are plenty of vegetarian and vegan options available. Most restaurants can accommodate dietary restrictions with advance notice.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="contact-card">
-            <h3>Need Help?</h3>
-            <p>Our travel experts are here to assist you</p>
-            <button class="btn-contact" routerLink="/contact">Contact Us</button>
+  <!-- Location & Map Section (Moved to bottom before Similar Destinations) -->
+  <section class="location-map-section">
+    <div class="container-details">
+      <h2 class="section-title-modern">
+        <span class="section-icon">📍</span>
+        Location & Map
+      </h2>
+      <p class="section-subtitle-modern">Find {{destination.name}} on the map</p>
+      <div class="map-container">
+        <iframe
+          [src]="getMapUrl(destination.name, destination.country)"
+          width="100%"
+          height="350"
+          style="border:0; border-radius: 16px;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Similar Destinations Section -->
+  <section class="similar-destinations-section">
+    <div class="container-details">
+      <h2 class="section-title-modern">
+        <span class="section-icon">🌟</span>
+        You Might Also Like
+      </h2>
+      <p class="section-subtitle-modern">Explore more amazing destinations similar to {{destination.name}}</p>
+      
+      <div class="similar-destinations-grid">
+        <div *ngFor="let similar of similarDestinations" class="similar-dest-card" (click)="viewDestination(similar)">
+          <div class="similar-dest-image">
+            <img [src]="similar.imageUrl" [alt]="similar.name" (error)="onImageError($event)">
+            <div class="similar-dest-badge" *ngIf="similar.isPopular">🔥 Popular</div>
+            <div class="similar-dest-badge" *ngIf="similar.isNew && !similar.isPopular">✨ New</div>
+            <div class="similar-dest-badge" *ngIf="similar.isTrending && !similar.isPopular && !similar.isNew">📈 Trending</div>
+            <div class="similar-dest-discount" *ngIf="similar.discount">-{{similar.discount}}%</div>
+          </div>
+          <div class="similar-dest-content">
+            <h4>{{similar.name}}</h4>
+            <p class="similar-dest-country">📍 {{similar.country}}</p>
+            <p class="similar-dest-description">{{similar.shortDescription}}</p>
+            <div class="similar-dest-meta">
+              <span>⭐ {{similar.rating.toFixed(1)}}</span>
+              <span>From ${{similar.price}}</span>
+            </div>
+            <button class="btn-similar-dest" (click)="viewDestination(similar); $event.stopPropagation()">
+              View Details →
+            </button>
+          </div>
+        </div>
+        
+        <!-- Fallback if no similar destinations -->
+        <div *ngIf="similarDestinations.length === 0" class="similar-dest-card">
+          <div class="similar-dest-image">
+            <img src="https://picsum.photos/seed/explore-more/400/300" alt="Explore destinations">
+          </div>
+          <div class="similar-dest-content">
+            <h4>Explore More Destinations</h4>
+            <p>Discover hundreds of amazing places</p>
+            <div class="similar-dest-meta">
+              <span>⭐ 4.8</span>
+              <span>From $299</span>
+            </div>
+            <a routerLink="/destinations" class="btn-similar-dest">View All Destinations →</a>
           </div>
         </div>
       </div>
@@ -106,4 +739,626 @@
   </section>
 </div>
 
-<app-footer></app-footer>
+<!-- Company Details Modal -->
+<div class="modal-overlay" *ngIf="selectedCompany" (click)="closeCompanyDetails()">
+  <div class="modal-content company-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeCompanyDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="company-icon-large">{{selectedCompany.icon}}</div>
+      <div>
+        <h2>{{selectedCompany.name}}</h2>
+        <p class="company-specialization">{{selectedCompany.specialization}}</p>
+        <div class="company-rating-large">
+          <span>⭐ {{selectedCompany.rating}}</span>
+          <span>({{selectedCompany.reviewsCount}} reviews)</span>
+          <span>• Est. {{selectedCompany.established}}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="company-detail-section">
+        <h3>About</h3>
+        <p>{{selectedCompany.description}}</p>
+      </div>
+      
+      <div class="company-detail-section">
+        <h3>Our Expert Guides</h3>
+        <div class="guides-list">
+          <div *ngFor="let guide of selectedCompany.guides" class="guide-item-modal">
+            <div class="guide-item-header">
+              <div class="guide-avatar-small">{{guide.photo}}</div>
+              <div class="guide-item-info">
+                <h4>{{guide.name}}</h4>
+                <p class="guide-experience">{{guide.experience}} experience</p>
+                <div class="guide-rating-small">
+                  <span>⭐ {{guide.rating}}</span>
+                  <span>({{guide.reviewsCount}} reviews)</span>
+                </div>
+              </div>
+              <div class="guide-status-small" [class.available]="guide.availability === 'Available'" 
+                   [class.limited]="guide.availability === 'Limited'">
+                {{guide.availability}}
+              </div>
+            </div>
+            
+            <p class="guide-bio-small">{{guide.bio}}</p>
+            
+            <div class="guide-languages-small">
+              <span class="lang-icon">🗣️</span>
+              <span>{{guide.languages.join(', ')}}</span>
+            </div>
+            
+            <div class="guide-certifications-small">
+              <span *ngFor="let cert of guide.certifications" class="cert-badge-small">✓ {{cert}}</span>
+            </div>
+            
+            <div class="guide-pricing-actions">
+              <div class="guide-price-small">
+                <span class="price-value-small">₹{{guide.pricePerDay}}</span>
+                <span class="price-unit-small">/day</span>
+              </div>
+              <div class="guide-contact-buttons-small">
+                <a [href]="'tel:' + guide.phone" class="contact-btn-small phone">📞</a>
+                <a [href]="'mailto:' + guide.email" class="contact-btn-small email">📧</a>
+                <a *ngIf="guide.whatsapp" [href]="'https://wa.me/' + guide.whatsapp.replace(/[^0-9]/g, '')" 
+                   target="_blank" class="contact-btn-small whatsapp">💬</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Provider Details Modal -->
+<div class="modal-overlay" *ngIf="selectedProvider" (click)="closeProviderDetails()">
+  <div class="modal-content provider-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeProviderDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="provider-icon-large">{{selectedProvider.icon}}</div>
+      <div>
+        <h2>{{selectedProvider.name}}</h2>
+        <p class="provider-specialization">{{selectedProvider.specialization}}</p>
+        <div class="provider-rating-large">
+          <span>⭐ {{selectedProvider.rating}}</span>
+          <span>({{selectedProvider.reviewsCount}} reviews)</span>
+          <span>• Est. {{selectedProvider.established}}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="provider-detail-section">
+        <h3>About</h3>
+        <p>{{selectedProvider.description}}</p>
+      </div>
+      
+      <div class="provider-detail-section">
+        <h3>Contact Information</h3>
+        <div class="provider-contact-details">
+          <a [href]="'tel:' + selectedProvider.contact" class="contact-btn phone-btn">
+            <span>📞</span> {{selectedProvider.contact}}
+          </a>
+          <a [href]="'mailto:' + selectedProvider.email" class="contact-btn email-btn">
+            <span>📧</span> {{selectedProvider.email}}
+          </a>
+        </div>
+      </div>
+      
+      <div class="provider-detail-section">
+        <h3>Available Vehicles</h3>
+        <div class="vehicles-list">
+          <div *ngFor="let pkg of selectedProvider.packages" class="vehicle-item-modal">
+            <div class="vehicle-icon-large">{{pkg.imageUrl}}</div>
+            <div class="vehicle-info">
+              <div class="vehicle-type-badge">{{pkg.type}}</div>
+              <h4>{{pkg.vehicleName}}</h4>
+              
+              <div class="vehicle-specs">
+                <span class="spec-item"><span class="spec-icon">👥</span> {{pkg.capacity}}</span>
+                <span class="spec-item"><span class="spec-icon">⛽</span> {{pkg.fuelType}}</span>
+                <span class="spec-item" *ngIf="pkg.includesDriver"><span class="spec-icon">👨‍✈️</span> Driver</span>
+                <span class="spec-item" *ngIf="pkg.insurance"><span class="spec-icon">🛡️</span> Insured</span>
+              </div>
+              
+              <div class="vehicle-features-modal">
+                <span *ngFor="let feature of pkg.features" class="feature-tag-modal">{{feature}}</span>
+              </div>
+              
+              <div class="vehicle-pricing-modal">
+                <div class="pricing-item">
+                  <span class="pricing-label">Per Day:</span>
+                  <span class="pricing-value">₹{{pkg.pricePerDay}}</span>
+                </div>
+                <div class="pricing-item" *ngIf="pkg.pricePerKm">
+                  <span class="pricing-label">Per KM:</span>
+                  <span class="pricing-value">₹{{pkg.pricePerKm}}</span>
+                </div>
+              </div>
+              
+              <button class="btn-book-vehicle" (click)="bookPackage(pkg)" [disabled]="!pkg.availability">
+                {{pkg.availability ? 'Book Now' : 'Not Available'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Guide Details Modal (kept for backward compatibility) -->
+<div class="modal-overlay" *ngIf="selectedGuide" (click)="closeGuideDetails()">
+  <div class="modal-content guide-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeGuideDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="guide-avatar-large">{{selectedGuide.photo}}</div>
+      <div>
+        <h2>{{selectedGuide.name}}</h2>
+        <p class="guide-specialization">{{selectedGuide.specialization}}</p>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="guide-detail-section">
+        <h3>About</h3>
+        <p>{{selectedGuide.bio}}</p>
+      </div>
+      
+      <div class="guide-detail-section">
+        <h3>Experience & Languages</h3>
+        <p><strong>Experience:</strong> {{selectedGuide.experience}}</p>
+        <p><strong>Languages:</strong> {{selectedGuide.languages.join(', ')}}</p>
+        <p><strong>Rating:</strong> ⭐ {{selectedGuide.rating}} ({{selectedGuide.reviewsCount}} reviews)</p>
+      </div>
+      
+      <div class="guide-detail-section" *ngIf="selectedGuide.certifications && selectedGuide.certifications.length > 0">
+        <h3>Certifications</h3>
+        <div class="certifications-list">
+          <span *ngFor="let cert of selectedGuide.certifications" class="cert-badge-large">✓ {{cert}}</span>
+        </div>
+      </div>
+      
+      <div class="guide-detail-section">
+        <h3>Pricing</h3>
+        <div class="pricing-box">
+          <span class="price-large">₹{{selectedGuide.pricePerDay}}</span>
+          <span class="price-unit-large">/day</span>
+        </div>
+      </div>
+      
+      <div class="guide-detail-section">
+        <h3>Contact Information</h3>
+        <div class="contact-buttons">
+          <a [href]="'tel:' + selectedGuide.phone" class="contact-btn phone-btn">
+            <span>📞</span> Call Now
+          </a>
+          <a [href]="'mailto:' + selectedGuide.email" class="contact-btn email-btn">
+            <span>📧</span> Email
+          </a>
+          <a *ngIf="selectedGuide.whatsapp" [href]="'https://wa.me/' + selectedGuide.whatsapp.replace(/[^0-9]/g, '')" 
+             target="_blank" class="contact-btn whatsapp-btn">
+            <span>💬</span> WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Vendor Details Modal -->
+<div class="modal-overlay" *ngIf="selectedVendor" (click)="closeVendorDetails()">
+  <div class="modal-content vendor-details-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeVendorDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="vendor-logo-large">{{selectedVendor.logo}}</div>
+      <div>
+        <h2>{{selectedVendor.name}}</h2>
+        <p class="vendor-specialization">{{selectedVendor.speciality}}</p>
+        <div class="vendor-rating-large">
+          <span>⭐ {{selectedVendor.rating.toFixed(1)}}</span>
+          <span>({{selectedVendor.reviews}} reviews)</span>
+          <span *ngIf="selectedVendor.verified" class="verified-badge-vendor">✓ Verified Partner</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="vendor-detail-section">
+        <h3>About {{selectedVendor.name}}</h3>
+        <p>{{selectedVendor.description}}</p>
+        <div class="vendor-meta-info">
+          <span class="meta-badge">📅 Established {{selectedVendor.established}}</span>
+          <span class="meta-badge">⭐ {{selectedVendor.reviews}}+ Reviews</span>
+          <span class="meta-badge">✓ Verified Partner</span>
+        </div>
+      </div>
+      
+      <div class="vendor-detail-section">
+        <h3>Services Offered</h3>
+        <div class="services-grid">
+          <div *ngFor="let service of selectedVendor.services" class="service-item">
+            <span class="service-icon">✓</span>
+            <span>{{service}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="vendor-detail-section">
+        <h3>Achievements & Recognition</h3>
+        <div class="achievements-grid">
+          <div *ngFor="let achievement of selectedVendor.achievements" class="achievement-item">
+            {{achievement}}
+          </div>
+        </div>
+      </div>
+      
+      <div class="vendor-detail-section">
+        <h3>Contact Information</h3>
+        <div class="contact-info-grid">
+          <div class="contact-info-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <span class="contact-label">Phone</span>
+              <a [href]="'tel:' + selectedVendor.contact.phone" class="contact-value">
+                {{selectedVendor.contact.phone}}
+              </a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <span class="contact-label">Email</span>
+              <a [href]="'mailto:' + selectedVendor.contact.email" class="contact-value">
+                {{selectedVendor.contact.email}}
+              </a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">🌐</span>
+            <div>
+              <span class="contact-label">Website</span>
+              <a [href]="'https://' + selectedVendor.contact.website" target="_blank" class="contact-value">
+                {{selectedVendor.contact.website}}
+              </a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📍</span>
+            <div>
+              <span class="contact-label">Address</span>
+              <span class="contact-value">{{selectedVendor.contact.address}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="vendor-action-buttons">
+        <a [href]="'tel:' + selectedVendor.contact.phone" class="vendor-action-btn phone-btn">
+          <span>📞</span> Call Now
+        </a>
+        <a [href]="'mailto:' + selectedVendor.contact.email" class="vendor-action-btn email-btn">
+          <span>📧</span> Send Email
+        </a>
+        <a [href]="'https://' + selectedVendor.contact.website" target="_blank" class="vendor-action-btn website-btn">
+          <span>🌐</span> Visit Website
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hotel Details Modal -->
+<div class="modal-overlay" *ngIf="selectedHotel" (click)="closeHotelDetails()">
+  <div class="modal-content hotel-details-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeHotelDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="hotel-icon-large">{{selectedHotel.icon}}</div>
+      <div>
+        <h2>{{selectedHotel.name}}</h2>
+        <p class="hotel-category-large">{{selectedHotel.category}}</p>
+        <div class="hotel-rating-large">
+          <span>⭐ {{selectedHotel.rating.toFixed(1)}}</span>
+          <span>({{selectedHotel.reviewsCount}} reviews)</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="hotel-image-large">
+        <img [src]="selectedHotel.images" [alt]="selectedHotel.name">
+      </div>
+      
+      <div class="hotel-detail-section">
+        <h3>About</h3>
+        <p>{{selectedHotel.description}}</p>
+      </div>
+      
+      <div class="hotel-detail-section">
+        <h3>Amenities</h3>
+        <div class="amenities-grid">
+          <div *ngFor="let amenity of selectedHotel.amenities" class="amenity-item">
+            <span class="amenity-icon">✓</span>
+            <span>{{amenity}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hotel-detail-section">
+        <h3>Pricing</h3>
+        <div class="pricing-box-large">
+          <span class="price-large">₹{{selectedHotel.pricePerNight}}</span>
+          <span class="price-unit-large">/night</span>
+        </div>
+      </div>
+      
+      <div class="hotel-detail-section">
+        <h3>Contact & Location</h3>
+        <div class="contact-info-grid">
+          <div class="contact-info-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <span class="contact-label">Phone</span>
+              <a [href]="'tel:' + selectedHotel.phone" class="contact-value">{{selectedHotel.phone}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <span class="contact-label">Email</span>
+              <a [href]="'mailto:' + selectedHotel.email" class="contact-value">{{selectedHotel.email}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">🌐</span>
+            <div>
+              <span class="contact-label">Website</span>
+              <a [href]="'https://' + selectedHotel.website" target="_blank" class="contact-value">{{selectedHotel.website}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📍</span>
+            <div>
+              <span class="contact-label">Address</span>
+              <span class="contact-value">{{selectedHotel.address}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hotel-action-buttons">
+        <a [href]="'tel:' + selectedHotel.phone" class="hotel-action-btn phone-btn">
+          <span>📞</span> Call to Book
+        </a>
+        <a [href]="'mailto:' + selectedHotel.email" class="hotel-action-btn email-btn">
+          <span>📧</span> Email Inquiry
+        </a>
+        <a [href]="'https://' + selectedHotel.website" target="_blank" class="hotel-action-btn website-btn">
+          <span>🌐</span> Visit Website
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Restaurant Details Modal -->
+<div class="modal-overlay" *ngIf="selectedRestaurant" (click)="closeRestaurantDetails()">
+  <div class="modal-content restaurant-details-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeRestaurantDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="restaurant-icon-large">{{selectedRestaurant.icon}}</div>
+      <div>
+        <h2>{{selectedRestaurant.name}}</h2>
+        <p class="restaurant-cuisine-large">{{selectedRestaurant.cuisine}}</p>
+        <div class="restaurant-rating-large">
+          <span>⭐ {{selectedRestaurant.rating.toFixed(1)}}</span>
+          <span>({{selectedRestaurant.reviewsCount}} reviews)</span>
+          <span class="price-range-badge">{{selectedRestaurant.priceRange}}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="restaurant-image-large">
+        <img [src]="selectedRestaurant.images" [alt]="selectedRestaurant.name" (error)="onImageError($event)">
+      </div>
+      
+      <div class="restaurant-detail-section">
+        <h3>About</h3>
+        <p>{{selectedRestaurant.description}}</p>
+        <div class="restaurant-meta-info">
+          <span class="meta-badge">🍽️ {{selectedRestaurant.cuisine}}</span>
+          <span class="meta-badge">⭐ {{selectedRestaurant.rating}} rating</span>
+          <span class="meta-badge">{{selectedRestaurant.priceRange}} Price Range</span>
+        </div>
+      </div>
+      
+      <div class="restaurant-detail-section">
+        <h3>Specialties</h3>
+        <div class="specialties-grid">
+          <div *ngFor="let specialty of selectedRestaurant.specialties" class="specialty-item">
+            <span class="specialty-icon">✓</span>
+            <span>{{specialty}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="restaurant-detail-section">
+        <h3>Pricing & Timings</h3>
+        <div class="pricing-timings-grid">
+          <div class="info-box">
+            <div class="info-label">Average Cost for Two</div>
+            <div class="info-value">₹{{selectedRestaurant.avgCostForTwo}}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Opening Hours</div>
+            <div class="info-value">{{selectedRestaurant.timings}}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="restaurant-detail-section">
+        <h3>Contact & Location</h3>
+        <div class="contact-info-grid">
+          <div class="contact-info-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <span class="contact-label">Phone</span>
+              <a [href]="'tel:' + selectedRestaurant.phone" class="contact-value">{{selectedRestaurant.phone}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <span class="contact-label">Email</span>
+              <a [href]="'mailto:' + selectedRestaurant.email" class="contact-value">{{selectedRestaurant.email}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">🌐</span>
+            <div>
+              <span class="contact-label">Website</span>
+              <a [href]="'https://' + selectedRestaurant.website" target="_blank" class="contact-value">{{selectedRestaurant.website}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📍</span>
+            <div>
+              <span class="contact-label">Address</span>
+              <span class="contact-value">{{selectedRestaurant.address}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="restaurant-action-buttons">
+        <a [href]="'tel:' + selectedRestaurant.phone" class="restaurant-action-btn phone-btn">
+          <span>📞</span> Call for Reservation
+        </a>
+        <a [href]="'mailto:' + selectedRestaurant.email" class="restaurant-action-btn email-btn">
+          <span>📧</span> Email Inquiry
+        </a>
+        <a [href]="'https://' + selectedRestaurant.website" target="_blank" class="restaurant-action-btn website-btn">
+          <span>🌐</span> Visit Website
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Photographer Details Modal -->
+<div class="modal-overlay" *ngIf="selectedPhotographer" (click)="closePhotographerDetails()">
+  <div class="modal-content photographer-details-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closePhotographerDetails()">✕</button>
+    
+    <div class="modal-header">
+      <div class="photographer-icon-large">{{selectedPhotographer.icon}}</div>
+      <div>
+        <h2>{{selectedPhotographer.name}}</h2>
+        <p class="photographer-specialization-large">{{selectedPhotographer.specialization}}</p>
+        <div class="photographer-rating-large">
+          <span>⭐ {{selectedPhotographer.rating.toFixed(1)}}</span>
+          <span>({{selectedPhotographer.reviewsCount}} reviews)</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="photographer-image-large">
+        <img [src]="selectedPhotographer.images" [alt]="selectedPhotographer.name">
+      </div>
+      
+      <div class="photographer-detail-section">
+        <h3>About</h3>
+        <p>{{selectedPhotographer.description}}</p>
+        <div class="photographer-meta-info">
+          <span class="meta-badge">📸 {{selectedPhotographer.experience}} experience</span>
+          <span class="meta-badge">⭐ {{selectedPhotographer.rating}} rating</span>
+        </div>
+      </div>
+      
+      <div class="photographer-detail-section">
+        <h3>Services Offered</h3>
+        <div class="services-grid">
+          <div *ngFor="let service of selectedPhotographer.services" class="service-item">
+            <span class="service-icon">✓</span>
+            <span>{{service}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="photographer-detail-section">
+        <h3>Pricing</h3>
+        <div class="pricing-options-grid">
+          <div class="pricing-option-card">
+            <div class="pricing-label-large">Hourly Rate</div>
+            <div class="pricing-value-large">₹{{selectedPhotographer.pricePerHour}}</div>
+            <div class="pricing-note">Perfect for short sessions</div>
+          </div>
+          <div class="pricing-option-card">
+            <div class="pricing-label-large">Full Day</div>
+            <div class="pricing-value-large">₹{{selectedPhotographer.pricePerDay}}</div>
+            <div class="pricing-note">Best value for full coverage</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="photographer-detail-section">
+        <h3>Contact Information</h3>
+        <div class="contact-info-grid">
+          <div class="contact-info-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <span class="contact-label">Phone</span>
+              <a [href]="'tel:' + selectedPhotographer.phone" class="contact-value">{{selectedPhotographer.phone}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <span class="contact-label">Email</span>
+              <a [href]="'mailto:' + selectedPhotographer.email" class="contact-value">{{selectedPhotographer.email}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">💬</span>
+            <div>
+              <span class="contact-label">WhatsApp</span>
+              <a [href]="'https://wa.me/' + selectedPhotographer.whatsapp.replace(/[^0-9]/g, '')" target="_blank" class="contact-value">{{selectedPhotographer.whatsapp}}</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-icon">🌐</span>
+            <div>
+              <span class="contact-label">Portfolio</span>
+              <a [href]="'https://' + selectedPhotographer.portfolio" target="_blank" class="contact-value">{{selectedPhotographer.portfolio}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="photographer-action-buttons">
+        <a [href]="'tel:' + selectedPhotographer.phone" class="photographer-action-btn phone-btn">
+          <span>📞</span> Call Now
+        </a>
+        <a [href]="'https://wa.me/' + selectedPhotographer.whatsapp.replace(/[^0-9]/g, '')" target="_blank" class="photographer-action-btn whatsapp-btn">
+          <span>💬</span> WhatsApp
+        </a>
+        <a [href]="'mailto:' + selectedPhotographer.email" class="photographer-action-btn email-btn">
+          <span>📧</span> Email
+        </a>
+        <a [href]="'https://' + selectedPhotographer.portfolio" target="_blank" class="photographer-action-btn portfolio-btn">
+          <span>🌐</span> View Portfolio
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

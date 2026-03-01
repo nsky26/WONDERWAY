@@ -6,9 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
-
 import { Destination } from '../../models/destination.model';
 import { Offer } from '../../models/offer.model';
 import { Testimonial } from '../../models/testimonial.model';
@@ -27,9 +24,7 @@ import * as TestimonialsActions from '../../store/testimonials/testimonials.acti
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
-    NavbarComponent,
-    FooterComponent
+    FormsModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -41,7 +36,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isDarkMode = true;
 
   // Booking tabs
-  bookingTabs = ['Flights', 'Hotels', 'Packages', 'Cars', 'Cruises'];
+  bookingTabs = ['Flights', 'Hotels', 'Packages', 'Cars', 'Buses', 'Cruises'];
   activeTab = 'Flights';
 
   // Booking form
@@ -49,7 +44,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     from: '',
     to: '',
     date: '',
-    travelers: 1
+    checkoutDate: '',
+    travelers: 1,
+    duration: '5',
+    carType: 'economy'
   };
 
   // Data observables
@@ -125,8 +123,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.store.dispatch(TestimonialsActions.loadTestimonialsSuccess({ testimonials }));
     });
 
-    // Get observables
-    this.destinations$ = this.destinationsService.getPopularDestinations();
+    // Get observables - only trending destinations
+    this.destinations$ = this.destinationsService.getTrendingDestinations();
     this.offers$ = this.offersService.getOffers();
     this.testimonials$ = this.testimonialsService.getTestimonials();
   }
@@ -170,11 +168,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // Search booking
   searchBooking(): void {
     console.log('Searching:', this.activeTab, this.bookingForm);
-    this.router.navigate(['/destinations'], {
+    
+    // Navigate to booking page with search parameters
+    this.router.navigate(['/booking'], {
       queryParams: {
-        type: this.activeTab.toLowerCase(),
+        bookingType: this.activeTab.toLowerCase(),
         from: this.bookingForm.from,
-        to: this.bookingForm.to
+        to: this.bookingForm.to,
+        date: this.bookingForm.date,
+        travelers: this.bookingForm.travelers
       }
     });
   }
@@ -183,6 +185,50 @@ export class HomeComponent implements OnInit, AfterViewInit {
   viewDestination(destination: Destination): void {
     this.store.dispatch(DestinationsActions.selectDestination({ destination }));
     this.router.navigate(['/destinations', destination.id]);
+  }
+
+  // Book destination directly
+  bookDestination(event: Event, destination: Destination): void {
+    console.log('🎫 Book Now clicked for:', destination.name);
+    
+    // Stop all event propagation
+    if (event) {
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      event.preventDefault();
+    }
+    
+    console.log('📍 Navigating to booking page...');
+    console.log('📦 Destination data:', {
+      id: destination.id,
+      name: destination.name,
+      price: destination.price
+    });
+    
+    // Navigate directly
+    this.router.navigate(['/booking'], {
+      queryParams: {
+        destinationId: destination.id,
+        destinationName: destination.name,
+        price: destination.price
+      }
+    }).then(
+      success => console.log('✅ Navigation SUCCESS:', success),
+      error => console.error('❌ Navigation FAILED:', error)
+    );
+  }
+
+  // Book offer directly
+  bookOffer(event: Event, offer: Offer): void {
+    event.stopPropagation();
+    this.router.navigate(['/booking'], {
+      queryParams: {
+        destinationName: offer.destination,
+        price: offer.discountedPrice,
+        offerType: offer.type,
+        offerId: offer.id
+      }
+    });
   }
 
   // Get stars for rating

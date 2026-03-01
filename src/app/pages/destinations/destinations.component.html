@@ -1,57 +1,325 @@
 <!-- Destinations Page -->
-<app-navbar></app-navbar>
-
 <div class="destinations-page">
-  <!-- Page Header -->
-  <section class="page-header">
-    <div class="container">
-      <h1>Explore Destinations</h1>
-      <p>Discover amazing places around the world</p>
+  
+  <!-- Hero Search Section -->
+  <section class="hero-search-section">
+    <div class="hero-background">
+      <div class="animated-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+    </div>
+    
+    <div class="container-full">
+      <div class="hero-content-search">
+        <h1 class="hero-title">
+          <span class="title-line">Discover Your Next</span>
+          <span class="title-highlight">Adventure</span>
+        </h1>
+        <p class="hero-subtitle">Explore {{allDestinations.length}}+ amazing destinations worldwide</p>
+        
+        <div class="search-filter-wrapper">
+          <div class="search-box-hero">
+            <span class="search-icon-hero">🔍</span>
+            <input 
+              type="text" 
+              [(ngModel)]="searchQuery"
+              (ngModelChange)="onSearchChange()"
+              placeholder="Where do you want to go?"
+              class="search-input-hero">
+            <button 
+              *ngIf="searchQuery" 
+              (click)="clearSearch()" 
+              class="clear-btn-hero">
+              ✕
+            </button>
+          </div>
+          
+          <button class="filter-btn-hero" (click)="toggleFilters()" [class.active]="filtersOpen">
+            <span class="filter-icon-hero">⚙️</span>
+            <span>Filters</span>
+            <span class="filter-count" *ngIf="selectedRegion !== 'All' || selectedCategory !== 'All' || selectedPriceRange !== 'All' || selectedRating > 0 || selectedMonth !== 'All'">
+              {{(selectedRegion !== 'All' ? 1 : 0) + (selectedCategory !== 'All' ? 1 : 0) + (selectedPriceRange !== 'All' ? 1 : 0) + (selectedRating > 0 ? 1 : 0) + (selectedMonth !== 'All' ? 1 : 0)}}
+            </span>
+          </button>
+        </div>
+        
+        <!-- Remove results badge -->
+      </div>
     </div>
   </section>
 
-  <!-- Destinations Content -->
-  <section class="destinations-content">
-    <div class="container">
-      <div *ngIf="loading" class="loading-container">
-        <app-loading-spinner></app-loading-spinner>
+  <!-- Expandable Filter Panel -->
+  <div class="filter-panel-overlay" *ngIf="filtersOpen" (click)="closeFilters()"></div>
+  <aside class="filter-panel" [class.open]="filtersOpen">
+    <div class="filter-panel-header">
+      <h3>
+        <span class="filter-icon">🎯</span>
+        Filters
+      </h3>
+      <button class="btn-close-panel" (click)="closeFilters()">✕</button>
+    </div>
+    
+    <div class="filter-panel-content">
+      <!-- Sort By Section -->
+      <div class="filter-section">
+        <h4 class="filter-title">Sort By</h4>
+        <p class="filter-note">📋 Results are sorted alphabetically (A-Z) first, then by your selection below</p>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" name="sort" value="popular" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <span>🔥 Most Popular</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="sort" value="price-low" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <span>💰 Price: Low to High</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="sort" value="price-high" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <span>💎 Price: High to Low</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="sort" value="rating" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <span>⭐ Highest Rated</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="sort" value="name" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <span>🔤 Name (A-Z)</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="sort" value="newest" [(ngModel)]="sortBy" (ngModelChange)="onSortChange()">
+            <span>✨ Newest First</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Region Filter -->
+      <div class="filter-section">
+        <h4 class="filter-title">Region</h4>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" name="region" value="All" [(ngModel)]="selectedRegion" (ngModelChange)="onRegionChange(selectedRegion)">
+            <span>All Regions</span>
+            <span class="count">({{allDestinations.length}})</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="region" value="National" [(ngModel)]="selectedRegion" (ngModelChange)="onRegionChange(selectedRegion)">
+            <span>🇮🇳 National</span>
+            <span class="count">({{getRegionCount('National')}})</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="region" value="International" [(ngModel)]="selectedRegion" (ngModelChange)="onRegionChange(selectedRegion)">
+            <span>🌍 International</span>
+            <span class="count">({{getRegionCount('International')}})</span>
+          </label>
+        </div>
       </div>
 
-      <div class="destinations-grid">
-        <div 
-          *ngFor="let destination of destinations$ | async" 
-          class="destination-card"
-          (click)="viewDestination(destination)">
-          <div class="destination-image">
-            <img [src]="destination.imageUrl" [alt]="destination.name">
-            <div class="destination-badge" *ngIf="destination.isPopular">Popular</div>
+      <!-- Category Filter -->
+      <div class="filter-section">
+        <h4 class="filter-title">Category</h4>
+        <div class="filter-options">
+          <label class="filter-option" *ngFor="let category of categories">
+            <input type="radio" name="category" [value]="category" [(ngModel)]="selectedCategory" (ngModelChange)="onCategoryChange()">
+            <span>{{category}}</span>
+            <span class="count" *ngIf="category !== 'All'">({{getCategoryCount(category)}})</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Best Month to Visit Filter -->
+      <div class="filter-section">
+        <h4 class="filter-title">Best Month to Visit</h4>
+        <div class="filter-options">
+          <label class="filter-option" *ngFor="let month of months">
+            <input type="radio" name="month" [value]="month.value" [(ngModel)]="selectedMonth" (ngModelChange)="applyFilters()">
+            <span>{{month.label}}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Price Range Filter -->
+      <div class="filter-section">
+        <h4 class="filter-title">Price Range</h4>
+        <div class="filter-options">
+          <label class="filter-option" *ngFor="let range of priceRanges">
+            <input type="radio" name="price" [value]="range.value" [(ngModel)]="selectedPriceRange" (ngModelChange)="onPriceRangeChange()">
+            <span>{{range.label}}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Rating Filter -->
+      <div class="filter-section">
+        <h4 class="filter-title">Minimum Rating</h4>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" name="rating" [value]="0" [(ngModel)]="selectedRating" (ngModelChange)="onRatingChange()">
+            <span>All Ratings</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="rating" [value]="4.5" [(ngModel)]="selectedRating" (ngModelChange)="onRatingChange()">
+            <span>⭐ 4.5 & above</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="rating" [value]="4.0" [(ngModel)]="selectedRating" (ngModelChange)="onRatingChange()">
+            <span>⭐ 4.0 & above</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="rating" [value]="3.5" [(ngModel)]="selectedRating" (ngModelChange)="onRatingChange()">
+            <span>⭐ 3.5 & above</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Special Features Filter -->
+      <div class="filter-section">
+        <h4 class="filter-title">Special Features</h4>
+        <div class="filter-options">
+          <label class="filter-option-checkbox">
+            <input type="checkbox" [(ngModel)]="showPopularOnly" (ngModelChange)="applyFilters()">
+            <span>🔥 Popular Destinations</span>
+          </label>
+          <label class="filter-option-checkbox">
+            <input type="checkbox" [(ngModel)]="showNewOnly" (ngModelChange)="applyFilters()">
+            <span>✨ New Destinations</span>
+          </label>
+          <label class="filter-option-checkbox">
+            <input type="checkbox" [(ngModel)]="showTrendingOnly" (ngModelChange)="applyFilters()">
+            <span>📈 Trending Now</span>
+          </label>
+          <label class="filter-option-checkbox">
+            <input type="checkbox" [(ngModel)]="showDiscountOnly" (ngModelChange)="applyFilters()">
+            <span>💰 Discounted</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="filter-panel-footer">
+      <button class="btn-clear-all-panel" (click)="clearAllFilters()">Clear All</button>
+      <button class="btn-apply-filters" (click)="closeFilters()">Apply Filters</button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <section class="destinations-showcase">
+    <div class="container-full">
+      
+      <!-- Quick Filters Pills -->
+      <div class="quick-filters" *ngIf="!loading">
+        <button class="quick-filter-pill" [class.active]="!showPopularOnly && !showNewOnly && !showTrendingOnly && !showDiscountOnly" (click)="clearAllFilters()">
+          <span>🌍</span> All
+        </button>
+        <button class="quick-filter-pill" [class.active]="showPopularOnly" (click)="showPopularOnly = !showPopularOnly; applyFilters()">
+          <span>🔥</span> Popular
+        </button>
+        <button class="quick-filter-pill" [class.active]="showNewOnly" (click)="showNewOnly = !showNewOnly; applyFilters()">
+          <span>✨</span> New
+        </button>
+        <button class="quick-filter-pill" [class.active]="showTrendingOnly" (click)="showTrendingOnly = !showTrendingOnly; applyFilters()">
+          <span>📈</span> Trending
+        </button>
+        <button class="quick-filter-pill" [class.active]="showDiscountOnly" (click)="showDiscountOnly = !showDiscountOnly; applyFilters()">
+          <span>💰</span> Deals
+        </button>
+      </div>
+      
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <app-loading-spinner></app-loading-spinner>
+        <p style="color: white; text-align: center; margin-top: 1rem;">Loading destinations...</p>
+      </div>
+
+      <!-- Destinations Grid -->
+      <div *ngIf="!loading" class="destinations-masonry">
+        <!-- No destinations message -->
+        <div *ngIf="filteredDestinations.length === 0" class="no-results-modern">
+          <div class="no-results-animation">
+            <div class="search-animation">🔍</div>
           </div>
-          <div class="destination-content">
-            <div class="destination-header">
-              <h3>{{destination.name}}</h3>
-              <span class="destination-country">{{destination.country}}</span>
+          <h3>No destinations found</h3>
+          <p>Try adjusting your search or filters</p>
+          <button class="btn-reset-modern" (click)="clearAllFilters()">
+            <span>🔄</span> Reset Filters
+          </button>
+        </div>
+
+        <!-- Destination cards -->
+        <div 
+          *ngFor="let destination of filteredDestinations; trackBy: trackByDestinationId; let i = index" 
+          class="destination-card-modern"
+          [style.animation-delay]="(i * 0.05) + 's'">
+          
+          <div class="card-image-wrapper" (click)="viewDestination(destination)">
+            <img [src]="destination.imageUrl" [alt]="destination.name" (error)="onImageError($event)" class="card-image">
+            
+            <div class="image-overlay"></div>
+            
+            <!-- Badges -->
+            <div class="card-badges">
+              <span class="badge-modern badge-popular" *ngIf="destination.isPopular">🔥 Hot</span>
+              <span class="badge-modern badge-new" *ngIf="destination.isNew">✨ New</span>
+              <span class="badge-modern badge-trending" *ngIf="destination.isTrending">📈 Trending</span>
             </div>
-            <p class="destination-description">{{destination.shortDescription}}</p>
-            <div class="destination-meta">
-              <span class="meta-item">
-                <span class="icon">⏱️</span>
-                {{destination.duration}}
-              </span>
-              <span class="meta-item">
-                <span class="icon">🏷️</span>
-                {{destination.category}}
-              </span>
+            
+            <!-- Discount Badge -->
+            <div class="discount-corner" *ngIf="destination.discount">
+              <span class="discount-text">{{destination.discount}}%</span>
+              <span class="discount-label">OFF</span>
             </div>
-            <div class="destination-footer">
-              <div class="rating">
-                <span *ngFor="let star of getStars(destination.rating)" class="star">⭐</span>
-                <span class="rating-text">{{destination.rating}}</span>
+            
+            <!-- Region Badge -->
+            <div class="region-tag" [class.national]="destination.region === 'National'">
+              <span class="region-icon">{{destination.region === 'National' ? '🇮🇳' : '🌍'}}</span>
+              {{destination.region}}
+            </div>
+          </div>
+          
+          <div class="card-content-modern">
+            <div class="card-header-modern" (click)="viewDestination(destination)">
+              <h3 class="card-title">{{ destination.name }}</h3>
+              <p class="card-location">
+                <span class="location-icon">📍</span>
+                {{ destination.country }}
+              </p>
+            </div>
+            
+            <p class="card-description">{{ destination.shortDescription }}</p>
+            
+            <div class="card-meta-modern">
+              <div class="meta-item-modern">
+                <span class="meta-icon">⏱️</span>
+                <span class="meta-text">{{ destination.duration }}</span>
               </div>
-              <div class="price">
-                <span class="price-label">From</span>
-                <span class="price-value">${{destination.price}}</span>
+              <div class="meta-item-modern">
+                <span class="meta-icon">🏷️</span>
+                <span class="meta-text">{{ destination.category }}</span>
               </div>
             </div>
+            
+            <div class="card-footer-modern">
+              <div class="rating-modern">
+                <span class="rating-star">⭐</span>
+                <span class="rating-value">{{ destination.rating.toFixed(1) }}</span>
+                <span class="rating-count">({{ destination.reviews }})</span>
+              </div>
+              
+              <div class="price-modern">
+                <span class="price-from">from</span>
+                <div class="price-wrapper-modern">
+                  <span class="price-current">${{ destination.price }}</span>
+                  <span class="price-original" *ngIf="destination.discount">${{ (destination.price / (1 - destination.discount / 100)).toFixed(0) }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <a [routerLink]="['/destinations', destination.id]" class="btn-explore-modern">
+              <span class="btn-icon-modern">✈️</span>
+              <span class="btn-text-modern">Explore Now</span>
+              <span class="btn-arrow">→</span>
+            </a>
           </div>
         </div>
       </div>
@@ -59,4 +327,58 @@
   </section>
 </div>
 
-<app-footer></app-footer>
+<!-- Scroll to Top Button -->
+<button *ngIf="showScrollToTop" class="scroll-to-top" (click)="scrollToTop()">
+  <span>↑</span>
+</button>
+
+<!-- Enhanced AI Chatbot -->
+<div class="chatbot-container" [class.open]="chatbotOpen">
+  <button class="chatbot-toggle" (click)="toggleChatbot()">
+    <span *ngIf="!chatbotOpen">💬</span>
+    <span *ngIf="chatbotOpen">✕</span>
+  </button>
+  
+  <div class="chatbot-window" *ngIf="chatbotOpen">
+    <div class="chatbot-header">
+      <div class="chatbot-avatar">🤖</div>
+      <div class="chatbot-info">
+        <h3>WonderWay Assistant</h3>
+        <p class="chatbot-status">
+          <span class="status-dot"></span>
+          Online - Ready to help!
+        </p>
+      </div>
+    </div>
+    
+    <div class="chatbot-messages">
+      <div *ngFor="let message of chatMessages" 
+           class="message"
+           [class.user]="message.type === 'user'"
+           [class.bot]="message.type === 'bot'">
+        <div class="message-content">{{ message.text }}</div>
+        <div class="message-time">{{ message.time }}</div>
+      </div>
+    </div>
+    
+    <div class="chatbot-suggestions">
+      <button *ngFor="let suggestion of chatSuggestions" 
+              (click)="useSuggestion(suggestion)"
+              class="suggestion-btn">
+        {{ suggestion }}
+      </button>
+    </div>
+    
+    <div class="chatbot-input">
+      <input 
+        type="text" 
+        [(ngModel)]="chatInput"
+        (keyup.enter)="sendMessage()"
+        placeholder="Ask me anything about destinations..."
+        class="chat-input">
+      <button (click)="sendMessage()" class="send-btn">
+        <span>➤</span>
+      </button>
+    </div>
+  </div>
+</div>

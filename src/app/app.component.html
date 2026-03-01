@@ -1,77 +1,11 @@
-<!-- GLOBAL NAVBAR -->
-<header class="main-navbar">
-  <div class="nav-container">
-
-    <!-- BRAND -->
-    <div class="brand" routerLink="/">
-      WonderWay
-    </div>
-
-    <!-- NAV LINKS -->
-    <nav class="nav-links">
-      <a routerLink="/home" routerLinkActive="active">Home</a>
-      <a routerLink="/about" routerLinkActive="active">About</a>
-      <a routerLink="/destinations" routerLinkActive="active">Destinations</a>
-      <a routerLink="/contact" routerLinkActive="active">Contact</a>
-    </nav>
-
-  </div>
-</header>
+<!-- Navbar Component -->
+<app-navbar></app-navbar>
 
 <!-- ROUTER OUTLET -->
 <main>
   <router-outlet></router-outlet>
 </main>
 
-<!-- =================== FOOTER =================== -->
-<footer class="footer">
-
-  <div class="footer-container">
-
-    <!-- BRAND -->
-    <div class="footer-brand">
-      <h2>WonderWay</h2>
-      <p>Your trusted global travel companion.</p>
-
-      <div class="social-links">
-        <a><i class="fab fa-facebook"></i></a>
-        <a><i class="fab fa-instagram"></i></a>
-        <a><i class="fab fa-twitter"></i></a>
-        <a><i class="fab fa-youtube"></i></a>
-      </div>
-    </div>
-
-    <!-- QUICK LINKS -->
-    <div class="footer-links">
-      <h3>Quick Links</h3>
-      <a routerLink="/home">Home</a>
-      <a routerLink="/about">About</a>
-      <a routerLink="/destinations">Destinations</a>
-      <a routerLink="/contact">Contact</a>
-    </div>
-
-    <!-- OUR SERVICES -->
-    <div class="footer-links">
-      <h3>Services</h3>
-      <a>Travel Planning</a>
-      <a>Hotel Booking</a>
-      <a>Custom Packages</a>
-      <a>24×7 Support</a>
-    </div>
-
-    <!-- CONTACT SECTION -->
-    <div class="footer-contact">
-      <h3>Contact Us</h3>
-      <p><i class="fas fa-phone"></i> +91 98765 43210</p>
-      <p><i class="fas fa-envelope"></i> support@wonderway.com</p>
-      <p><i class="fas fa-map-marker-alt"></i> vizianagaram, India</p>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    © 2026 WonderWay | All Rights Reserved.
-  </div>
-
-</footer>
+<!-- Footer Component -->
+<app-footer></app-footer>
 

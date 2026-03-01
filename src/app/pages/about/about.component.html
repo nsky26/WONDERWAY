@@ -1,14 +1,10 @@
 <!-- About Page -->
-<app-navbar></app-navbar>
+<app-page-header 
+  title="About WonderWay" 
+  subtitle="Your trusted partner in creating unforgettable travel experiences">
+</app-page-header>
 
 <div class="about-page">
-  <!-- Page Header -->
-  <section class="page-header">
-    <div class="container">
-      <h1>About WonderWayTech</h1>
-      <p>Your trusted partner in creating unforgettable travel experiences</p>
-    </div>
-  </section>
 
   <!-- About Content -->
   <section class="about-content">
@@ -18,11 +14,91 @@
         <div class="section-grid">
           <div class="section-text">
             <h2>Our Mission</h2>
-            <p>At WonderWayTech, we believe that travel is more than just visiting new places—it's about creating memories that last a lifetime. Our mission is to make world-class travel experiences accessible to everyone through innovative technology and personalized service.</p>
-            <p>We combine cutting-edge booking technology with deep local expertise to offer you the best travel deals and experiences around the globe.</p>
+            <p>At WonderWay, we believe that travel is more than just visiting new places—it's about creating memories that last a lifetime. Our mission is to make world-class travel experiences accessible to everyone through innovative technology and personalized service.</p>
+            
+            <div class="expandable-content" [class.expanded]="showFullMission">
+              <p>We combine cutting-edge booking technology with deep local expertise to offer you the best travel deals and experiences around the globe. With over 500+ destinations worldwide and partnerships with premium hotels, airlines, and local tour operators, we ensure every journey is seamless and unforgettable.</p>
+              <p>Our platform leverages AI-powered recommendations, real-time pricing, and 24/7 customer support to provide you with the most comprehensive travel planning experience. Whether you're seeking adventure, relaxation, cultural immersion, or luxury escapes, WonderWay is your trusted companion every step of the way.</p>
+            </div>
+            
+            <button class="btn-read-more" (click)="toggleMission()">
+              <span *ngIf="!showFullMission">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 12l-4-4h8l-4 4z"/>
+                </svg>
+                Read More
+              </span>
+              <span *ngIf="showFullMission">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 4l4 4H4l4-4z"/>
+                </svg>
+                Show Less
+              </span>
+            </button>
           </div>
           <div class="section-image">
             <div class="image-placeholder">🌍</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Story Section -->
+      <div class="content-section story-section">
+        <h2>Our Story</h2>
+        <p>Founded in 2020, WonderWay was born from a simple idea: travel should be accessible, affordable, and amazing for everyone. Our founders, seasoned travelers themselves, experienced firsthand the challenges of planning trips—hidden fees, unreliable information, and lack of personalized recommendations.</p>
+        
+        <div class="expandable-content" [class.expanded]="showFullStory">
+          <p>Starting with just 50 destinations, we've grown to become one of the leading travel platforms, serving over 500,000 happy travelers across 150+ countries. Our success is built on trust, innovation, and an unwavering commitment to customer satisfaction.</p>
+          <p>Today, we're proud to offer not just bookings, but complete travel experiences—from combo packages that save you money to exclusive deals with top-rated hotels and airlines. Our AI-powered chatbot assists you 24/7, and our expert travel consultants are always ready to help craft your perfect journey.</p>
+        </div>
+        
+        <button class="btn-read-more" (click)="toggleStory()">
+          <span *ngIf="!showFullStory">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 12l-4-4h8l-4 4z"/>
+            </svg>
+            Read More
+          </span>
+          <span *ngIf="showFullStory">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 4l4 4H4l4-4z"/>
+            </svg>
+            Show Less
+          </span>
+        </button>
+      </div>
+
+      <!-- What Sets Us Apart -->
+      <div class="content-section">
+        <h2>What Sets Us Apart</h2>
+        <div class="features-list">
+          <div class="feature-item">
+            <span class="feature-number">01</span>
+            <div class="feature-content">
+              <h3>Smart Technology</h3>
+              <p>Our AI-powered platform learns your preferences and suggests personalized destinations, ensuring every recommendation matches your travel style and budget.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-number">02</span>
+            <div class="feature-content">
+              <h3>Best Price Guarantee</h3>
+              <p>We monitor prices 24/7 and guarantee you'll get the best deal. Find a lower price within 24 hours? We'll refund the difference plus 10%.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-number">03</span>
+            <div class="feature-content">
+              <h3>Combo Packages</h3>
+              <p>Save up to 40% with our exclusive combo packages that bundle multiple destinations, hotels, and experiences into one seamless journey.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-number">04</span>
+            <div class="feature-content">
+              <h3>Local Expertise</h3>
+              <p>Our team of local travel experts in every destination ensures authentic experiences, insider tips, and hidden gems you won't find in guidebooks.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -111,11 +187,9 @@
       <!-- CTA Section -->
       <div class="cta-section">
         <h2>Ready to Start Your Journey?</h2>
-        <p>Join thousands of satisfied travelers and discover the world with WonderWayTech</p>
+        <p>Join thousands of satisfied travelers and discover the world with WonderWay</p>
         <button class="btn-cta" routerLink="/destinations">Explore Destinations</button>
       </div>
     </div>
   </section>
 </div>
-
-<app-footer></app-footer>

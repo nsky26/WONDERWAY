@@ -1,6 +1,6 @@
 // Application configuration with NgRx store and routing
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
@@ -22,7 +22,10 @@ import { BookingsService } from './services/bookings.service';
 // Export configuration to enable routing and state management
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({
+      scrollPositionRestoration: 'top',
+      anchorScrolling: 'enabled'
+    })),
     provideStore({
       destinations: destinationsReducer,
       offers: offersReducer,

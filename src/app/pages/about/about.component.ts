@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 
 @Component({
   selector: 'app-about',
@@ -12,11 +11,21 @@ import { FooterComponent } from '../../components/footer/footer.component';
   imports: [
     CommonModule,
     RouterModule,
-    NavbarComponent,
-    FooterComponent
+    PageHeaderComponent
   ],
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent {
+  // Expandable sections state
+  showFullMission = false;
+  showFullStory = false;
+
+  toggleMission() {
+    this.showFullMission = !this.showFullMission;
+  }
+
+  toggleStory() {
+    this.showFullStory = !this.showFullStory;
+  }
 }

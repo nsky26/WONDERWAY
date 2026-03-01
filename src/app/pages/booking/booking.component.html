@@ -1,219 +1,365 @@
 <!-- Booking Page -->
-<app-navbar></app-navbar>
+<app-page-header 
+  title="Book Your Journey" 
+  subtitle="Complete your booking in just a few steps">
+</app-page-header>
 
-<div class="booking-page">
-  <!-- Page Header -->
-  <section class="page-header">
-    <div class="container">
-      <h1>Book Your Trip</h1>
-      <p>Fill in the details below to complete your booking</p>
+<div class="booking-container">
+  
+  <!-- Search Results Section -->
+  <div *ngIf="searchPerformed" class="search-results-section">
+    
+    <!-- Loading State -->
+    <div *ngIf="searching" class="loading-state">
+      <div class="spinner">⏳</div>
+      <p>Searching for best options...</p>
     </div>
-  </section>
-
-  <!-- Booking Form -->
-  <section class="booking-content">
-    <div class="container">
-      <div class="booking-grid">
-        <!-- Form Section -->
-        <div class="form-section">
-          <div class="form-card">
-            <h2>Booking Details</h2>
-
-            <!-- Success Message -->
-            <div *ngIf="bookingSuccess" class="success-message">
-              <span class="success-icon">✓</span>
-              <div>
-                <h3>Booking Successful!</h3>
-                <p>Your booking has been confirmed. We'll send you a confirmation email shortly.</p>
-              </div>
-            </div>
-
-            <form (ngSubmit)="onSubmit()" #bookingFormRef="ngForm">
-              <!-- Destination -->
-              <div class="form-group">
-                <label for="destinationName">Destination *</label>
-                <input 
-                  type="text" 
-                  id="destinationName"
-                  [(ngModel)]="bookingForm.destinationName" 
-                  name="destinationName"
-                  placeholder="Enter destination"
-                  required>
-              </div>
-
-              <!-- Booking Type -->
-              <div class="form-group">
-                <label for="bookingType">Booking Type *</label>
-                <select 
-                  id="bookingType"
-                  [(ngModel)]="bookingForm.bookingType" 
-                  name="bookingType"
-                  required>
-                  <option value="flight">Flight Only</option>
-                  <option value="hotel">Hotel Only</option>
-                  <option value="package">Complete Package</option>
-                </select>
-              </div>
-
-              <!-- Personal Information -->
-              <div class="form-section-title">Personal Information</div>
-
-              <div class="form-group">
-                <label for="customerName">Full Name *</label>
-                <input 
-                  type="text" 
-                  id="customerName"
-                  [(ngModel)]="bookingForm.customerName" 
-                  name="customerName"
-                  placeholder="Enter your full name"
-                  required>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="email">Email *</label>
-                  <input 
-                    type="email" 
-                    id="email"
-                    [(ngModel)]="bookingForm.email" 
-                    name="email"
-                    placeholder="your@email.com"
-                    required>
-                </div>
-
-                <div class="form-group">
-                  <label for="phone">Phone *</label>
-                  <input 
-                    type="tel" 
-                    id="phone"
-                    [(ngModel)]="bookingForm.phone" 
-                    name="phone"
-                    placeholder="+1 (555) 123-4567"
-                    required>
-                </div>
-              </div>
-
-              <!-- Travel Dates -->
-              <div class="form-section-title">Travel Dates</div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="checkInDate">Check-in Date *</label>
-                  <input 
-                    type="date" 
-                    id="checkInDate"
-                    [(ngModel)]="bookingForm.checkInDate" 
-                    name="checkInDate"
-                    required>
-                </div>
-
-                <div class="form-group">
-                  <label for="checkOutDate">Check-out Date *</label>
-                  <input 
-                    type="date" 
-                    id="checkOutDate"
-                    [(ngModel)]="bookingForm.checkOutDate" 
-                    name="checkOutDate"
-                    required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="guests">Number of Guests *</label>
-                <input 
-                  type="number" 
-                  id="guests"
-                  [(ngModel)]="bookingForm.guests" 
-                  name="guests"
-                  min="1"
-                  max="10"
-                  required>
-              </div>
-
-              <!-- Special Requests -->
-              <div class="form-group">
-                <label for="specialRequests">Special Requests (Optional)</label>
-                <textarea 
-                  id="specialRequests"
-                  [(ngModel)]="bookingForm.specialRequests" 
-                  name="specialRequests"
-                  rows="4"
-                  placeholder="Any special requirements or requests..."></textarea>
-              </div>
-
-              <!-- Submit Button -->
-              <button 
-                type="submit" 
-                class="btn-submit"
-                [disabled]="!bookingFormRef.valid || (loading$ | async)">
-                <span *ngIf="!(loading$ | async)">Complete Booking</span>
-                <span *ngIf="loading$ | async">Processing...</span>
-              </button>
-            </form>
+    
+    <!-- Flights Results -->
+    <div *ngIf="bookingType === 'flights' && !searching && flights.length > 0" class="results-container">
+      <h2 class="results-title">✈️ Available Flights</h2>
+      <p class="results-subtitle">{{ flights.length }} flights found from {{ bookingForm.from }} to {{ bookingForm.to }}</p>
+      
+      <div class="results-grid">
+        <div *ngFor="let flight of flights" class="result-card flight-card">
+          <div class="card-header">
+            <h3>{{ flight.airline }}</h3>
+            <span class="flight-number">{{ flight.flightNumber }}</span>
           </div>
-        </div>
-
-        <!-- Summary Section -->
-        <div class="summary-section">
-          <div class="summary-card">
-            <h3>Booking Summary</h3>
-            
-            <div class="summary-item">
-              <span class="label">Destination:</span>
-              <span class="value">{{bookingForm.destinationName || 'Not selected'}}</span>
-            </div>
-
-            <div class="summary-item">
-              <span class="label">Booking Type:</span>
-              <span class="value">{{bookingForm.bookingType | titlecase}}</span>
-            </div>
-
-            <div class="summary-item">
-              <span class="label">Check-in:</span>
-              <span class="value">{{bookingForm.checkInDate || 'Not selected'}}</span>
-            </div>
-
-            <div class="summary-item">
-              <span class="label">Check-out:</span>
-              <span class="value">{{bookingForm.checkOutDate || 'Not selected'}}</span>
-            </div>
-
-            <div class="summary-item">
-              <span class="label">Guests:</span>
-              <span class="value">{{bookingForm.guests}}</span>
-            </div>
-
-            <div class="summary-item" *ngIf="bookingForm.checkInDate && bookingForm.checkOutDate">
-              <span class="label">Duration:</span>
-              <span class="value">{{getDaysDifference()}} days</span>
-            </div>
-
-            <div class="summary-divider"></div>
-
-            <div class="summary-total">
-              <span class="label">Estimated Total:</span>
-              <span class="value">${{calculatePrice()}}</span>
-            </div>
-
-            <div class="summary-note">
-              <p>* Final price will be confirmed after booking</p>
+          
+          <div class="flight-details">
+            <div class="flight-time">
+              <div class="time-block">
+                <span class="time">{{ flight.departureTime }}</span>
+                <span class="city">{{ flight.from }}</span>
+              </div>
+              <div class="flight-duration">
+                <span class="duration">{{ flight.duration }}</span>
+                <div class="flight-line">
+                  <span class="stops">{{ flight.stops === 0 ? 'Non-stop' : flight.stops + ' stop(s)' }}</span>
+                </div>
+              </div>
+              <div class="time-block">
+                <span class="time">{{ flight.arrivalTime }}</span>
+                <span class="city">{{ flight.to }}</span>
+              </div>
             </div>
           </div>
-
-          <div class="info-card">
-            <h4>Why Book With Us?</h4>
-            <ul class="benefits-list">
-              <li>✓ Best price guarantee</li>
-              <li>✓ Free cancellation up to 24 hours</li>
-              <li>✓ Instant confirmation</li>
-              <li>✓ 24/7 customer support</li>
-              <li>✓ Secure payment</li>
-            </ul>
+          
+          <div class="card-footer">
+            <div class="price-info">
+              <span class="price">₹{{ flight.price }}</span>
+              <span class="seats">{{ flight.availableSeats }} seats left</span>
+            </div>
+            <button class="btn-select" (click)="selectForBooking(flight, 'flight')">
+              Select Flight
+            </button>
           </div>
         </div>
       </div>
     </div>
-  </section>
-</div>
+    
+    <!-- Hotels Results -->
+    <div *ngIf="bookingType === 'hotels' && !searching && hotels.length > 0" class="results-container">
+      <h2 class="results-title">🏨 Available Hotels</h2>
+      <p class="results-subtitle">{{ hotels.length }} hotels found in {{ bookingForm.to }}</p>
+      
+      <div class="results-grid">
+        <div *ngFor="let hotel of hotels" class="result-card hotel-card">
+          <div class="hotel-image">
+            <img [src]="hotel.imageUrl" [alt]="hotel.name">
+            <span class="hotel-rating">⭐ {{ hotel.rating }}</span>
+          </div>
+          
+          <div class="card-content">
+            <h3>{{ hotel.name }}</h3>
+            <p class="location">📍 {{ hotel.location }}, {{ hotel.city }}</p>
+            <p class="distance">{{ hotel.distance }}</p>
+            
+            <div class="amenities">
+              <span *ngFor="let amenity of hotel.amenities.slice(0, 4)" class="amenity-tag">
+                {{ amenity }}
+              </span>
+            </div>
+            
+            <div class="room-info">
+              <span class="room-type">{{ hotel.roomType }}</span>
+              <span class="available-rooms">{{ hotel.availableRooms }} rooms available</span>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="price-info">
+              <span class="price">₹{{ hotel.pricePerNight }}</span>
+              <span class="per-night">per night</span>
+            </div>
+            <button class="btn-select" (click)="selectForBooking(hotel, 'hotel')">
+              Select Hotel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Buses Results -->
+    <div *ngIf="bookingType === 'buses' && !searching && buses.length > 0" class="results-container">
+      <h2 class="results-title">🚌 Available Buses</h2>
+      <p class="results-subtitle">{{ buses.length }} buses found from {{ bookingForm.from }} to {{ bookingForm.to }}</p>
+      
+      <div class="results-grid">
+        <div *ngFor="let bus of buses" class="result-card bus-card">
+          <div class="card-header">
+            <h3>{{ bus.operator }}</h3>
+            <span class="bus-type">{{ bus.busType }}</span>
+            <span class="rating">⭐ {{ bus.rating }}</span>
+          </div>
+          
+          <div class="bus-details">
+            <div class="bus-time">
+              <div class="time-block">
+                <span class="time">{{ bus.departureTime }}</span>
+                <span class="city">{{ bus.from }}</span>
+              </div>
+              <div class="bus-duration">
+                <span class="duration">{{ bus.duration }}</span>
+              </div>
+              <div class="time-block">
+                <span class="time">{{ bus.arrivalTime }}</span>
+                <span class="city">{{ bus.to }}</span>
+              </div>
+            </div>
+            
+            <div class="amenities">
+              <span *ngFor="let amenity of bus.amenities" class="amenity-tag">
+                {{ amenity }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="price-info">
+              <span class="price">₹{{ bus.price }}</span>
+              <span class="seats">{{ bus.availableSeats }} seats available</span>
+            </div>
+            <button class="btn-select" (click)="selectForBooking(bus, 'bus')">
+              Select Bus
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Cars Results -->
+    <div *ngIf="bookingType === 'cars' && !searching && cars.length > 0" class="results-container">
+      <h2 class="results-title">🚗 Available Cars</h2>
+      <p class="results-subtitle">{{ cars.length }} cars available for rent</p>
+      
+      <div class="results-grid">
+        <div *ngFor="let car of cars" class="result-card car-card">
+          <div class="car-image">
+            <img [src]="car.imageUrl" [alt]="car.model">
+            <span class="car-rating">⭐ {{ car.rating }}</span>
+          </div>
+          
+          <div class="card-content">
+            <h3>{{ car.brand }} {{ car.model }}</h3>
+            <p class="car-type">{{ car.type }} • {{ car.seats }} Seater</p>
+            
+            <div class="car-specs">
+              <span class="spec">{{ car.transmission }}</span>
+              <span class="spec">{{ car.fuelType }}</span>
+            </div>
+            
+            <div class="amenities">
+              <span *ngFor="let feature of car.features" class="amenity-tag">
+                {{ feature }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="price-info">
+              <span class="price">₹{{ car.pricePerDay }}</span>
+              <span class="per-day">per day</span>
+            </div>
+            <button class="btn-select" (click)="selectForBooking(car, 'car')">
+              Select Car
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- No Results -->
+    <div *ngIf="!searching && 
+                ((bookingType === 'flights' && flights.length === 0) ||
+                 (bookingType === 'hotels' && hotels.length === 0) ||
+                 (bookingType === 'buses' && buses.length === 0) ||
+                 (bookingType === 'cars' && cars.length === 0))" 
+         class="no-results">
+      <p>😔 No results found. Please try different search criteria.</p>
+    </div>
+  </div>
+  
+  <!-- Booking Form Section -->
+  <div class="booking-form-section" id="booking-form">
+    <div class="form-card">
+      <h2 class="form-title">
+        <span *ngIf="!selectedItem">📝 Booking Details</span>
+        <span *ngIf="selectedItem">✅ Complete Your Booking</span>
+      </h2>
+      
+      <!-- Selected Item Summary -->
+      <div *ngIf="selectedItem" class="selected-summary">
+        <h3>Selected {{ selectedItem.type | titlecase }}</h3>
+        <p class="summary-text">{{ bookingForm.destinationName }}</p>
+      </div>
 
-<app-footer></app-footer>
+      <form (ngSubmit)="onSubmit()" class="booking-form">
+        <!-- Destination/Service Name (Read-only if pre-filled) -->
+        <div class="form-group">
+          <label for="destinationName">
+            <span *ngIf="bookingType === 'package'">Destination</span>
+            <span *ngIf="bookingType !== 'package'">Service</span>
+          </label>
+          <input 
+            type="text" 
+            id="destinationName" 
+            [(ngModel)]="bookingForm.destinationName" 
+            name="destinationName"
+            [readonly]="!!bookingForm.destinationName"
+            placeholder="Enter destination or service"
+            required>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customerName">Full Name *</label>
+            <input 
+              type="text" 
+              id="customerName" 
+              [(ngModel)]="bookingForm.customerName" 
+              name="customerName"
+              placeholder="John Doe"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input 
+              type="email" 
+              id="email" 
+              [(ngModel)]="bookingForm.email" 
+              name="email"
+              placeholder="john@example.com"
+              required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              [(ngModel)]="bookingForm.phone" 
+              name="phone"
+              placeholder="+91 98765 43210"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="guests">Number of Guests *</label>
+            <input 
+              type="number" 
+              id="guests" 
+              [(ngModel)]="bookingForm.guests" 
+              name="guests"
+              min="1"
+              required>
+          </div>
+        </div>
+
+        <!-- Travel Dates -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="checkInDate">Check-in / Start Date *</label>
+            <input 
+              type="date" 
+              id="checkInDate" 
+              [(ngModel)]="bookingForm.checkInDate" 
+              name="checkInDate"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="checkOutDate">Check-out / End Date *</label>
+            <input 
+              type="date" 
+              id="checkOutDate" 
+              [(ngModel)]="bookingForm.checkOutDate" 
+              name="checkOutDate"
+              required>
+          </div>
+        </div>
+
+        <!-- Booking Type -->
+        <div class="form-group">
+          <label for="bookingType">Booking Type</label>
+          <select 
+            id="bookingType" 
+            [(ngModel)]="bookingForm.bookingType" 
+            name="bookingType"
+            [disabled]="!!selectedItem">
+            <option value="flight">Flight</option>
+            <option value="hotel">Hotel</option>
+            <option value="package">Package</option>
+            <option value="bus">Bus</option>
+            <option value="car">Car Rental</option>
+            <option value="cruise">Cruise</option>
+          </select>
+        </div>
+
+        <!-- Special Requests -->
+        <div class="form-group">
+          <label for="specialRequests">Special Requests (Optional)</label>
+          <textarea 
+            id="specialRequests" 
+            [(ngModel)]="bookingForm.specialRequests" 
+            name="specialRequests"
+            rows="4"
+            placeholder="Any special requirements or preferences..."></textarea>
+        </div>
+
+        <!-- Price Summary -->
+        <div *ngIf="selectedItem" class="price-summary">
+          <h3>Price Summary</h3>
+          <div class="summary-row">
+            <span>Base Price:</span>
+            <span>₹{{ calculatePrice() }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total Amount:</span>
+            <span>₹{{ calculatePrice() }}</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="!isFormValid()">
+          <span class="btn-icon">🎫</span>
+          <span>Confirm Booking</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <app-success-message 
+    *ngIf="bookingSuccess"
+    message="Booking confirmed successfully! We'll send you a confirmation email shortly.">
+  </app-success-message>
+</div>

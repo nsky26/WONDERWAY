@@ -153,6 +153,8 @@
 .social-icon {
   position: relative;
   z-index: 1;
+  width: 24px;
+  height: 24px;
 }
 
 /* Footer Sections */

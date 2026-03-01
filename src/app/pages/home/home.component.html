@@ -1,5 +1,4 @@
 <!-- WonderWay Premium Travel Portal -->
-<app-navbar></app-navbar>
 
 <!-- Theme Toggle -->
 <button class="theme-toggle" (click)="toggleTheme()">
@@ -37,27 +36,137 @@
       </div>
 
       <form class="booking-form">
-        <div class="form-grid">
+        <div class="form-grid" *ngIf="activeTab === 'Flights'">
           <div class="form-group">
             <label>From</label>
-            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="from">
+            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="flightFrom">
           </div>
           <div class="form-group">
             <label>To</label>
-            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="to">
+            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="flightTo">
           </div>
           <div class="form-group">
             <label>Date</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="date">
+            <input type="date" [(ngModel)]="bookingForm.date" name="flightDate">
           </div>
           <div class="form-group">
             <label>Travelers</label>
-            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="travelers">
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="flightTravelers">
           </div>
         </div>
+
+        <div class="form-grid" *ngIf="activeTab === 'Hotels'">
+          <div class="form-group">
+            <label>Destination</label>
+            <input type="text" placeholder="Where are you going?" [(ngModel)]="bookingForm.to" name="hotelDestination">
+          </div>
+          <div class="form-group">
+            <label>Check-in</label>
+            <input type="date" [(ngModel)]="bookingForm.date" name="hotelCheckin">
+          </div>
+          <div class="form-group">
+            <label>Check-out</label>
+            <input type="date" [(ngModel)]="bookingForm.checkoutDate" name="hotelCheckout">
+          </div>
+          <div class="form-group">
+            <label>Guests</label>
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="hotelGuests">
+          </div>
+        </div>
+
+        <div class="form-grid" *ngIf="activeTab === 'Packages'">
+          <div class="form-group">
+            <label>Destination</label>
+            <input type="text" placeholder="Where to?" [(ngModel)]="bookingForm.to" name="packageDestination">
+          </div>
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" [(ngModel)]="bookingForm.date" name="packageDate">
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <select [(ngModel)]="bookingForm.duration" name="packageDuration">
+              <option value="3">3 Days</option>
+              <option value="5">5 Days</option>
+              <option value="7">7 Days</option>
+              <option value="10">10 Days</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Travelers</label>
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="packageTravelers">
+          </div>
+        </div>
+
+        <div class="form-grid" *ngIf="activeTab === 'Cars'">
+          <div class="form-group">
+            <label>Pick-up Location</label>
+            <input type="text" placeholder="City or Airport" [(ngModel)]="bookingForm.from" name="carPickup">
+          </div>
+          <div class="form-group">
+            <label>Pick-up Date</label>
+            <input type="date" [(ngModel)]="bookingForm.date" name="carPickupDate">
+          </div>
+          <div class="form-group">
+            <label>Drop-off Date</label>
+            <input type="date" [(ngModel)]="bookingForm.checkoutDate" name="carDropoff">
+          </div>
+          <div class="form-group">
+            <label>Car Type</label>
+            <select [(ngModel)]="bookingForm.carType" name="carType">
+              <option value="economy">Economy</option>
+              <option value="compact">Compact</option>
+              <option value="suv">SUV</option>
+              <option value="luxury">Luxury</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid" *ngIf="activeTab === 'Buses'">
+          <div class="form-group">
+            <label>From</label>
+            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="busFrom">
+          </div>
+          <div class="form-group">
+            <label>To</label>
+            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="busTo">
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" [(ngModel)]="bookingForm.date" name="busDate">
+          </div>
+          <div class="form-group">
+            <label>Passengers</label>
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="busPassengers">
+          </div>
+        </div>
+
+        <div class="form-grid" *ngIf="activeTab === 'Cruises'">
+          <div class="form-group">
+            <label>Destination</label>
+            <input type="text" placeholder="Cruise Destination" [(ngModel)]="bookingForm.to" name="cruiseDestination">
+          </div>
+          <div class="form-group">
+            <label>Departure Date</label>
+            <input type="date" [(ngModel)]="bookingForm.date" name="cruiseDate">
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <select [(ngModel)]="bookingForm.duration" name="cruiseDuration">
+              <option value="3">3 Nights</option>
+              <option value="5">5 Nights</option>
+              <option value="7">7 Nights</option>
+              <option value="14">14 Nights</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Guests</label>
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="cruiseGuests">
+          </div>
+        </div>
+
         <button type="button" class="search-button" (click)="searchBooking()">
           <span>Search</span>
-          <span class="arrow">→</span>
         </button>
       </form>
     </div>
@@ -67,26 +176,38 @@
 <!-- Popular Destinations with Auto Scroll -->
 <section class="destinations-section">
   <div class="section-header">
-    <h2 class="section-title">Popular Destinations</h2>
-    <p class="section-subtitle">Explore the world's most beautiful places</p>
+    <h2 class="section-title">Trending Destinations</h2>
+    <p class="section-subtitle">Explore the world's most trending places</p>
   </div>
 
-  <div class="auto-scroll-container" #destinationsScroll>
+  <!-- Loading State -->
+  <div *ngIf="!(destinations$ | async)?.length" class="loading-message">
+    <div class="loading-spinner">⏳</div>
+    <p>Loading amazing destinations...</p>
+  </div>
+
+  <!-- Destinations Cards -->
+  <div *ngIf="(destinations$ | async)?.length" class="auto-scroll-container" #destinationsScroll>
     <div class="scroll-track">
       <div class="destination-glass-card" 
-           *ngFor="let destination of destinations$ | async"
-           (click)="viewDestination(destination)">
-        <div class="card-image-wrapper">
+           *ngFor="let destination of destinations$ | async">
+        <div class="card-image-wrapper" (click)="viewDestination(destination)">
           <img [src]="destination.imageUrl" [alt]="destination.name">
           <div class="card-overlay"></div>
           <div class="card-badge">{{ destination.category }}</div>
         </div>
         <div class="card-info">
-          <h3>{{ destination.name }}</h3>
+          <h3 (click)="viewDestination(destination)" style="cursor: pointer;">{{ destination.name }}</h3>
           <p class="location">📍 {{ destination.country }}</p>
           <div class="card-meta">
             <span class="rating">⭐ {{ destination.rating }}</span>
             <span class="price">From ${{ destination.price }}</span>
+          </div>
+          <div class="card-actions">
+            <a [routerLink]="['/destinations', destination.id]" class="btn-view-details">
+              <span class="btn-icon">👁️</span>
+              <span class="btn-text">View Details</span>
+            </a>
           </div>
         </div>
       </div>
@@ -115,7 +236,12 @@
           <span class="new-price">${{ offer.discountedPrice }}</span>
         </div>
         <div class="offer-validity">Valid until {{ offer.validUntil | date }}</div>
-        <button class="offer-button">Book Now</button>
+        <a [routerLink]="['/booking']"
+           [queryParams]="{destinationName: offer.destination, price: offer.discountedPrice, offerType: offer.type, offerId: offer.id}"
+           class="offer-button">
+          <span class="btn-icon">🎫</span>
+          <span>Book Now</span>
+        </a>
       </div>
     </div>
   </div>
@@ -162,5 +288,3 @@
     </div>
   </div>
 </section>
-
-<app-footer></app-footer>

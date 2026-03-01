@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { PageHeaderComponent } from '../../components/page-header/page-header.component';
+import { SuccessMessageComponent } from '../../components/success-message/success-message.component';
 
 @Component({
   selector: 'app-contact',
@@ -14,8 +14,8 @@ import { FooterComponent } from '../../components/footer/footer.component';
     CommonModule,
     RouterModule,
     FormsModule,
-    NavbarComponent,
-    FooterComponent
+    PageHeaderComponent,
+    SuccessMessageComponent
   ],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']

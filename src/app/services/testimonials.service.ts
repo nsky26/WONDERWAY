@@ -15,7 +15,7 @@ export class TestimonialsService {
       name: 'Sarah Johnson',
       location: 'New York, USA',
       rating: 5,
-      comment: 'Amazing experience! The booking process was smooth and the trip to Bali exceeded all expectations. WonderWayTech made everything so easy.',
+      comment: 'Amazing experience! The booking process was smooth and the trip to Bali exceeded all expectations. WonderWay made everything so easy.',
       imageUrl: 'https://i.pravatar.cc/150?img=1',
       date: '2026-01-15',
       destination: 'Bali'
@@ -35,7 +35,7 @@ export class TestimonialsService {
       name: 'Emma Williams',
       location: 'London, UK',
       rating: 4,
-      comment: 'Wonderful honeymoon package to Maldives. The resort was stunning and everything was perfectly organized. Thank you WonderWayTech!',
+      comment: 'Wonderful honeymoon package to Maldives. The resort was stunning and everything was perfectly organized. Thank you WonderWay!',
       imageUrl: 'https://i.pravatar.cc/150?img=5',
       date: '2026-02-01',
       destination: 'Maldives'
@@ -45,7 +45,7 @@ export class TestimonialsService {
       name: 'David Martinez',
       location: 'Madrid, Spain',
       rating: 5,
-      comment: 'Tokyo trip was incredible! From flights to hotels, everything was top-notch. Will definitely book again through WonderWayTech.',
+      comment: 'Tokyo trip was incredible! From flights to hotels, everything was top-notch. Will definitely book again through WonderWay.',
       imageUrl: 'https://i.pravatar.cc/150?img=12',
       date: '2026-02-05',
       destination: 'Tokyo'
