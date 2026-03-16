@@ -1,0 +1,261 @@
+<!-- Flights Page -->
+<app-page-header 
+  title="Book Your Flight" 
+  subtitle="Find and book the best flights">
+</app-page-header>
+
+<div class="page-wrapper">
+<div class="flights-container">
+
+  <!-- Inline Search Bar -->
+  <div class="inline-search-bar">
+    <div class="search-field autocomplete-wrap">
+      <label>From</label>
+      <input type="text" placeholder="Departure City" [(ngModel)]="inlineSearch.from" name="isFrom"
+        (input)="onCityInput('from', inlineSearch.from)" (blur)="closeSuggestions()" autocomplete="off">
+      <div class="suggestions-box" *ngIf="showSuggestions === 'from'">
+        <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('from', s)">{{ s }}</div>
+      </div>
+    </div>
+    <div class="search-field autocomplete-wrap">
+      <label>To</label>
+      <input type="text" placeholder="Destination City" [(ngModel)]="inlineSearch.to" name="isTo"
+        (input)="onCityInput('to', inlineSearch.to)" (blur)="closeSuggestions()" autocomplete="off">
+      <div class="suggestions-box" *ngIf="showSuggestions === 'to'">
+        <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('to', s)">{{ s }}</div>
+      </div>
+    </div>
+    <div class="search-field">
+      <label>Date</label>
+      <input type="date" [(ngModel)]="inlineSearch.date" name="isDate" [min]="minDate" [max]="maxDate">
+    </div>
+    <button class="btn-inline-search" (click)="doInlineSearch()">✈️ Search</button>
+  </div>
+  
+  <!-- Search Results Section -->
+  <div class="search-results-section">
+    
+    <!-- Loading State -->
+    <div *ngIf="searching" class="loading-state">
+      <div class="spinner">⏳</div>
+      <p>Searching for best flights...</p>
+    </div>
+    
+    <!-- Start Search Prompt -->
+    <div *ngIf="!searching && !hasSearched" class="start-search-prompt">
+      <div class="prompt-icon">✈️</div>
+      <h3>Find Your Perfect Flight</h3>
+      <p>Enter your departure city, destination, and travel date above to search available flights.</p>
+    </div>
+    
+    <!-- Flights Results -->
+    <div *ngIf="!searching && flights.length > 0" class="results-container">
+      <h2 class="results-title">✈️ Available Flights</h2>
+      <p class="results-subtitle">{{ flights.length }} flights found from {{ searchParams.from }} to {{ searchParams.to }}</p>
+      
+      <div class="results-grid">
+        <div *ngFor="let flight of flights" class="result-card flight-card">
+          <div class="card-header">
+            <h3>{{ flight.airline }}</h3>
+            <span class="flight-number">{{ flight.flightNumber }}</span>
+          </div>
+          
+          <div class="flight-details">
+            <div class="flight-time">
+              <div class="time-block">
+                <span class="time">{{ flight.departureTime }}</span>
+                <span class="city">{{ flight.from }}</span>
+              </div>
+              <div class="flight-duration">
+                <span class="duration">{{ flight.duration }}</span>
+                <div class="flight-line">
+                  <span class="stops">{{ flight.stops === 0 ? 'Non-stop' : flight.stops + ' stop(s)' }}</span>
+                </div>
+              </div>
+              <div class="time-block">
+                <span class="time">{{ flight.arrivalTime }}</span>
+                <span class="city">{{ flight.to }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="price-info">
+              <span class="price">₹{{ flight.price }}</span>
+              <span class="seats">{{ flight.availableSeats }} seats left</span>
+            </div>
+            <button class="btn-select" (click)="selectFlight(flight)">
+              Select Flight
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- No Results -->
+    <div *ngIf="!searching && hasSearched && flights.length === 0" class="no-results">
+      <div class="no-results-icon">😔</div>
+      <h3>No Flights Found</h3>
+      <p>We couldn't find any available flights for your search. Please try different criteria.</p>
+      <button class="btn-back-home" (click)="router.navigate(['/'])">
+        ← Back to Home
+      </button>
+    </div>
+  </div>
+  
+  <!-- Booking Form Section -->
+  <div class="booking-form-section" id="booking-form" *ngIf="selectedFlight">
+    <div class="form-card">
+      <h2 class="form-title">✅ Complete Your Booking</h2>
+      
+      <!-- Selected Flight Summary -->
+      <div class="selected-summary">
+        <h3>Selected Flight</h3>
+        <p class="summary-text">{{ selectedFlight.airline }} - {{ selectedFlight.flightNumber }}</p>
+        <p class="summary-route">{{ selectedFlight.from }} → {{ selectedFlight.to }}</p>
+        <p class="summary-time">{{ selectedFlight.departureTime }} - {{ selectedFlight.arrivalTime }}</p>
+      </div>
+
+      <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="booking-form">
+        <!-- Personal Information -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customerName">Full Name *</label>
+            <input 
+              type="text" 
+              id="customerName" 
+              formControlName="customerName"
+              placeholder="John Doe"
+              [class.error]="isFieldInvalid('customerName')">
+            <span class="error-message" *ngIf="isFieldInvalid('customerName')">
+              {{ getFieldError('customerName') }}
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email"
+              placeholder="john@example.com"
+              [class.error]="isFieldInvalid('email')">
+            <span class="error-message" *ngIf="isFieldInvalid('email')">
+              {{ getFieldError('email') }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone"
+              placeholder="9876543210"
+              [class.error]="isFieldInvalid('phone')">
+            <span class="error-message" *ngIf="isFieldInvalid('phone')">
+              {{ getFieldError('phone') }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Guest Management -->
+        <div class="form-group">
+          <label>Passengers * (At least 1 adult required, age 12+)</label>
+          <div class="guests-container">
+            <div *ngFor="let guest of guests; let i = index" class="guest-row">
+              <input 
+                type="text" 
+                [(ngModel)]="guest.name"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Passenger Name"
+                class="guest-name">
+              <input 
+                type="number" 
+                [(ngModel)]="guest.age"
+                [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="updateGuestType(i)"
+                min="1"
+                max="100"
+                placeholder="Age"
+                class="guest-age">
+              <span class="guest-type-badge" [class.adult]="guest.type === 'adult'" [class.child]="guest.type === 'child'">
+                {{ guest.type === 'adult' ? '👤 Adult' : '👶 Child' }}
+              </span>
+              <button 
+                type="button" 
+                class="btn-remove-guest" 
+                (click)="removeGuest(i)"
+                [disabled]="guests.length === 1">
+                ✕
+              </button>
+            </div>
+            <button type="button" class="btn-add-guest" (click)="addGuest()">
+              + Add Passenger
+            </button>
+          </div>
+          <div class="guest-summary">
+            <span>Adults: {{ getAdultCount() }}</span>
+            <span>Children: {{ getChildCount() }}</span>
+          </div>
+          <span class="error-message" *ngIf="errors['guests']">
+            {{ errors['guests'] }}
+          </span>
+        </div>
+
+        <!-- Special Requests -->
+        <div class="form-group">
+          <label for="specialRequests">Special Requests (Optional)</label>
+          <textarea 
+            id="specialRequests" 
+            formControlName="specialRequests"
+            rows="4"
+            placeholder="Any special requirements or preferences..."></textarea>
+        </div>
+
+        <!-- Price Summary -->
+        <div class="price-summary">
+          <h3>Price Summary</h3>
+          <div class="summary-row">
+            <span>Price per person:</span>
+            <span>₹{{ selectedFlight.price }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Number of passengers:</span>
+            <span>{{ guests.length }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total Amount:</span>
+            <span>₹{{ calculatePrice() }}</span>
+          </div>
+        </div>
+        
+        <!-- General Error Message -->
+        <div class="error-message" *ngIf="errors['form']">
+          {{ errors['form'] }}
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="!bookingForm.valid || getAdultCount() < 1">
+          <span class="btn-icon">🎫</span>
+          <span>Confirm Booking & Download PDF</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Booking Confirmed Modal -->
+<app-booking-confirmed
+  *ngIf="showEmailModal"
+  [booking]="bookingConfirmation"
+  [bookingType]="'Flight'"
+  (close)="closeEmailModal()"
+  (download)="downloadPDFAgain()">
+</app-booking-confirmed>

@@ -1,0 +1,65 @@
+<div class="auth-page">
+  <div class="auth-bg">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+  </div>
+
+  <!-- Left branding panel -->
+  <div class="auth-left">
+    <div class="brand">
+      <span class="brand-icon">✈️</span>
+      <span class="brand-name">WonderWay</span>
+    </div>
+    <h2 class="brand-tagline">Welcome back,<br>explorer.</h2>
+    <div class="perks">
+      <div class="perk"><span class="perk-icon">🗺️</span><span>View all your past trips</span></div>
+      <div class="perk"><span class="perk-icon">📄</span><span>Download booking PDFs</span></div>
+      <div class="perk"><span class="perk-icon">⚡</span><span>Fast checkout with saved info</span></div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="card-header">
+        <h1>Sign In</h1>
+        <p>New here? <a routerLink="/signup">Create a free account</a></p>
+      </div>
+
+      <form class="auth-form" (ngSubmit)="onSubmit()">
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-box" [class.focused]="emailFocus" [class.filled]="email">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+            <input type="email" [(ngModel)]="email" name="email" placeholder="you@example.com"
+              (focus)="emailFocus=true" (blur)="emailFocus=false" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input-box" [class.focused]="pwFocus" [class.filled]="password">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+            <input [type]="showPw ? 'text' : 'password'" [(ngModel)]="password" name="password"
+              placeholder="Your password" (focus)="pwFocus=true" (blur)="pwFocus=false" autocomplete="current-password">
+            <button type="button" class="toggle-pw" (click)="showPw=!showPw">{{ showPw ? '🙈' : '👁️' }}</button>
+          </div>
+        </div>
+
+        <div class="auth-error" *ngIf="error">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          {{ error }}
+        </div>
+
+        <button type="submit" class="btn-auth" [disabled]="loading">
+          <span *ngIf="!loading">Sign In →</span>
+          <span *ngIf="loading" class="spinner-wrap"><span class="btn-spinner"></span> Signing in...</span>
+        </button>
+      </form>
+
+      <div class="auth-divider"><span>or</span></div>
+      <a routerLink="/" class="auth-back">← Continue without signing in</a>
+    </div>
+  </div>
+</div>

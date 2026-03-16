@@ -1,0 +1,107 @@
+<div class="auth-page">
+  <div class="auth-bg">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+  </div>
+
+  <!-- Left panel - branding -->
+  <div class="auth-left">
+    <div class="brand">
+      <span class="brand-icon">✈️</span>
+      <span class="brand-name">WonderWay</span>
+    </div>
+    <h2 class="brand-tagline">Your journey starts<br>with one account.</h2>
+    <div class="perks">
+      <div class="perk"><span class="perk-icon">🎫</span><span>Track all your bookings</span></div>
+      <div class="perk"><span class="perk-icon">⚡</span><span>One-click checkout</span></div>
+      <div class="perk"><span class="perk-icon">🔔</span><span>Instant confirmations</span></div>
+      <div class="perk"><span class="perk-icon">💰</span><span>Exclusive member deals</span></div>
+    </div>
+  </div>
+
+  <!-- Right panel - form -->
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="card-header">
+        <h1>Create Account</h1>
+        <p>Already have one? <a routerLink="/login">Sign in</a></p>
+      </div>
+
+      <form class="auth-form" (ngSubmit)="onSubmit()" #f="ngForm">
+
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <div class="input-box" [class.focused]="nameFocus" [class.filled]="name">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z"/></svg>
+            <input type="text" [(ngModel)]="name" name="name" placeholder="Your full name"
+              (focus)="nameFocus=true" (blur)="nameFocus=false" autocomplete="name">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <div class="input-box" [class.focused]="emailFocus" [class.filled]="email">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+            <input type="email" [(ngModel)]="email" name="email" placeholder="you@example.com"
+              (focus)="emailFocus=true" (blur)="emailFocus=false" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Phone <span class="optional">(optional)</span></label>
+          <div class="input-box" [class.focused]="phoneFocus" [class.filled]="phone">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
+            <input type="tel" [(ngModel)]="phone" name="phone" placeholder="10-digit mobile"
+              (focus)="phoneFocus=true" (blur)="phoneFocus=false">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Password <span class="req">*</span></label>
+            <div class="input-box" [class.focused]="pwFocus" [class.filled]="password">
+              <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+              <input [type]="showPw ? 'text' : 'password'" [(ngModel)]="password" name="password"
+                placeholder="Min 6 chars" (focus)="pwFocus=true" (blur)="pwFocus=false" autocomplete="new-password">
+              <button type="button" class="toggle-pw" (click)="showPw=!showPw">{{ showPw ? '🙈' : '👁️' }}</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Confirm Password <span class="req">*</span></label>
+            <div class="input-box" [class.focused]="cpwFocus" [class.filled]="confirmPassword">
+              <svg class="field-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+              <input [type]="showCpw ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword"
+                placeholder="Repeat password" (focus)="cpwFocus=true" (blur)="cpwFocus=false" autocomplete="new-password">
+              <button type="button" class="toggle-pw" (click)="showCpw=!showCpw">{{ showCpw ? '🙈' : '👁️' }}</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password strength -->
+        <div class="pw-strength" *ngIf="password">
+          <div class="strength-bars">
+            <div class="bar" [class.active]="password.length >= 1" [class.weak]="pwStrength===1" [class.medium]="pwStrength===2" [class.strong]="pwStrength===3"></div>
+            <div class="bar" [class.active]="password.length >= 4" [class.medium]="pwStrength===2" [class.strong]="pwStrength===3"></div>
+            <div class="bar" [class.active]="password.length >= 8" [class.strong]="pwStrength===3"></div>
+          </div>
+          <span class="strength-label" [class.weak]="pwStrength===1" [class.medium]="pwStrength===2" [class.strong]="pwStrength===3">
+            {{ pwStrength === 1 ? 'Weak' : pwStrength === 2 ? 'Good' : 'Strong' }}
+          </span>
+        </div>
+
+        <div class="auth-error" *ngIf="error">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          {{ error }}
+        </div>
+
+        <button type="submit" class="btn-auth" [disabled]="loading">
+          <span *ngIf="!loading">Create Account</span>
+          <span *ngIf="loading" class="spinner-wrap"><span class="btn-spinner"></span> Creating...</span>
+        </button>
+
+        <p class="terms">By creating an account you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+      </form>
+    </div>
+  </div>
+</div>

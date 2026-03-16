@@ -1,34 +1,97 @@
-<!-- Sticky Navigation Bar -->
 <nav class="navbar">
   <div class="navbar-container">
+
     <!-- Logo -->
-    <div class="navbar-logo">
-      <a routerLink="/" class="logo-link">
-        <span class="logo-icon">✈️</span>
-        <span class="logo-text">WonderWay</span>
-      </a>
-    </div>
+    <a routerLink="/" class="navbar-logo">
+      <span class="logo-icon">✈️</span>
+      <span class="logo-text">WonderWay</span>
+    </a>
 
     <!-- Desktop Navigation -->
     <ul class="navbar-menu">
-      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
-      <li><a routerLink="/destinations" routerLinkActive="active">Destinations</a></li>
-      <li><a routerLink="/booking" routerLinkActive="active">Booking</a></li>
-      <li><a routerLink="/about" routerLinkActive="active">About</a></li>
-      <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+      <li>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      </li>
+      <li>
+        <a routerLink="/destinations" routerLinkActive="active">Destinations</a>
+      </li>
+      <li class="has-dropdown">
+        <span class="nav-link dropdown-trigger">
+          Book
+          <svg class="chevron" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div class="dropdown-menu">
+          <a routerLink="/flights" class="dropdown-item">
+            <span class="di-icon">✈️</span>
+            <span class="di-text">
+              <strong>Flights</strong>
+              <small>Domestic & International</small>
+            </span>
+          </a>
+          <a routerLink="/hotels" class="dropdown-item">
+            <span class="di-icon">🏨</span>
+            <span class="di-text">
+              <strong>Hotels</strong>
+              <small>Best stays, best prices</small>
+            </span>
+          </a>
+          <a routerLink="/buses" class="dropdown-item">
+            <span class="di-icon">🚌</span>
+            <span class="di-text">
+              <strong>Buses</strong>
+              <small>Comfortable intercity travel</small>
+            </span>
+          </a>
+          <a routerLink="/cars" class="dropdown-item">
+            <span class="di-icon">🚗</span>
+            <span class="di-text">
+              <strong>Cars</strong>
+              <small>Self-drive & chauffeur</small>
+            </span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <a routerLink="/about" routerLinkActive="active">About</a>
+      </li>
+      <li>
+        <a routerLink="/contact" routerLinkActive="active">Contact</a>
+      </li>
     </ul>
 
-    <!-- Auth Buttons -->
+    <!-- Auth / User Actions -->
     <div class="navbar-actions">
-      <button class="btn-login">Login</button>
-      <button class="btn-signup">Sign Up</button>
+      <!-- Logged out -->
+      <ng-container *ngIf="!currentUser">
+        <a routerLink="/login" class="btn-login">Sign In</a>
+        <a routerLink="/signup" class="btn-signup">Get Started</a>
+      </ng-container>
+
+      <!-- Logged in -->
+      <ng-container *ngIf="currentUser">
+        <a routerLink="/my-bookings" class="btn-my-bookings">
+          🎫 My Bookings
+          <span class="bookings-badge" *ngIf="bookingsCount > 0">{{ bookingsCount }}</span>
+        </a>
+        <div class="user-menu-wrap" (click)="toggleUserMenu()" (blur)="closeUserMenu()" tabindex="0">
+          <div class="user-avatar">{{ userInitial }}</div>
+          <div class="user-dropdown" *ngIf="showUserMenu">
+            <div class="user-info">
+              <span class="user-name">{{ currentUser.name }}</span>
+              <span class="user-email">{{ currentUser.email }}</span>
+            </div>
+            <div class="user-divider"></div>
+            <button class="btn-logout" (click)="logout()">🚪 Sign Out</button>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
-      <span></span>
-      <span></span>
-      <span></span>
+    <!-- Mobile Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
     </button>
   </div>
 
@@ -37,13 +100,21 @@
     <ul>
       <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
       <li><a routerLink="/destinations" (click)="closeMenu()">Destinations</a></li>
-      <li><a routerLink="/booking" (click)="closeMenu()">Booking</a></li>
+      <li class="mobile-section-label">Book</li>
+      <li><a routerLink="/flights" (click)="closeMenu()">✈️ Flights</a></li>
+      <li><a routerLink="/hotels" (click)="closeMenu()">🏨 Hotels</a></li>
+      <li><a routerLink="/buses" (click)="closeMenu()">🚌 Buses</a></li>
+      <li><a routerLink="/cars" (click)="closeMenu()">🚗 Cars</a></li>
       <li><a routerLink="/about" (click)="closeMenu()">About</a></li>
       <li><a routerLink="/contact" (click)="closeMenu()">Contact</a></li>
-      <li class="mobile-auth">
-        <button class="btn-login">Login</button>
-        <button class="btn-signup">Sign Up</button>
-      </li>
+      <ng-container *ngIf="currentUser">
+        <li><a routerLink="/my-bookings" (click)="closeMenu()">🎫 My Bookings</a></li>
+        <li><a (click)="logout(); closeMenu()" style="cursor:pointer; color:#ff6b6b">🚪 Sign Out</a></li>
+      </ng-container>
+      <ng-container *ngIf="!currentUser">
+        <li><a routerLink="/login" (click)="closeMenu()">Sign In</a></li>
+        <li><a routerLink="/signup" (click)="closeMenu()" class="mobile-signup">Get Started</a></li>
+      </ng-container>
     </ul>
   </div>
 </nav>

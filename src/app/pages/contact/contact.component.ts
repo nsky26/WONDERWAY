@@ -30,18 +30,48 @@ export class ContactComponent {
   };
 
   submitted = false;
+  private readonly STORAGE_KEY = 'wonderway_contacts';
 
   onSubmit() {
     if (this.isFormValid()) {
       console.log('Contact form submitted:', this.contactForm);
+      
+      // Save to localStorage
+      this.saveContactToStorage();
+      
       this.submitted = true;
 
-      // Reset form after 3 seconds
+      // Reset form after 5 seconds
       setTimeout(() => {
         this.submitted = false;
         this.resetForm();
-      }, 3000);
+      }, 5000);
     }
+  }
+
+  private saveContactToStorage(): void {
+    try {
+      const contactData = {
+        ...this.contactForm,
+        id: this.generateContactId(),
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      };
+      
+      const contacts = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
+      contacts.push(contactData);
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(contacts));
+      
+      console.log('Contact saved to localStorage:', contactData);
+    } catch (error) {
+      console.error('Error saving contact to storage:', error);
+    }
+  }
+
+  private generateContactId(): string {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 10000);
+    return `WW-CONTACT-${timestamp}${random}`;
   }
 
   isFormValid(): boolean {

@@ -37,55 +37,67 @@
 
       <form class="booking-form">
         <div class="form-grid" *ngIf="activeTab === 'Flights'">
-          <div class="form-group">
+          <div class="form-group autocomplete-wrap">
             <label>From</label>
-            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="flightFrom">
+            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="flightFrom"
+              (input)="onCityInput('from', bookingForm.from)" (blur)="closeSuggestions()" autocomplete="off">
+            <div class="suggestions-box" *ngIf="showSuggestions === 'from'">
+              <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('from', s)">{{ s }}</div>
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group autocomplete-wrap">
             <label>To</label>
-            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="flightTo">
+            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="flightTo"
+              (input)="onCityInput('to', bookingForm.to)" (blur)="closeSuggestions()" autocomplete="off">
+            <div class="suggestions-box" *ngIf="showSuggestions === 'to'">
+              <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('to', s)">{{ s }}</div>
+            </div>
           </div>
           <div class="form-group">
             <label>Date</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="flightDate">
+            <input type="date" [(ngModel)]="bookingForm.date" name="flightDate" [min]="getMinDate()" [max]="getMaxDate()">
           </div>
           <div class="form-group">
             <label>Travelers</label>
-            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="flightTravelers">
+            <input type="number" min="1" max="9" placeholder="1" [(ngModel)]="bookingForm.travelers" name="flightTravelers">
           </div>
         </div>
 
         <div class="form-grid" *ngIf="activeTab === 'Hotels'">
-          <div class="form-group">
+          <div class="form-group autocomplete-wrap">
             <label>Destination</label>
-            <input type="text" placeholder="Where are you going?" [(ngModel)]="bookingForm.to" name="hotelDestination">
+            <input type="text" placeholder="City or Hotel Name" [(ngModel)]="bookingForm.to" name="hotelDestination"
+              (input)="onCityInput('to', bookingForm.to)" (blur)="closeSuggestions()" autocomplete="off">
+            <div class="suggestions-box" *ngIf="showSuggestions === 'to'">
+              <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('to', s)">{{ s }}</div>
+            </div>
           </div>
           <div class="form-group">
             <label>Check-in</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="hotelCheckin">
+            <input type="date" [(ngModel)]="bookingForm.date" name="hotelCheckin" [min]="getMinDate()" [max]="getMaxDate()">
           </div>
           <div class="form-group">
             <label>Check-out</label>
-            <input type="date" [(ngModel)]="bookingForm.checkoutDate" name="hotelCheckout">
+            <input type="date" [(ngModel)]="bookingForm.checkoutDate" name="hotelCheckout" [min]="getMinDate()" [max]="getMaxDate()">
           </div>
           <div class="form-group">
             <label>Guests</label>
-            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="hotelGuests">
+            <input type="number" min="1" max="9" placeholder="1" [(ngModel)]="bookingForm.travelers" name="hotelGuests">
           </div>
         </div>
 
         <div class="form-grid" *ngIf="activeTab === 'Packages'">
           <div class="form-group">
             <label>Destination</label>
-            <input type="text" placeholder="Where to?" [(ngModel)]="bookingForm.to" name="packageDestination">
+            <input type="text" placeholder="Where to?" [(ngModel)]="bookingForm.to" name="packageDestination" required>
           </div>
           <div class="form-group">
             <label>Start Date</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="packageDate">
+            <input type="date" [(ngModel)]="bookingForm.date" name="packageDate" [min]="getMinDate()" [max]="getMaxDate()" required>
           </div>
           <div class="form-group">
             <label>Duration</label>
-            <select [(ngModel)]="bookingForm.duration" name="packageDuration">
+            <select [(ngModel)]="bookingForm.duration" name="packageDuration" required>
               <option value="3">3 Days</option>
               <option value="5">5 Days</option>
               <option value="7">7 Days</option>
@@ -94,22 +106,26 @@
           </div>
           <div class="form-group">
             <label>Travelers</label>
-            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="packageTravelers">
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="packageTravelers" required>
           </div>
         </div>
 
         <div class="form-grid" *ngIf="activeTab === 'Cars'">
-          <div class="form-group">
+          <div class="form-group autocomplete-wrap">
             <label>Pick-up Location</label>
-            <input type="text" placeholder="City or Airport" [(ngModel)]="bookingForm.from" name="carPickup">
+            <input type="text" placeholder="City or Airport" [(ngModel)]="bookingForm.from" name="carPickup"
+              (input)="onCityInput('from', bookingForm.from)" (blur)="closeSuggestions()" autocomplete="off">
+            <div class="suggestions-box" *ngIf="showSuggestions === 'from'">
+              <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('from', s)">{{ s }}</div>
+            </div>
           </div>
           <div class="form-group">
             <label>Pick-up Date</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="carPickupDate">
+            <input type="date" [(ngModel)]="bookingForm.date" name="carPickupDate" [min]="getMinDate()" [max]="getMaxDate()">
           </div>
           <div class="form-group">
             <label>Drop-off Date</label>
-            <input type="date" [(ngModel)]="bookingForm.checkoutDate" name="carDropoff">
+            <input type="date" [(ngModel)]="bookingForm.checkoutDate" name="carDropoff" [min]="getMinDate()" [max]="getMaxDate()">
           </div>
           <div class="form-group">
             <label>Car Type</label>
@@ -123,36 +139,44 @@
         </div>
 
         <div class="form-grid" *ngIf="activeTab === 'Buses'">
-          <div class="form-group">
+          <div class="form-group autocomplete-wrap">
             <label>From</label>
-            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="busFrom">
+            <input type="text" placeholder="Departure City" [(ngModel)]="bookingForm.from" name="busFrom"
+              (input)="onCityInput('from', bookingForm.from)" (blur)="closeSuggestions()" autocomplete="off">
+            <div class="suggestions-box" *ngIf="showSuggestions === 'from'">
+              <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('from', s)">{{ s }}</div>
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group autocomplete-wrap">
             <label>To</label>
-            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="busTo">
+            <input type="text" placeholder="Destination" [(ngModel)]="bookingForm.to" name="busTo"
+              (input)="onCityInput('to', bookingForm.to)" (blur)="closeSuggestions()" autocomplete="off">
+            <div class="suggestions-box" *ngIf="showSuggestions === 'to'">
+              <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('to', s)">{{ s }}</div>
+            </div>
           </div>
           <div class="form-group">
             <label>Date</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="busDate">
+            <input type="date" [(ngModel)]="bookingForm.date" name="busDate" [min]="getMinDate()" [max]="getMaxDate()">
           </div>
           <div class="form-group">
             <label>Passengers</label>
-            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="busPassengers">
+            <input type="number" min="1" max="50" placeholder="1" [(ngModel)]="bookingForm.travelers" name="busPassengers">
           </div>
         </div>
 
         <div class="form-grid" *ngIf="activeTab === 'Cruises'">
           <div class="form-group">
             <label>Destination</label>
-            <input type="text" placeholder="Cruise Destination" [(ngModel)]="bookingForm.to" name="cruiseDestination">
+            <input type="text" placeholder="Cruise Destination" [(ngModel)]="bookingForm.to" name="cruiseDestination" required>
           </div>
           <div class="form-group">
             <label>Departure Date</label>
-            <input type="date" [(ngModel)]="bookingForm.date" name="cruiseDate">
+            <input type="date" [(ngModel)]="bookingForm.date" name="cruiseDate" [min]="getMinDate()" [max]="getMaxDate()" required>
           </div>
           <div class="form-group">
             <label>Duration</label>
-            <select [(ngModel)]="bookingForm.duration" name="cruiseDuration">
+            <select [(ngModel)]="bookingForm.duration" name="cruiseDuration" required>
               <option value="3">3 Nights</option>
               <option value="5">5 Nights</option>
               <option value="7">7 Nights</option>
@@ -161,13 +185,14 @@
           </div>
           <div class="form-group">
             <label>Guests</label>
-            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="cruiseGuests">
+            <input type="number" min="1" placeholder="1" [(ngModel)]="bookingForm.travelers" name="cruiseGuests" required>
           </div>
         </div>
 
         <button type="button" class="search-button" (click)="searchBooking()">
           <span>Search</span>
         </button>
+        <div class="search-error" *ngIf="searchError">⚠️ {{ searchError }}</div>
       </form>
     </div>
   </div>
@@ -186,64 +211,86 @@
     <p>Loading amazing destinations...</p>
   </div>
 
-  <!-- Destinations Cards -->
-  <div *ngIf="(destinations$ | async)?.length" class="auto-scroll-container" #destinationsScroll>
-    <div class="scroll-track">
-      <div class="destination-glass-card" 
-           *ngFor="let destination of destinations$ | async">
-        <div class="card-image-wrapper" (click)="viewDestination(destination)">
-          <img [src]="destination.imageUrl" [alt]="destination.name">
-          <div class="card-overlay"></div>
-          <div class="card-badge">{{ destination.category }}</div>
-        </div>
-        <div class="card-info">
-          <h3 (click)="viewDestination(destination)" style="cursor: pointer;">{{ destination.name }}</h3>
-          <p class="location">📍 {{ destination.country }}</p>
-          <div class="card-meta">
-            <span class="rating">⭐ {{ destination.rating }}</span>
-            <span class="price">From ${{ destination.price }}</span>
+  <!-- Destinations Cards with Scroll Buttons -->
+  <div *ngIf="(destinations$ | async)?.length" class="scroll-container-wrapper">
+    <button class="scroll-btn scroll-btn-left" (click)="scrollDestinations('left')" #destinationsLeftBtn>
+      <span>‹</span>
+    </button>
+    
+    <div class="auto-scroll-container" #destinationsScroll>
+      <div class="scroll-track">
+        <div class="destination-glass-card" 
+             *ngFor="let destination of destinations$ | async">
+          <div class="card-image-wrapper" (click)="viewDestination(destination)">
+            <img [src]="destination.imageUrl" [alt]="destination.name">
+            <div class="card-overlay"></div>
+            <div class="card-badge">{{ destination.category }}</div>
           </div>
-          <div class="card-actions">
-            <a [routerLink]="['/destinations', destination.id]" class="btn-view-details">
-              <span class="btn-icon">👁️</span>
-              <span class="btn-text">View Details</span>
-            </a>
+          <div class="card-info">
+            <h3 (click)="viewDestination(destination)" style="cursor: pointer;">{{ destination.name }}</h3>
+            <p class="location">📍 {{ destination.country }}</p>
+            <div class="card-meta">
+              <span class="rating">⭐ {{ destination.rating }}</span>
+              <span class="price">From ${{ destination.price }}</span>
+            </div>
+            <div class="card-actions">
+              <a [routerLink]="['/destinations', destination.id]" class="btn-view-details">
+                <span class="btn-icon">👁️</span>
+                <span class="btn-text">View Details</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    
+    <button class="scroll-btn scroll-btn-right" (click)="scrollDestinations('right')" #destinationsRightBtn>
+      <span>›</span>
+    </button>
   </div>
 </section>
 
-<!-- Special Offers -->
+<!-- Special Offers - Scrollable -->
 <section class="offers-section">
   <div class="section-header">
     <h2 class="section-title">Special Offers</h2>
     <p class="section-subtitle">Limited time deals you don't want to miss</p>
   </div>
 
-  <div class="offers-grid">
-    <div class="offer-glass-card" *ngFor="let offer of offers$ | async">
-      <div class="offer-badge">-{{ offer.discount }}%</div>
-      <div class="offer-image">
-        <img [src]="offer.imageUrl" [alt]="offer.title">
-      </div>
-      <div class="offer-content">
-        <h3>{{ offer.title }}</h3>
-        <p>{{ offer.description }}</p>
-        <div class="offer-pricing">
-          <span class="old-price">${{ offer.originalPrice }}</span>
-          <span class="new-price">${{ offer.discountedPrice }}</span>
+  <div class="scroll-container-wrapper">
+    <button class="scroll-btn scroll-btn-left" (click)="scrollOffers('left')" #offersLeftBtn>
+      <span>‹</span>
+    </button>
+    
+    <div class="auto-scroll-container" #offersScroll>
+      <div class="scroll-track">
+        <div class="offer-glass-card" *ngFor="let offer of offers$ | async">
+          <div class="offer-badge">-{{ offer.discount }}%</div>
+          <div class="offer-image">
+            <img [src]="offer.imageUrl" [alt]="offer.title">
+          </div>
+          <div class="offer-content">
+            <h3>{{ offer.title }}</h3>
+            <p>{{ offer.description }}</p>
+            <div class="offer-pricing">
+              <span class="old-price">${{ offer.originalPrice }}</span>
+              <span class="new-price">${{ offer.discountedPrice }}</span>
+            </div>
+            <div class="offer-validity">Valid until {{ offer.validUntil | date }}</div>
+            <a [routerLink]="['/booking']"
+               [queryParams]="{destinationName: offer.destination, price: offer.discountedPrice, offerType: offer.type, offerId: offer.id}"
+               class="offer-button">
+              <span class="btn-icon">🎫</span>
+              <span>Book Now</span>
+            </a>
+          </div>
         </div>
-        <div class="offer-validity">Valid until {{ offer.validUntil | date }}</div>
-        <a [routerLink]="['/booking']"
-           [queryParams]="{destinationName: offer.destination, price: offer.discountedPrice, offerType: offer.type, offerId: offer.id}"
-           class="offer-button">
-          <span class="btn-icon">🎫</span>
-          <span>Book Now</span>
-        </a>
       </div>
     </div>
+    
+    <button class="scroll-btn scroll-btn-right" (click)="scrollOffers('right')" #offersRightBtn>
+      <span>›</span>
+    </button>
   </div>
 </section>
 
@@ -263,28 +310,30 @@
   </div>
 </section>
 
-<!-- Reviews/Testimonials -->
+<!-- Reviews/Testimonials - Scrollable -->
 <section class="reviews-section">
   <div class="section-header">
     <h2 class="section-title">Traveler Reviews</h2>
     <p class="section-subtitle">What our customers say about us</p>
   </div>
 
-  <div class="reviews-container">
-    <div class="review-glass-card" *ngFor="let review of testimonials$ | async">
-      <div class="quote-icon">"</div>
-      <div class="review-header">
-        <img [src]="review.imageUrl" [alt]="review.name" class="reviewer-avatar">
-        <div class="reviewer-info">
-          <h4>{{ review.name }}</h4>
-          <p>{{ review.location }}</p>
+  <div class="auto-scroll-container">
+    <div class="scroll-track">
+      <div class="review-glass-card" *ngFor="let review of testimonials$ | async">
+        <div class="quote-icon">"</div>
+        <div class="review-header">
+          <img [src]="review.imageUrl" [alt]="review.name" class="reviewer-avatar">
+          <div class="reviewer-info">
+            <h4>{{ review.name }}</h4>
+            <p>{{ review.location }}</p>
+          </div>
         </div>
+        <div class="review-rating">
+          <span *ngFor="let star of getStars(review.rating)" class="star">⭐</span>
+        </div>
+        <p class="review-text">{{ review.comment }}</p>
+        <div class="review-destination">Trip to {{ review.destination }}</div>
       </div>
-      <div class="review-rating">
-        <span *ngFor="let star of getStars(review.rating)" class="star">⭐</span>
-      </div>
-      <p class="review-text">{{ review.comment }}</p>
-      <div class="review-destination">Trip to {{ review.destination }}</div>
     </div>
   </div>
 </section>

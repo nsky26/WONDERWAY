@@ -31,24 +31,54 @@ import * as TestimonialsActions from '../../store/testimonials/testimonials.acti
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('destinationsScroll') destinationsScroll!: ElementRef;
+  @ViewChild('offersScroll') offersScroll!: ElementRef;
+  @ViewChild('destinationsLeftBtn') destinationsLeftBtn!: ElementRef;
+  @ViewChild('destinationsRightBtn') destinationsRightBtn!: ElementRef;
+  @ViewChild('offersLeftBtn') offersLeftBtn!: ElementRef;
+  @ViewChild('offersRightBtn') offersRightBtn!: ElementRef;
 
   // Theme
   isDarkMode = true;
 
   // Booking tabs
-  bookingTabs = ['Flights', 'Hotels', 'Packages', 'Cars', 'Buses', 'Cruises'];
+  bookingTabs = ['Flights', 'Hotels', 'Cars', 'Buses', 'Cruises'];
   activeTab = 'Flights';
 
   // Booking form
   bookingForm = {
     from: '',
     to: '',
-    date: '',
-    checkoutDate: '',
+    date: this.getTodayDate(),
+    checkoutDate: this.getTomorrowDate(),
     travelers: 1,
     duration: '5',
     carType: 'economy'
   };
+  
+  // Get today's date in YYYY-MM-DD format
+  getTodayDate(): string {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
+  
+  // Get tomorrow's date in YYYY-MM-DD format
+  getTomorrowDate(): string {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  }
+  
+  // Get minimum date (today)
+  getMinDate(): string {
+    return this.getTodayDate();
+  }
+  
+  // Get maximum date (3 months from now)
+  getMaxDate(): string {
+    const maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 3);
+    return maxDate.toISOString().split('T')[0];
+  }
 
   // Data observables
   destinations$!: Observable<Destination[]>;
@@ -165,18 +195,69 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Search booking
+  // Search booking - navigate to booking page with search results
   searchBooking(): void {
-    console.log('Searching:', this.activeTab, this.bookingForm);
+    this.searchError = '';
     
-    // Navigate to booking page with search parameters
-    this.router.navigate(['/booking'], {
+    // Validate required fields based on booking type
+    let isValid = false;
+    
+    switch (this.activeTab) {
+      case 'Flights':
+      case 'Buses':
+        isValid = !!(this.bookingForm.from && this.bookingForm.to && this.bookingForm.date);
+        if (!isValid) this.searchError = 'Please fill in departure city, destination, and date';
+        break;
+      case 'Hotels':
+        isValid = !!(this.bookingForm.to && this.bookingForm.date && this.bookingForm.checkoutDate);
+        if (!isValid) this.searchError = 'Please fill in destination, check-in, and check-out dates';
+        break;
+      case 'Cars':
+        isValid = !!(this.bookingForm.from && this.bookingForm.date && this.bookingForm.checkoutDate);
+        if (!isValid) this.searchError = 'Please fill in pick-up location and dates';
+        break;
+      case 'Cruises':
+        isValid = !!(this.bookingForm.to && this.bookingForm.date);
+        if (!isValid) this.searchError = 'Please fill in destination and date';
+        break;
+    }
+    
+    if (!isValid) return;
+    
+    // Navigate to appropriate page based on booking type
+    const bookingType = this.activeTab.toLowerCase();
+    let route = '';
+    
+    switch (bookingType) {
+      case 'flights':
+        route = '/flights';
+        break;
+      case 'hotels':
+        route = '/hotels';
+        break;
+      case 'buses':
+        route = '/buses';
+        break;
+      case 'cars':
+        route = '/cars';
+        break;
+      case 'cruises':
+        route = '/booking'; // Cruises still go to booking page
+        break;
+      default:
+        route = '/booking';
+    }
+    
+    this.router.navigate([route], {
       queryParams: {
-        bookingType: this.activeTab.toLowerCase(),
-        from: this.bookingForm.from,
-        to: this.bookingForm.to,
-        date: this.bookingForm.date,
-        travelers: this.bookingForm.travelers
+        bookingType: bookingType,
+        from: this.bookingForm.from || '',
+        to: this.bookingForm.to || '',
+        date: this.bookingForm.date || '',
+        checkoutDate: this.bookingForm.checkoutDate || '',
+        travelers: this.bookingForm.travelers || 1,
+        duration: this.bookingForm.duration || '',
+        carType: this.bookingForm.carType || ''
       }
     });
   }
@@ -231,8 +312,74 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Search validation error
+  searchError = '';
+
+  // Search autocomplete
+  suggestions: string[] = [];
+  showSuggestions: 'from' | 'to' | null = null;
+
+  private allCities = [
+    'Hyderabad', 'Bangalore', 'Mumbai', 'Delhi', 'Chennai', 'Kolkata',
+    'Pune', 'Goa', 'Jaipur', 'Agra', 'Kochi', 'Ahmedabad', 'Surat',
+    'Vijayawada', 'Visakhapatnam', 'Coimbatore', 'Mysore', 'Chandigarh',
+    'Bhopal', 'Indore', 'Nagpur', 'Lucknow', 'Varanasi', 'Amritsar',
+    'Dubai', 'Singapore', 'Bangkok', 'London', 'Paris', 'New York', 'Tokyo'
+  ];
+
+  onCityInput(field: 'from' | 'to', value: string) {
+    if (value.length < 2) { this.suggestions = []; this.showSuggestions = null; return; }
+    this.suggestions = this.allCities.filter(c => c.toLowerCase().startsWith(value.toLowerCase())).slice(0, 6);
+    this.showSuggestions = this.suggestions.length ? field : null;
+  }
+
+  selectSuggestion(field: 'from' | 'to', city: string) {
+    if (field === 'from') this.bookingForm.from = city;
+    else this.bookingForm.to = city;
+    this.suggestions = [];
+    this.showSuggestions = null;
+  }
+
+  closeSuggestions() {
+    setTimeout(() => { this.suggestions = []; this.showSuggestions = null; }, 200);
+  }
+
   // Get stars for rating
   getStars(rating: number): number[] {
     return Array(Math.floor(rating)).fill(0);
+  }
+
+  // Scroll destinations left or right
+  scrollDestinations(direction: 'left' | 'right'): void {
+    const container = this.destinationsScroll?.nativeElement;
+    if (container) {
+      const scrollAmount = 420; // Card width + gap
+      const currentScroll = container.scrollLeft;
+      const targetScroll = direction === 'left' 
+        ? currentScroll - scrollAmount 
+        : currentScroll + scrollAmount;
+      
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // Scroll offers left or right
+  scrollOffers(direction: 'left' | 'right'): void {
+    const container = this.offersScroll?.nativeElement;
+    if (container) {
+      const scrollAmount = 400; // Card width + gap
+      const currentScroll = container.scrollLeft;
+      const targetScroll = direction === 'left' 
+        ? currentScroll - scrollAmount 
+        : currentScroll + scrollAmount;
+      
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
   }
 }

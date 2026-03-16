@@ -24,6 +24,34 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent)
   },
   {
+    path: 'flights',
+    loadComponent: () => import('./pages/flights/flights').then(m => m.FlightsComponent)
+  },
+  {
+    path: 'hotels',
+    loadComponent: () => import('./pages/hotels/hotels').then(m => m.HotelsComponent)
+  },
+  {
+    path: 'buses',
+    loadComponent: () => import('./pages/buses/buses').then(m => m.BusesComponent)
+  },
+  {
+    path: 'cars',
+    loadComponent: () => import('./pages/cars/cars').then(m => m.CarsComponent)
+  },
+  {
+    path: 'my-bookings',
+    loadComponent: () => import('./pages/my-bookings/my-bookings').then(m => m.MyBookingsComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent)
+  },
+  {
+    path: 'signup',
+    loadComponent: () => import('./pages/signup/signup').then(m => m.SignupComponent)
+  },
+  {
     path: 'about',
     loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
   },

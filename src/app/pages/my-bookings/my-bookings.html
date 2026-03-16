@@ -1,0 +1,80 @@
+<div class="bookings-page">
+  <div class="page-header">
+    <h1>My Bookings</h1>
+    <p>All your travel bookings in one place</p>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button
+      *ngFor="let f of filters"
+      class="filter-tab"
+      [class.active]="activeFilter === f"
+      (click)="applyFilter(f)">
+      {{ f === 'all' ? 'All' : getTypeLabel(f) }}
+      <span class="count" *ngIf="f === 'all'">{{ bookings.length }}</span>
+      <span class="count" *ngIf="f !== 'all'">{{ countByType(f) }}</span>
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredBookings.length === 0">
+    <div class="empty-icon">🗺️</div>
+    <h3>No bookings found</h3>
+    <p *ngIf="activeFilter === 'all'">You haven't made any bookings yet. Start exploring!</p>
+    <p *ngIf="activeFilter !== 'all'">No {{ getTypeLabel(activeFilter) }} bookings found.</p>
+    <button class="btn-explore" (click)="router.navigate(['/'])">Explore Now</button>
+  </div>
+
+  <!-- Bookings Grid -->
+  <div class="bookings-grid" *ngIf="filteredBookings.length > 0">
+    <div class="booking-card" *ngFor="let booking of filteredBookings">
+      <div class="card-top">
+        <div class="type-badge">
+          <span class="type-icon">{{ getTypeIcon(booking.bookingType) }}</span>
+          <span class="type-label">{{ getTypeLabel(booking.bookingType) }}</span>
+        </div>
+        <div class="status-badge" [class.confirmed]="booking.status === 'confirmed'">
+          {{ booking.status || 'confirmed' }}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h3 class="booking-title">{{ booking.destinationName }}</h3>
+        <div class="booking-id">ID: {{ booking.bookingId || booking.id }}</div>
+
+        <div class="booking-details">
+          <div class="detail-item" *ngIf="booking.from">
+            <span class="detail-icon">📍</span>
+            <span>{{ booking.from }} → {{ booking.to }}</span>
+          </div>
+          <div class="detail-item" *ngIf="!booking.from && booking.to">
+            <span class="detail-icon">📍</span>
+            <span>{{ booking.to }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">📅</span>
+            <span>{{ formatDate(booking.checkInDate) }}
+              <ng-container *ngIf="booking.checkOutDate"> → {{ formatDate(booking.checkOutDate) }}</ng-container>
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">👤</span>
+            <span>{{ booking.customerName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">👥</span>
+            <span>{{ booking.guests }} passenger(s)</span>
+          </div>
+        </div>
+
+        <div class="card-price">₹{{ booking.totalPrice | number }}</div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-pdf" (click)="downloadPDF(booking)">📄 PDF</button>
+        <button class="btn-delete" (click)="deleteBooking(booking.bookingId || booking.id)">🗑️ Remove</button>
+      </div>
+    </div>
+  </div>
+</div>

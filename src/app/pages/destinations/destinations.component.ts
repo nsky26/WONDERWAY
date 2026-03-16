@@ -8,7 +8,6 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
-import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 
 import { Destination } from '../../models/destination.model';
 import { DestinationsService } from '../../services/destinations.service';
@@ -20,8 +19,7 @@ import * as DestinationsActions from '../../store/destinations/destinations.acti
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
-    LoadingSpinnerComponent
+    FormsModule
   ],
   templateUrl: './destinations.component.html',
   styleUrls: ['./destinations.component.css']
@@ -474,6 +472,16 @@ export class DestinationsComponent implements OnInit, OnDestroy {
     this.showTrendingOnly = false;
     this.showDiscountOnly = false;
     this.applyFilters();
+  }
+
+  getActiveFiltersCount(): number {
+    let count = 0;
+    if (this.selectedCategory !== 'All') count++;
+    if (this.selectedPriceRange !== 'All') count++;
+    if (this.selectedRating > 0) count++;
+    if (this.selectedMonth !== 'All') count++;
+    if (this.sortBy !== 'popular') count++;
+    return count;
   }
 
   viewDestination(destination: Destination) {

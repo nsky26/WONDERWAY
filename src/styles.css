@@ -210,3 +210,25 @@ body {
 body * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
+
+/* =========================================
+   PAGE WRAPPER - Dark gradient background
+   Used by Flights, Hotels, Buses, Cars pages
+========================================= */
+.page-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg,
+    #0a0e27 0%,
+    #1a1f3a 25%,
+    #2d1b4e 50%,
+    #1a1f3a 75%,
+    #0a0e27 100%);
+  background-size: 400% 400%;
+  animation: pageGradientShift 15s ease infinite;
+}
+
+@keyframes pageGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
