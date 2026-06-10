@@ -10,20 +10,20 @@
   <!-- Inline Search Bar -->
   <div class="inline-search-bar">
     <div class="search-field autocomplete-wrap">
-      <label>Pick-up Location</label>
-      <input type="text" placeholder="City or Airport" [(ngModel)]="inlineSearch.from" name="isFrom"
+      <label for="car-location">Pick-up Location</label>
+      <input type="text" id="car-location" placeholder="City or Airport" [(ngModel)]="inlineSearch.from" name="carLocation"
         (input)="onCityInput(inlineSearch.from)" (blur)="closeSuggestions()" autocomplete="off">
       <div class="suggestions-box" *ngIf="showSuggestions">
         <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion(s)">{{ s }}</div>
       </div>
     </div>
     <div class="search-field">
-      <label>Pick-up Date</label>
-      <input type="date" [(ngModel)]="inlineSearch.date" name="isDate" [min]="minDate" [max]="maxDate">
+      <label for="car-pickup-date">Pick-up Date</label>
+      <input type="date" id="car-pickup-date" [(ngModel)]="inlineSearch.date" name="carPickupDate" [min]="minDate" [max]="maxDate">
     </div>
     <div class="search-field">
-      <label>Drop-off Date</label>
-      <input type="date" [(ngModel)]="inlineSearch.checkoutDate" name="isDropoff" [min]="minDate" [max]="maxDate">
+      <label for="car-dropoff-date">Drop-off Date</label>
+      <input type="date" id="car-dropoff-date" [(ngModel)]="inlineSearch.checkoutDate" name="carDropoffDate" [min]="minDate" [max]="maxDate">
     </div>
     <button class="btn-inline-search" (click)="doInlineSearch()">🚗 Search</button>
   </div>
@@ -45,12 +45,12 @@
     </div>
     
     <!-- Cars Results -->
-    <div *ngIf="!searching && cars.length > 0" class="results-container">
+    <div *ngIf="cars.length > 0" class="results-container">
       <h2 class="results-title">🚗 Available Cars</h2>
       <p class="results-subtitle">{{ cars.length }} cars found in {{ searchParams.from }}</p>
       
       <div class="results-grid">
-        <div *ngFor="let car of cars" class="result-card flight-card">
+        <div *ngFor="let car of cars; trackBy: trackByCarId" class="result-card flight-card">
           <div class="card-header">
             <h3>{{ car.brand }} {{ car.model }}</h3>
             <span class="flight-number">{{ car.type }}</span>

@@ -23,6 +23,14 @@
           </svg>
         </span>
         <div class="dropdown-menu">
+          <a routerLink="/booking" class="dropdown-item highlight-item">
+            <span class="di-icon">🎫</span>
+            <span class="di-text">
+              <strong>Book Now</strong>
+              <small>Quick booking - select your destination</small>
+            </span>
+          </a>
+          <div class="dropdown-divider"></div>
           <a routerLink="/flights" class="dropdown-item">
             <span class="di-icon">✈️</span>
             <span class="di-text">
@@ -100,11 +108,40 @@
     <ul>
       <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
       <li><a routerLink="/destinations" (click)="closeMenu()">Destinations</a></li>
-      <li class="mobile-section-label">Book</li>
-      <li><a routerLink="/flights" (click)="closeMenu()">✈️ Flights</a></li>
-      <li><a routerLink="/hotels" (click)="closeMenu()">🏨 Hotels</a></li>
-      <li><a routerLink="/buses" (click)="closeMenu()">🚌 Buses</a></li>
-      <li><a routerLink="/cars" (click)="closeMenu()">🚗 Cars</a></li>
+      
+      <!-- Book Dropdown in Mobile -->
+      <li class="mobile-dropdown">
+        <div class="mobile-dropdown-trigger" (click)="toggleMobileBookDropdown()">
+          <span>🎫 Book</span>
+          <svg class="mobile-chevron" [class.rotated]="isMobileBookOpen" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <ul class="mobile-dropdown-menu" [class.open]="isMobileBookOpen">
+          <li><a routerLink="/booking" (click)="closeMenu()" class="mobile-highlight">
+            <span class="mobile-menu-icon">🎫</span>
+            <span>Book Now</span>
+            <span class="mobile-menu-badge">Quick</span>
+          </a></li>
+          <li><a routerLink="/flights" (click)="closeMenu()">
+            <span class="mobile-menu-icon">✈️</span>
+            <span>Flights</span>
+          </a></li>
+          <li><a routerLink="/hotels" (click)="closeMenu()">
+            <span class="mobile-menu-icon">🏨</span>
+            <span>Hotels</span>
+          </a></li>
+          <li><a routerLink="/buses" (click)="closeMenu()">
+            <span class="mobile-menu-icon">🚌</span>
+            <span>Buses</span>
+          </a></li>
+          <li><a routerLink="/cars" (click)="closeMenu()">
+            <span class="mobile-menu-icon">🚗</span>
+            <span>Cars</span>
+          </a></li>
+        </ul>
+      </li>
+      
       <li><a routerLink="/about" (click)="closeMenu()">About</a></li>
       <li><a routerLink="/contact" (click)="closeMenu()">Contact</a></li>
       <ng-container *ngIf="currentUser">

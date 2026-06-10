@@ -51,6 +51,11 @@
       
       <div class="results-grid">
         <div *ngFor="let hotel of hotels" class="result-card flight-card">
+          <div class="hotel-card-image">
+            <img [src]="hotel.imageUrl" [alt]="hotel.name" (error)="onImageError($event)">
+            <div class="hotel-rating-badge">⭐ {{ hotel.rating }}</div>
+          </div>
+          
           <div class="card-header">
             <h3>{{ hotel.name }}</h3>
             <span class="flight-number">{{ hotel.location }}</span>
@@ -67,18 +72,19 @@
                 <span class="value">{{ hotel.distance }}</span>
               </div>
               <div class="info-row">
-                <span class="label">Rating:</span>
-                <span class="value">⭐ {{ hotel.rating }}</span>
+                <span class="label">Available:</span>
+                <span class="value">{{ hotel.availableRooms }} rooms</span>
               </div>
             </div>
             <div class="amenities-list">
-              <span *ngFor="let amenity of hotel.amenities" class="amenity-badge">{{ amenity }}</span>
+              <span *ngFor="let amenity of hotel.amenities.slice(0, 5)" class="amenity-badge">{{ amenity }}</span>
+              <span *ngIf="hotel.amenities.length > 5" class="amenity-badge more">+{{ hotel.amenities.length - 5 }} more</span>
             </div>
           </div>
           
           <div class="card-footer">
             <div class="price-info">
-              <span class="price">₹{{ hotel.pricePerNight }}/night</span>
+              <span class="price">₹{{ hotel.pricePerNight | number:'1.0-0' }}/night</span>
               <span class="seats">{{ hotel.availableRooms }} rooms left</span>
             </div>
             <button class="btn-select" (click)="selectHotel(hotel)">

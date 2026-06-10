@@ -98,6 +98,7 @@ export class DestinationsComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll')
   onWindowScroll() {
+    if (typeof window === 'undefined') return;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
     // Show scroll to top button after scrolling 300px
@@ -107,13 +108,17 @@ export class DestinationsComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   scrollToFilters() {
-    const filtersElement = document.querySelector('.filters-sidebar');
-    if (filtersElement) {
-      filtersElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (typeof document !== 'undefined') {
+      const filtersElement = document.querySelector('.filters-sidebar');
+      if (filtersElement) {
+        filtersElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }
 
@@ -133,7 +138,7 @@ export class DestinationsComponent implements OnInit, OnDestroy {
   initializeChatbot() {
     this.chatMessages.push({
       type: 'bot',
-      text: 'Hello! 👋 I\'m your WonderWay travel assistant.\n\nI can help you:\n✈️ Find perfect destinations\n💰 Get best deals\n📅 Plan your trip\n⭐ Recommend based on preferences\n\nWhat are you looking for today?',
+      text: 'Hello! I\'m your WonderWay travel assistant. I can help you find perfect destinations, get best deals, plan your trip, and recommend based on preferences. What are you looking for today?',
       time: this.getCurrentTime()
     });
   }
@@ -289,9 +294,11 @@ export class DestinationsComponent implements OnInit, OnDestroy {
 
   scrollChatToBottom() {
     setTimeout(() => {
-      const chatContainer = document.querySelector('.chatbot-messages');
-      if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+      if (typeof document !== 'undefined') {
+        const chatContainer = document.querySelector('.chatbot-messages');
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
       }
     }, 100);
   }

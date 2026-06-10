@@ -57,6 +57,9 @@
 .results-container {
   margin-bottom: 3rem;
   animation: fadeInUp 0.6s ease-out;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 @keyframes fadeInUp {
@@ -93,6 +96,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
   gap: 2.5rem;
+  width: 100%;
 }
 
 /* ==========================================
@@ -289,6 +293,58 @@
   white-space: nowrap;
   border: 1px solid rgba(100, 255, 218, 0.3);
   font-weight: 600;
+}
+
+/* Flight Stops Info - New Style */
+.flight-stops-info {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stops-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffc107;
+  transition: all 0.3s ease;
+}
+
+.stops-badge.nonstop {
+  background: linear-gradient(135deg, rgba(100, 255, 218, 0.2), rgba(102, 126, 234, 0.2));
+  border-color: rgba(100, 255, 218, 0.4);
+  color: #64ffda;
+}
+
+.stops-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+}
+
+.stops-badge.nonstop:hover {
+  box-shadow: 0 4px 15px rgba(100, 255, 218, 0.3);
+}
+
+.stops-icon {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.stops-text {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ==========================================

@@ -57,6 +57,9 @@
 .results-container {
   margin-bottom: 3rem;
   animation: fadeInUp 0.6s ease-out;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 @keyframes fadeInUp {

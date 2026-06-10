@@ -90,19 +90,33 @@ export class BusesComponent implements OnInit {
       if (this.guests.length > 0) this.guests[0].name = u.name;
     }
 
-    // Get search params from query, or default to popular route
+    // Set default search params immediately
+    const today = new Date();
+    today.setDate(today.getDate() + 3);
+    const defaultDate = today.toISOString().split('T')[0];
+    this.searchParams = {
+      from: 'Delhi',
+      to: 'Agra',
+      date: defaultDate
+    };
+    this.inlineSearch = { ...this.searchParams };
+    this.hasSearched = true;
+    
+    // Perform search immediately
+    this.performSearch();
+
+    // Also subscribe to query params for external navigation
     this.route.queryParams.subscribe(params => {
-      const today = new Date();
-      today.setDate(today.getDate() + 3);
-      const defaultDate = today.toISOString().split('T')[0];
-      this.searchParams = {
-        from: params['from'] || 'Delhi',
-        to: params['to'] || 'Agra',
-        date: params['date'] || defaultDate
-      };
-      this.inlineSearch = { ...this.searchParams };
-      this.hasSearched = true;
-      this.performSearch();
+      if (params['from'] || params['to'] || params['date']) {
+        this.searchParams = {
+          from: params['from'] || 'Delhi',
+          to: params['to'] || 'Agra',
+          date: params['date'] || defaultDate
+        };
+        this.inlineSearch = { ...this.searchParams };
+        this.hasSearched = true;
+        this.performSearch();
+      }
     });
   }
 
@@ -116,16 +130,28 @@ export class BusesComponent implements OnInit {
   }
 
   performSearch(): void {
+    console.log('performSearch called - starting search');
     this.searching = true;
     this.selectedBus = null;
     this.busesService.searchBuses(
       this.searchParams.from,
       this.searchParams.to,
       this.searchParams.date
-    ).subscribe(buses => {
-      this.buses = buses;
-      this.searching = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    ).subscribe({
+      next: (buses) => {
+        console.log('Buses API response:', buses);
+        this.buses = buses || [];
+        this.searching = false;
+        console.log('Buses loaded - searching:', this.searching, 'hasSearched:', this.hasSearched, 'count:', this.buses.length);
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      },
+      error: (err) => {
+        console.error('Buses search error:', err);
+        this.buses = [];
+        this.searching = false;
+      }
     });
   }
 
@@ -156,7 +182,9 @@ export class BusesComponent implements OnInit {
   selectBus(bus: Bus): void {
     this.selectedBus = bus;
     setTimeout(() => {
-      document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      if (typeof document !== 'undefined') {
+        document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 100);
   }
 
@@ -304,5 +332,9 @@ export class BusesComponent implements OnInit {
 
   getStars(rating: number): number[] {
     return Array(Math.floor(rating)).fill(0);
+  }
+
+  trackByBusId(index: number, bus: any): string {
+    return bus.id;
   }
 }

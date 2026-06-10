@@ -13,6 +13,7 @@ import { AuthService, User } from '../../services/auth.service';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
+  isMobileBookOpen = false;
   bookingsCount = 0;
   currentUser: User | null = null;
   showUserMenu = false;
@@ -47,7 +48,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleMenu() { this.isMenuOpen = !this.isMenuOpen; }
-  closeMenu() { this.isMenuOpen = false; }
+  closeMenu() { this.isMenuOpen = false; this.isMobileBookOpen = false; }
   toggleUserMenu() { this.showUserMenu = !this.showUserMenu; }
   closeUserMenu() { setTimeout(() => this.showUserMenu = false, 150); }
+  toggleMobileBookDropdown() { this.isMobileBookOpen = !this.isMobileBookOpen; }
 }

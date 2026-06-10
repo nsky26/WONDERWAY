@@ -133,7 +133,9 @@ export class HotelsComponent implements OnInit {
     ).subscribe(hotels => {
       this.hotels = hotels;
       this.searching = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     });
   }
 
@@ -163,7 +165,9 @@ export class HotelsComponent implements OnInit {
   selectHotel(hotel: Hotel): void {
     this.selectedHotel = hotel;
     setTimeout(() => {
-      document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      if (typeof document !== 'undefined') {
+        document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 100);
   }
 
@@ -321,5 +325,10 @@ export class HotelsComponent implements OnInit {
 
   getStars(rating: number): number[] {
     return Array(Math.floor(rating)).fill(0);
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'https://picsum.photos/seed/hotel-fallback/400/300';
   }
 }

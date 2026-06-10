@@ -1,6 +1,6 @@
 // Booking page component
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID, Inject, Optional } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { BookingConfirmedComponent } from '../../components/booking-confirmed/bo
 import { BookingService } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
 import { PdfGeneratorService } from '../../services/pdf-generator.service';
+import { DestinationsService } from '../../services/destinations.service';
 import * as BookingsActions from '../../store/bookings/bookings.actions';
 import { selectBookingsLoading } from '../../store/bookings/bookings.selectors';
 
@@ -18,6 +19,7 @@ import { FlightsService, Flight } from '../../services/flights.service';
 import { HotelsService, Hotel } from '../../services/hotels.service';
 import { BusesService, Bus } from '../../services/buses.service';
 import { CarsService, Car } from '../../services/cars.service';
+import { Destination } from '../../models/destination.model';
 
 interface Guest {
   name: string;
@@ -43,6 +45,8 @@ interface ServiceTab {
   styleUrls: ['./booking.component.css']
 })
 export class BookingComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  
   loading$: Observable<boolean>;
   bookingSuccess = false;
   bookingConfirmation: any = null;
@@ -54,6 +58,12 @@ export class BookingComponent implements OnInit {
   isDestinationMode = false;
   destinationName = '';
   destinationId = '';
+  destinationPrice: number = 0;
+  
+  // Available destinations for selection
+  allDestinations: Destination[] = [];
+  selectedDestination: Destination | null = null;
+  destinationSearchQuery = '';
 
   // Active service tab (used in destination mode)
   activeService: 'flights' | 'hotels' | 'buses' | 'cars' = 'flights';
@@ -64,6 +74,9 @@ export class BookingComponent implements OnInit {
     { id: 'buses',   label: 'Buses',    icon: '🚌' },
     { id: 'cars',    label: 'Cars',     icon: '🚗' },
   ];
+
+  // Direct booking mode (skip search)
+  directFormMode = false;
 
   // Search state
   searchPerformed = false;
@@ -101,10 +114,14 @@ export class BookingComponent implements OnInit {
     private flightsService: FlightsService,
     private hotelsService: HotelsService,
     private busesService: BusesService,
-    private carsService: CarsService
+    private carsService: CarsService,
+    @Optional() private destinationsService: DestinationsService
   ) {
     this.loading$ = this.store.select(selectBookingsLoading);
   }
+
+  // Current user for login check
+  currentUser: any = null;
 
   ngOnInit() {
     this.minDate = this.bookingService.getMinDate();
@@ -112,24 +129,34 @@ export class BookingComponent implements OnInit {
     this.searchDate = this.minDate;
     this.searchCheckout = this.minDate;
     this.initializeForm();
+    this.loadDestinations();
 
-    const u = this.auth.currentUser;
-    if (u) {
-      this.bookingForm.patchValue({ customerName: u.name, email: u.email, phone: u.phone || '' });
-      if (this.guests.length > 0) this.guests[0].name = u.name;
-    }
+    // Subscribe to auth state changes
+    this.auth.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      if (user) {
+        this.bookingForm.patchValue({ customerName: user.name, email: user.email, phone: user.phone || '' });
+        if (this.guests.length > 0) this.guests[0].name = user.name;
+      }
+    });
 
     this.route.queryParams.subscribe(params => {
       if (params['destinationId']) {
-        // Destination mode — show inline service tabs + search
+        // Destination mode — go directly to booking form
         this.isDestinationMode = true;
+        this.directFormMode = true; // Show booking form directly
         this.destinationId = params['destinationId'];
         this.destinationName = params['destinationName'] || '';
+        this.destinationPrice = params['price'] || 0;
         this.searchTo = this.destinationName;
         this.searchFrom = '';
         this.searchDate = this.minDate;
         this.searchCheckout = this.minDate;
-        this.bookingForm.patchValue({ destinationName: this.destinationName });
+        this.bookingForm.patchValue({ 
+          destinationName: this.destinationName,
+          checkInDate: this.minDate,
+          checkOutDate: this.minDate
+        });
         this.activeService = 'flights';
         this.searchPerformed = false;
       } else if (params['bookingType']) {
@@ -159,6 +186,11 @@ export class BookingComponent implements OnInit {
 
         if (shouldSearch) this.performSearch();
         else { this.searchPerformed = true; this.searching = false; }
+      } else {
+        // Direct navigation from navbar - show booking form directly
+        this.isDestinationMode = false;
+        this.directFormMode = true;
+        this.bookingForm.patchValue({ destinationName: 'General Booking' });
       }
     });
   }
@@ -176,6 +208,87 @@ export class BookingComponent implements OnInit {
       specialRequests: [''],
       from: [''], to: [''], date: ['']
     });
+  }
+
+  loadDestinations(): void {
+    // Only load destinations in browser environment
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    
+    // Check if service is available
+    if (!this.destinationsService) {
+      console.warn('Destinations service not available');
+      return;
+    }
+    
+    this.destinationsService.getDestinations().subscribe({
+      next: (destinations) => {
+        this.allDestinations = destinations;
+      },
+      error: (error) => {
+        console.error('Error loading destinations:', error);
+      }
+    });
+  }
+
+  // Filter destinations based on search query
+  get filteredDestinations(): Destination[] {
+    if (!this.destinationSearchQuery.trim()) {
+      return this.allDestinations.slice(0, 20); // Show first 20 by default
+    }
+    const query = this.destinationSearchQuery.toLowerCase();
+    return this.allDestinations.filter(d =>
+      d.name.toLowerCase().includes(query) ||
+      d.country.toLowerCase().includes(query) ||
+      d.category.toLowerCase().includes(query)
+    ).slice(0, 20);
+  }
+
+  // Select a destination
+  selectDestination(destination: Destination): void {
+    this.selectedDestination = destination;
+    this.destinationId = destination.id;
+    this.destinationName = destination.name;
+    this.destinationPrice = destination.price;
+    this.bookingForm.patchValue({
+      destinationId: destination.id,
+      destinationName: destination.name
+    });
+    this.destinationSearchQuery = '';
+  }
+
+  // Clear selected destination
+  clearSelectedDestination(): void {
+    this.selectedDestination = null;
+    this.destinationId = '';
+    this.destinationName = '';
+    this.destinationPrice = 0;
+    this.bookingForm.patchValue({
+      destinationId: '',
+      destinationName: ''
+    });
+  }
+
+  // Handle image loading errors
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'https://picsum.photos/seed/fallback/400/300';
+  }
+
+  // Toggle direct booking mode
+  toggleDirectMode() {
+    this.directFormMode = !this.directFormMode;
+    if (this.directFormMode) {
+      this.selectedItem = null;
+      // patch destination name so form is valid
+      this.bookingForm.patchValue({ destinationName: this.destinationName || 'Direct Booking' });
+      setTimeout(() => {
+        if (typeof document !== 'undefined') {
+          document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
   }
 
   // Switch service tab in destination mode
@@ -209,7 +322,9 @@ export class BookingComponent implements OnInit {
     this.searching = true;
     this.searchPerformed = true;
     this.selectedItem = null;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     const from = this.searchFrom || this.bookingForm.value.from;
     const to   = this.searchTo   || this.bookingForm.value.to;
@@ -242,7 +357,11 @@ export class BookingComponent implements OnInit {
       case 'bus':    this.bookingForm.patchValue({ destinationName: `${item.from} → ${item.to}`, bookingType: 'bus' }); break;
       case 'car':    this.bookingForm.patchValue({ destinationName: `${item.brand} ${item.model}`, bookingType: 'car' }); break;
     }
-    setTimeout(() => document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' }), 100);
+    setTimeout(() => {
+      if (typeof document !== 'undefined') {
+        document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   }
 
   addGuest()  { this.guests.push({ name: '', age: 18, type: 'adult' }); }
@@ -309,17 +428,48 @@ export class BookingComponent implements OnInit {
   }
 
   calculatePrice(): number {
+    // If we have a selected item from search results
     if (this.selectedItem) {
       const days = this.getDaysDifference();
+      const guests = this.guests.length;
       switch (this.selectedItem.type) {
-        case 'flight': return this.selectedItem.price * this.guests.length;
-        case 'hotel':  return this.selectedItem.pricePerNight * days;
-        case 'bus':    return this.selectedItem.price * this.guests.length;
+        case 'flight': return this.selectedItem.price * guests;
+        case 'hotel':  return this.selectedItem.pricePerNight * days * guests;
+        case 'bus':    return this.selectedItem.price * guests;
         case 'car':    return this.selectedItem.pricePerDay * days;
       }
     }
+    
+    // If we have a selected destination from the destination selector
+    if (this.selectedDestination) {
+      const days = this.getDaysDifference();
+      return this.selectedDestination.price * this.guests.length * days;
+    }
+    
+    // If we have a destination price from destination details page
+    if (this.destinationPrice && this.destinationPrice > 0) {
+      const days = this.getDaysDifference();
+      return this.destinationPrice * this.guests.length * days;
+    }
+    
+    // Default calculation for general booking
     const days = this.getDaysDifference();
-    return (this.getAdultCount() * days * 150) + (this.getChildCount() * days * 75);
+    const adultPrice = 150; // Base price per adult per day
+    const childPrice = 75;  // Base price per child per day
+    return (this.getAdultCount() * days * adultPrice) + (this.getChildCount() * days * childPrice);
+  }
+
+  // Calculate individual price components for breakdown
+  getBaseFare(): number {
+    return Math.round(this.calculatePrice() * 0.82);
+  }
+
+  getGST(): number {
+    return Math.round(this.calculatePrice() * 0.12);
+  }
+
+  getConvenienceFee(): number {
+    return Math.round(this.calculatePrice() * 0.06);
   }
 
   getDaysDifference(): number {

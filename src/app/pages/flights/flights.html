@@ -10,24 +10,24 @@
   <!-- Inline Search Bar -->
   <div class="inline-search-bar">
     <div class="search-field autocomplete-wrap">
-      <label>From</label>
-      <input type="text" placeholder="Departure City" [(ngModel)]="inlineSearch.from" name="isFrom"
+      <label for="flight-from">From</label>
+      <input type="text" id="flight-from" placeholder="Departure City" [(ngModel)]="inlineSearch.from" name="flightFrom"
         (input)="onCityInput('from', inlineSearch.from)" (blur)="closeSuggestions()" autocomplete="off">
       <div class="suggestions-box" *ngIf="showSuggestions === 'from'">
         <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('from', s)">{{ s }}</div>
       </div>
     </div>
     <div class="search-field autocomplete-wrap">
-      <label>To</label>
-      <input type="text" placeholder="Destination City" [(ngModel)]="inlineSearch.to" name="isTo"
+      <label for="flight-to">To</label>
+      <input type="text" id="flight-to" placeholder="Destination City" [(ngModel)]="inlineSearch.to" name="flightTo"
         (input)="onCityInput('to', inlineSearch.to)" (blur)="closeSuggestions()" autocomplete="off">
       <div class="suggestions-box" *ngIf="showSuggestions === 'to'">
         <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('to', s)">{{ s }}</div>
       </div>
     </div>
     <div class="search-field">
-      <label>Date</label>
-      <input type="date" [(ngModel)]="inlineSearch.date" name="isDate" [min]="minDate" [max]="maxDate">
+      <label for="flight-date">Date</label>
+      <input type="date" id="flight-date" [(ngModel)]="inlineSearch.date" name="flightDate" [min]="minDate" [max]="maxDate">
     </div>
     <button class="btn-inline-search" (click)="doInlineSearch()">✈️ Search</button>
   </div>
@@ -49,12 +49,12 @@
     </div>
     
     <!-- Flights Results -->
-    <div *ngIf="!searching && flights.length > 0" class="results-container">
+    <div *ngIf="flights.length > 0" class="results-container">
       <h2 class="results-title">✈️ Available Flights</h2>
       <p class="results-subtitle">{{ flights.length }} flights found from {{ searchParams.from }} to {{ searchParams.to }}</p>
       
       <div class="results-grid">
-        <div *ngFor="let flight of flights" class="result-card flight-card">
+        <div *ngFor="let flight of flights; trackBy: trackByFlightId" class="result-card flight-card">
           <div class="card-header">
             <h3>{{ flight.airline }}</h3>
             <span class="flight-number">{{ flight.flightNumber }}</span>
@@ -68,14 +68,18 @@
               </div>
               <div class="flight-duration">
                 <span class="duration">{{ flight.duration }}</span>
-                <div class="flight-line">
-                  <span class="stops">{{ flight.stops === 0 ? 'Non-stop' : flight.stops + ' stop(s)' }}</span>
-                </div>
+                <div class="flight-line"></div>
               </div>
               <div class="time-block">
                 <span class="time">{{ flight.arrivalTime }}</span>
                 <span class="city">{{ flight.to }}</span>
               </div>
+            </div>
+            <div class="flight-stops-info">
+              <span class="stops-badge" [class.nonstop]="flight.stops === 0">
+                <span class="stops-icon">{{ flight.stops === 0 ? '✓' : '⚡' }}</span>
+                <span class="stops-text">{{ flight.stops === 0 ? 'Non-stop' : flight.stops + ' Stop' + (flight.stops > 1 ? 's' : '') }}</span>
+              </span>
             </div>
           </div>
           

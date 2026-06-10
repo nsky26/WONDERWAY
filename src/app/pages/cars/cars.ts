@@ -91,26 +91,47 @@ export class CarsComponent implements OnInit {
       if (this.guests.length > 0) this.guests[0].name = u.name;
     }
 
-    // Get search params from query, or default to popular city
+    // Set default search params immediately
+    const today = new Date();
+    today.setDate(today.getDate() + 3);
+    const defaultDate = today.toISOString().split('T')[0];
+    const defaultCheckout = new Date(today);
+    defaultCheckout.setDate(defaultCheckout.getDate() + 2);
+    this.searchParams = {
+      from: 'Mumbai',
+      to: '',
+      date: defaultDate,
+      checkoutDate: defaultCheckout.toISOString().split('T')[0]
+    };
+    this.inlineSearch = {
+      from: this.searchParams.from,
+      date: this.searchParams.date,
+      checkoutDate: this.searchParams.checkoutDate
+    };
+    this.hasSearched = true;
+    
+    // Perform search immediately
+    this.performSearch();
+
+    // Also subscribe to query params for external navigation
     this.route.queryParams.subscribe(params => {
-      const today = new Date();
-      today.setDate(today.getDate() + 3);
-      const defaultDate = today.toISOString().split('T')[0];
-      const defaultCheckout = new Date(today);
-      defaultCheckout.setDate(defaultCheckout.getDate() + 2);
-      this.searchParams = {
-        from: params['from'] || 'Mumbai',
-        to: params['to'] || '',
-        date: params['date'] || defaultDate,
-        checkoutDate: params['checkoutDate'] || defaultCheckout.toISOString().split('T')[0]
-      };
-      this.inlineSearch = {
-        from: this.searchParams.from,
-        date: this.searchParams.date,
-        checkoutDate: this.searchParams.checkoutDate
-      };
-      this.hasSearched = true;
-      this.performSearch();
+      if (params['from'] || params['date']) {
+        const newCheckout = new Date(params['date'] || defaultDate);
+        newCheckout.setDate(newCheckout.getDate() + 2);
+        this.searchParams = {
+          from: params['from'] || 'Mumbai',
+          to: params['to'] || '',
+          date: params['date'] || defaultDate,
+          checkoutDate: params['checkoutDate'] || newCheckout.toISOString().split('T')[0]
+        };
+        this.inlineSearch = {
+          from: this.searchParams.from,
+          date: this.searchParams.date,
+          checkoutDate: this.searchParams.checkoutDate
+        };
+        this.hasSearched = true;
+        this.performSearch();
+      }
     });
   }
 
@@ -124,15 +145,27 @@ export class CarsComponent implements OnInit {
   }
 
   performSearch(): void {
+    console.log('performSearch called - starting search');
     this.searching = true;
     this.selectedCar = null;
     this.carsService.searchCars(
       this.searchParams.from,
       this.searchParams.date
-    ).subscribe(cars => {
-      this.cars = cars;
-      this.searching = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    ).subscribe({
+      next: (cars) => {
+        console.log('Cars API response:', cars);
+        this.cars = cars || [];
+        this.searching = false;
+        console.log('Cars loaded - searching:', this.searching, 'hasSearched:', this.hasSearched, 'count:', this.cars.length);
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      },
+      error: (err) => {
+        console.error('Cars search error:', err);
+        this.cars = [];
+        this.searching = false;
+      }
     });
   }
 
@@ -162,7 +195,9 @@ export class CarsComponent implements OnInit {
   selectCar(car: Car): void {
     this.selectedCar = car;
     setTimeout(() => {
-      document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      if (typeof document !== 'undefined') {
+        document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 100);
   }
 
@@ -320,5 +355,9 @@ export class CarsComponent implements OnInit {
 
   getStars(rating: number): number[] {
     return Array(Math.floor(rating)).fill(0);
+  }
+
+  trackByCarId(index: number, car: any): string {
+    return car.id;
   }
 }

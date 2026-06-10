@@ -135,6 +135,38 @@
               0 0 120px rgba(100, 255, 218, 0.4);
 }
 
+/* Hotel Card Image */
+.hotel-card-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.hotel-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.result-card:hover .hotel-card-image img {
+  transform: scale(1.1);
+}
+
+.hotel-rating-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, rgba(100, 255, 218, 0.9), rgba(102, 126, 234, 0.9));
+  color: #0a0e27;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
 .card-header {
   padding: 1.8rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -1339,6 +1371,12 @@
   background: rgba(100, 255, 218, 0.25);
   border-color: rgba(100, 255, 218, 0.5);
   transform: translateY(-2px);
+}
+
+.amenity-badge.more {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.4);
+  color: #a78bfa;
 }
 
 /* Inline Search Bar */

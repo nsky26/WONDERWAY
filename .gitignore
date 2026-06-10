@@ -8,8 +8,14 @@
 
 # Node
 /node_modules
-npm-debug.log
-yarn-error.log
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # IDEs and editors
 .idea/
@@ -29,8 +35,11 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Angular specific
+.angular/
+.angular/cache
+
 # Miscellaneous
-/.angular/cache
 .sass-cache/
 /connect.lock
 /coverage
@@ -39,6 +48,28 @@ testem.log
 /typings
 __screenshots__/
 
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Testing
+.nyc_output/
+
+# SSR build
+/server
+
 # System files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.swp
+*.swo
+
+# Misc
+*~
+.fuse_hidden*
+.tconfig

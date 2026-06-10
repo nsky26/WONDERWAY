@@ -1,253 +1,195 @@
-# WonderWayTech - Tourism Information and Online Booking Management System
+# WonderWay Travel Portal
 
-A production-ready tourism information and online booking management system built with Angular 21 (latest version) using standalone components architecture.
+WonderWay is a tourism information and online booking management system built with
+Angular 21. It helps users discover destinations, search travel services, complete
+bookings, download PDF confirmations, and review their saved bookings locally in
+the browser.
 
-## 🚀 Features
+The project uses standalone Angular components, lazy-loaded routes, NgRx state
+management, responsive styling, and client-side mock data so contributors can run
+and improve the app without needing a backend service.
 
-### Core Features
-- **Standalone Components Architecture** - No NgModule, fully modular
-- **NgRx State Management** - Centralized state with actions, reducers, and selectors
-- **Lazy Loading** - Optimized route-based code splitting
-- **Responsive Design** - Mobile-first approach with Flexbox and Grid
-- **Swiper.js Integration** - Smooth carousels for offers and testimonials
-- **Clean Professional UI** - Green + Navy theme with soft shadows
+## Features
 
-### Pages
-1. **Home Page**
-   - Sticky navigation bar
-   - Top offer strip banner
-   - Hero section with search panel (Flights/Hotels/Packages tabs)
-   - Special offers carousel
-   - Popular destinations grid
-   - Trending routes section
-   - Why choose us section
-   - Testimonials carousel
-   - App download section
-   - Professional footer
+- Travel search from the home page for flights, hotels, buses, cars, and cruises.
+- Dedicated booking flows for flights, hotels, buses, and cars.
+- Destination listing and destination detail pages.
+- Booking forms with validation, pricing, confirmation modals, and PDF downloads.
+- Local booking history through `localStorage`.
+- Contact form submissions saved in `localStorage`.
+- Login and signup pages for future authentication work.
+- Dark and light theme support on the home page.
+- NgRx store slices for destinations, offers, testimonials, and bookings.
+- Lazy-loaded standalone routes for better startup performance.
+- Responsive UI for desktop, tablet, and mobile screens.
 
-2. **Destinations Page**
-   - All destinations listing
-   - Filter and search capabilities
-   - Destination cards with ratings and pricing
+## Tech Stack
 
-3. **Destination Details Page**
-   - Full destination information
-   - Highlights and travel information
-   - Booking sidebar with pricing
-   - Contact support option
+- Angular 21
+- TypeScript 5.9
+- Angular Router
+- Angular SSR
+- NgRx Store, Effects, and DevTools
+- RxJS
+- Swiper
+- jsPDF and jsPDF AutoTable
+- Tailwind CSS/PostCSS tooling
+- Vitest and Angular test tooling
 
-4. **Booking Page**
-   - Comprehensive booking form
-   - Real-time price calculation
-   - Booking summary sidebar
-   - Form validation
+## Getting Started
 
-5. **About Page**
-   - Company mission and values
-   - Team members
-   - Statistics
-   - Call-to-action
+### Prerequisites
 
-6. **Contact Page**
-   - Contact form
-   - Multiple contact methods
-   - Quick help FAQ
+- Node.js compatible with Angular 21
+- npm 11 or newer, matching the `packageManager` field in `package.json`
 
-## 🏗️ Project Structure
+### Install
 
-```
-src/
-├── app/
-│   ├── components/          # Shared components
-│   │   ├── navbar/
-│   │   ├── footer/
-│   │   └── loading-spinner/
-│   ├── pages/              # Page components
-│   │   ├── home/
-│   │   ├── destinations/
-│   │   ├── destination-details/
-│   │   ├── booking/
-│   │   ├── about/
-│   │   └── contact/
-│   ├── models/             # TypeScript interfaces
-│   │   ├── destination.model.ts
-│   │   ├── offer.model.ts
-│   │   ├── testimonial.model.ts
-│   │   └── booking.model.ts
-│   ├── services/           # Data services
-│   │   ├── destinations.service.ts
-│   │   ├── offers.service.ts
-│   │   ├── testimonials.service.ts
-│   │   └── bookings.service.ts
-│   ├── store/              # NgRx state management
-│   │   ├── destinations/
-│   │   │   ├── destinations.actions.ts
-│   │   │   ├── destinations.reducer.ts
-│   │   │   ├── destinations.selectors.ts
-│   │   │   └── destinations.effects.ts
-│   │   ├── offers/
-│   │   ├── testimonials/
-│   │   └── bookings/
-│   ├── app.config.ts       # App configuration with NgRx
-│   ├── app.routes.ts       # Routing configuration
-│   └── app.ts              # Root component
-├── styles.css              # Global styles
-└── index.html
-```
-
-## 🛠️ Technologies Used
-
-- **Angular 21** - Latest version with standalone components
-- **TypeScript** - Type-safe development
-- **NgRx** - State management (Store, Effects, DevTools)
-- **Swiper.js** - Touch-enabled carousels
-- **RxJS** - Reactive programming
-- **CSS Grid & Flexbox** - Modern responsive layouts
-- **Angular Router** - Client-side routing with lazy loading
-
-## 📦 Installation
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd my-frst-app
-```
-
-2. **Install dependencies**
 ```bash
 npm install
 ```
 
-3. **Run development server**
+### Run Locally
+
 ```bash
 npm start
 ```
 
-4. **Open browser**
-Navigate to `http://localhost:4200/`
+Open `http://localhost:4200/` in your browser.
 
-## 🎨 Design System
-
-### Color Palette
-- **Primary Green**: `#1a5f4f`
-- **Secondary Green**: `#2c8c6f`
-- **Navy Blue**: `#1a3a52`
-- **Text Dark**: `#333333`
-- **Text Light**: `#666666`
-- **Background**: `#f8f9fa`
-- **White**: `#ffffff`
-
-### Typography
-- **Font Family**: System fonts (San Francisco, Segoe UI, Roboto)
-- **Headings**: Bold (700 weight)
-- **Body**: Regular (400 weight)
-
-### Spacing
-- Base unit: 1rem (16px)
-- Consistent spacing scale: 0.5rem, 1rem, 1.5rem, 2rem, 3rem, 4rem
-
-## 🔄 State Management
-
-### NgRx Store Structure
-
-```typescript
-{
-  destinations: {
-    destinations: Destination[],
-    selectedDestination: Destination | null,
-    loading: boolean,
-    error: string | null
-  },
-  offers: {
-    offers: Offer[],
-    loading: boolean,
-    error: string | null
-  },
-  testimonials: {
-    testimonials: Testimonial[],
-    loading: boolean,
-    error: string | null
-  },
-  bookings: {
-    bookings: Booking[],
-    loading: boolean,
-    error: string | null
-  }
-}
-```
-
-### Actions
-- `loadDestinations` - Fetch all destinations
-- `selectDestination` - Select a destination for details
-- `loadOffers` - Fetch special offers
-- `loadTestimonials` - Fetch customer testimonials
-- `createBooking` - Create a new booking
-
-## 📱 Responsive Breakpoints
-
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
-
-## 🚀 Build for Production
+### Build
 
 ```bash
 npm run build
 ```
 
-The build artifacts will be stored in the `dist/` directory.
+Build output is created in `dist/`.
 
-## 🧪 Testing
+### Run Tests
 
 ```bash
 npm test
 ```
 
-## 📝 Mock Data
+## Available Scripts
 
-The application currently uses mock JSON data stored in services. To connect to a real backend:
+| Script | Purpose |
+| --- | --- |
+| `npm start` | Runs the Angular development server. |
+| `npm run build` | Creates a production build. |
+| `npm run watch` | Builds continuously in development mode. |
+| `npm test` | Runs the test suite. |
+| `npm run serve:ssr:my-frst-app` | Serves the SSR build output. |
 
-1. Update service methods in `src/app/services/`
-2. Replace mock data with HTTP calls
-3. Update environment configuration
+## App Routes
 
-## 🔐 Security Features
+| Route | Page |
+| --- | --- |
+| `/` and `/home` | Home page with search, offers, destinations, and reviews |
+| `/destinations` | Destination listing |
+| `/destinations/:id` | Destination details |
+| `/booking` | General booking flow |
+| `/flights` | Flight search and booking |
+| `/hotels` | Hotel search and booking |
+| `/buses` | Bus search and booking |
+| `/cars` | Car rental search and booking |
+| `/my-bookings` | Saved local booking history |
+| `/login` | Login page |
+| `/signup` | Signup page |
+| `/about` | About page |
+| `/contact` | Contact form |
 
-- Input validation on all forms
-- XSS protection (Angular built-in)
-- CSRF protection ready
-- Secure routing
+## Project Structure
 
-## ♿ Accessibility
+```text
+src/
+  app/
+    components/       Shared UI components
+    data/             City and destination seed data
+    helpers/          Data generation helpers
+    models/           TypeScript interfaces
+    pages/            Route-level standalone components
+    services/         Mock data, booking, PDF, currency, and utility services
+    store/            NgRx actions, reducers, selectors, and effects
+    app.config.ts     Application providers and NgRx store registration
+    app.routes.ts     Lazy-loaded route configuration
+  styles/             Shared CSS utilities
+  styles.css          Global styles
+  main.ts             Browser bootstrap
+  server.ts           SSR server entry
+```
 
-- Semantic HTML
-- ARIA labels where needed
-- Keyboard navigation support
-- Screen reader friendly
+## Data And Persistence
 
-## 🌐 Browser Support
+The app currently uses local mock data and browser storage:
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+- Travel data is served from Angular services in `src/app/services/`.
+- Destination and city seed data lives in `src/app/data/`.
+- Bookings are saved under the `wonderway_bookings` localStorage key.
+- Contact form submissions are saved under the `wonderway_contacts` localStorage key.
+- Booking PDFs are generated client-side with jsPDF.
 
-## 📄 License
+To connect a real backend, replace the mock service methods with HTTP calls,
+add environment-specific API configuration, and keep the public models in
+`src/app/models/` aligned with the API responses.
 
-This project is licensed under the MIT License.
+## Contributing
 
-## 👥 Team
+Contributors are welcome. This repository is open to improvements, bug fixes,
+documentation updates, UI polish, tests, and new travel booking features.
 
-Built by senior Angular developers following industry best practices.
+### Good First Contributions
 
-## 🤝 Contributing
+- Fix copy, accessibility labels, and responsive layout issues.
+- Add or improve tests for existing page components.
+- Improve form validation and error messages.
+- Add filters or sorting for flights, hotels, buses, cars, or destinations.
+- Improve `my-bookings` with search, cancellation, or export options.
+- Replace mock data gradually with API-ready service methods.
+- Clean up corrupted icon/text encoding where it appears in templates or docs.
 
-Contributions are welcome! Please follow the coding standards and submit pull requests.
+### Development Workflow
 
-## 📞 Support
+1. Fork the repository.
+2. Create a feature branch from `main`.
+3. Install dependencies with `npm install`.
+4. Run the app with `npm start`.
+5. Make a focused change.
+6. Run `npm test` and `npm run build` before opening a pull request.
+7. Open a pull request with a clear summary and screenshots for UI changes.
 
-For support, email support@wonderwaytech.com or visit our contact page.
+### Pull Request Guidelines
 
----
+- Keep changes small and focused.
+- Follow the existing standalone component structure.
+- Prefer existing services, models, and shared styles before adding new patterns.
+- Add tests when changing business logic, forms, routing, or shared components.
+- Do not commit generated build output or local machine files.
+- Mention any known limitations or follow-up work in the pull request.
 
-**WonderWayTech** - Your trusted partner for unforgettable travel experiences.
+## Current Contributor Opportunities
+
+The app is functional, but there is plenty of useful work available:
+
+- Add real authentication behind the login and signup pages.
+- Add payment gateway integration.
+- Add a backend API for bookings and contact submissions.
+- Add real email delivery for booking confirmations.
+- Improve SSR readiness for browser-only APIs such as `localStorage`.
+- Add stronger accessibility coverage for keyboard and screen reader users.
+- Add SEO metadata and structured data for destination pages.
+
+## Testing Notes
+
+Manual testing guidance is available in `TESTING_GUIDE.md`. Recent implementation
+details and completed fixes are documented in `LATEST_UPDATES.md` and
+`IMPLEMENTATION_SUMMARY.md`.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For project questions, open an issue or start a discussion in the repository.
+

@@ -10,24 +10,24 @@
   <!-- Inline Search Bar -->
   <div class="inline-search-bar">
     <div class="search-field autocomplete-wrap">
-      <label>From</label>
-      <input type="text" placeholder="Departure City" [(ngModel)]="inlineSearch.from" name="isFrom"
+      <label for="bus-from">From</label>
+      <input type="text" id="bus-from" placeholder="Departure City" [(ngModel)]="inlineSearch.from" name="busFrom"
         (input)="onCityInput('from', inlineSearch.from)" (blur)="closeSuggestions()" autocomplete="off">
       <div class="suggestions-box" *ngIf="showSuggestions === 'from'">
         <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('from', s)">{{ s }}</div>
       </div>
     </div>
     <div class="search-field autocomplete-wrap">
-      <label>To</label>
-      <input type="text" placeholder="Destination City" [(ngModel)]="inlineSearch.to" name="isTo"
+      <label for="bus-to">To</label>
+      <input type="text" id="bus-to" placeholder="Destination City" [(ngModel)]="inlineSearch.to" name="busTo"
         (input)="onCityInput('to', inlineSearch.to)" (blur)="closeSuggestions()" autocomplete="off">
       <div class="suggestions-box" *ngIf="showSuggestions === 'to'">
         <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectSuggestion('to', s)">{{ s }}</div>
       </div>
     </div>
     <div class="search-field">
-      <label>Date</label>
-      <input type="date" [(ngModel)]="inlineSearch.date" name="isDate" [min]="minDate" [max]="maxDate">
+      <label for="bus-date">Date</label>
+      <input type="date" id="bus-date" [(ngModel)]="inlineSearch.date" name="busDate" [min]="minDate" [max]="maxDate">
     </div>
     <button class="btn-inline-search" (click)="doInlineSearch()">🚌 Search</button>
   </div>
@@ -49,12 +49,12 @@
     </div>
     
     <!-- Buses Results -->
-    <div *ngIf="!searching && buses.length > 0" class="results-container">
+    <div *ngIf="buses.length > 0" class="results-container">
       <h2 class="results-title">🚌 Available Buses</h2>
       <p class="results-subtitle">{{ buses.length }} buses found from {{ searchParams.from }} to {{ searchParams.to }}</p>
       
       <div class="results-grid">
-        <div *ngFor="let bus of buses" class="result-card flight-card">
+        <div *ngFor="let bus of buses; trackBy: trackByBusId" class="result-card flight-card">
           <div class="card-header">
             <h3>{{ bus.operator }}</h3>
             <span class="flight-number">{{ bus.busType }}</span>

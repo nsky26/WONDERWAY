@@ -117,16 +117,28 @@ export class FlightsComponent implements OnInit {
   }
 
   performSearch(): void {
+    console.log('performSearch called - starting search');
     this.searching = true;
     this.selectedFlight = null;
     this.flightsService.searchFlights(
       this.searchParams.from,
       this.searchParams.to,
       this.searchParams.date
-    ).subscribe(flights => {
-      this.flights = flights;
-      this.searching = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    ).subscribe({
+      next: (flights) => {
+        console.log('Flights API response:', flights);
+        this.flights = flights || [];
+        this.searching = false;
+        console.log('Flights loaded - searching:', this.searching, 'hasSearched:', this.hasSearched, 'count:', this.flights.length);
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      },
+      error: (err) => {
+        console.error('Flights search error:', err);
+        this.flights = [];
+        this.searching = false;
+      }
     });
   }
 
@@ -157,7 +169,9 @@ export class FlightsComponent implements OnInit {
   selectFlight(flight: Flight): void {
     this.selectedFlight = flight;
     setTimeout(() => {
-      document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      if (typeof document !== 'undefined') {
+        document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 100);
   }
 
@@ -305,5 +319,9 @@ export class FlightsComponent implements OnInit {
 
   getStars(rating: number): number[] {
     return Array(Math.floor(rating)).fill(0);
+  }
+
+  trackByFlightId(index: number, flight: Flight): string {
+    return flight.id;
   }
 }
