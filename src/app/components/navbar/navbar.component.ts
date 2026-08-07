@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService, User } from '../../services/auth.service';
+import { CurrencyService, Currency } from '../../services/currency.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,24 +18,53 @@ export class NavbarComponent implements OnInit, OnDestroy {
   bookingsCount = 0;
   currentUser: User | null = null;
   showUserMenu = false;
+  currencies: Currency[] = [];
+  selectedCurrencyCode: string = 'USD';
+  
   private sub!: Subscription;
+  private currencySub!: Subscription;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService, 
+    private router: Router,
+    public currencyService: CurrencyService
+  ) {}
 
   ngOnInit() {
+    this.currencies = this.currencyService.currencies;
+    this.selectedCurrencyCode = this.currencyService.getCurrentCurrency();
+    
     this.sub = this.auth.currentUser$.subscribe(user => {
       this.currentUser = user;
-      if (user) this.updateBookingsCount();
+      this.updateBookingsCount();
     });
+
+    this.currencySub = this.currencyService.currentCurrency$.subscribe(code => {
+      this.selectedCurrencyCode = code;
+    });
+
+    this.updateBookingsCount();
   }
 
-  ngOnDestroy() { this.sub?.unsubscribe(); }
+  ngOnDestroy() { 
+    this.sub?.unsubscribe(); 
+    this.currencySub?.unsubscribe();
+  }
 
   updateBookingsCount() {
     try {
-      const bookings = JSON.parse(localStorage.getItem('wonderway_bookings') || '[]');
-      this.bookingsCount = bookings.length;
-    } catch { this.bookingsCount = 0; }
+      if (typeof window !== 'undefined') {
+        const bookings = JSON.parse(localStorage.getItem('wonderway_bookings') || '[]');
+        this.bookingsCount = bookings.length;
+      }
+    } catch { 
+      this.bookingsCount = 0; 
+    }
+  }
+
+  onCurrencyChange(event: Event) {
+    const code = (event.target as HTMLSelectElement).value;
+    this.currencyService.setCurrentCurrency(code);
   }
 
   logout() {
@@ -44,7 +74,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   get userInitial(): string {
-    return this.currentUser?.name?.charAt(0).toUpperCase() || '?';
+    return this.currentUser?.name?.charAt(0).toUpperCase() || 'U';
   }
 
   toggleMenu() { this.isMenuOpen = !this.isMenuOpen; }

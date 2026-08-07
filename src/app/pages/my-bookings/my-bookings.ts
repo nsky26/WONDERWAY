@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { PdfGeneratorService } from '../../services/pdf-generator.service';
 import { AuthService } from '../../services/auth.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-my-bookings',
@@ -17,21 +18,24 @@ export class MyBookingsComponent implements OnInit {
   activeFilter = 'all';
   filters = ['all', 'flight', 'hotel', 'bus', 'car', 'package'];
 
-  constructor(public router: Router, private pdfService: PdfGeneratorService, private auth: AuthService) {}
+  constructor(
+    public router: Router, 
+    private pdfService: PdfGeneratorService, 
+    public auth: AuthService,
+    public currencyService: CurrencyService
+  ) {}
 
   ngOnInit() {
-    if (!this.auth.isLoggedIn) {
-      this.router.navigate(['/login']);
-      return;
-    }
     this.loadBookings();
   }
 
   loadBookings() {
     try {
-      this.bookings = JSON.parse(localStorage.getItem('wonderway_bookings') || '[]');
-      this.bookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      this.applyFilter(this.activeFilter);
+      if (typeof window !== 'undefined') {
+        this.bookings = JSON.parse(localStorage.getItem('wonderway_bookings') || '[]');
+        this.bookings.sort((a, b) => new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime());
+        this.applyFilter(this.activeFilter);
+      }
     } catch {
       this.bookings = [];
       this.filteredBookings = [];
@@ -46,13 +50,18 @@ export class MyBookingsComponent implements OnInit {
   }
 
   deleteBooking(id: string) {
-    this.bookings = this.bookings.filter(b => b.id !== id && b.bookingId !== id);
-    localStorage.setItem('wonderway_bookings', JSON.stringify(this.bookings));
-    this.applyFilter(this.activeFilter);
+    if (confirm('Are you sure you want to cancel and remove this booking?')) {
+      this.bookings = this.bookings.filter(b => b.id !== id && b.bookingId !== id);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('wonderway_bookings', JSON.stringify(this.bookings));
+      }
+      this.applyFilter(this.activeFilter);
+    }
   }
 
   downloadPDF(booking: any) {
-    const type = booking.bookingType?.charAt(0).toUpperCase() + booking.bookingType?.slice(1) || 'Booking';
+    const rawType = booking.bookingType || 'Booking';
+    const type = rawType.charAt(0).toUpperCase() + rawType.slice(1);
     this.pdfService.generateBookingPDF(booking, type);
   }
 
@@ -71,11 +80,20 @@ export class MyBookingsComponent implements OnInit {
   }
 
   countByType(type: string): number {
+    if (type === 'all') return this.bookings.length;
     return this.bookings.filter(b => b.bookingType === type).length;
   }
 
   formatDate(dateStr: string): string {
     if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    try {
+      return new Date(dateStr).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  }
+
+  formatPrice(price: number): string {
+    return this.currencyService.formatPrice(price);
   }
 }

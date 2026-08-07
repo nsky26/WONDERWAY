@@ -69,8 +69,23 @@
       </li>
     </ul>
 
-    <!-- Auth / User Actions -->
+    <!-- Currency & Auth Actions -->
     <div class="navbar-actions">
+      <!-- Currency Selector -->
+      <div class="currency-selector-wrap">
+        <select class="currency-select" [value]="selectedCurrencyCode" (change)="onCurrencyChange($event)" aria-label="Select Currency">
+          <option *ngFor="let c of currencies" [value]="c.code">
+            {{ c.flag }} {{ c.code }} ({{ c.symbol }})
+          </option>
+        </select>
+      </div>
+
+      <!-- My Bookings (Available to all visitors) -->
+      <a routerLink="/my-bookings" class="btn-my-bookings">
+        🎫 My Bookings
+        <span class="bookings-badge" *ngIf="bookingsCount > 0">{{ bookingsCount }}</span>
+      </a>
+
       <!-- Logged out -->
       <ng-container *ngIf="!currentUser">
         <a routerLink="/login" class="btn-login">Sign In</a>
@@ -79,10 +94,6 @@
 
       <!-- Logged in -->
       <ng-container *ngIf="currentUser">
-        <a routerLink="/my-bookings" class="btn-my-bookings">
-          🎫 My Bookings
-          <span class="bookings-badge" *ngIf="bookingsCount > 0">{{ bookingsCount }}</span>
-        </a>
         <div class="user-menu-wrap" (click)="toggleUserMenu()" (blur)="closeUserMenu()" tabindex="0">
           <div class="user-avatar">{{ userInitial }}</div>
           <div class="user-dropdown" *ngIf="showUserMenu">
@@ -106,6 +117,16 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" [class.active]="isMenuOpen">
     <ul>
+      <!-- Mobile Currency Picker -->
+      <li class="mobile-currency-item">
+        <div class="mobile-currency-label">🌐 Currency:</div>
+        <select class="currency-select mobile-select" [value]="selectedCurrencyCode" (change)="onCurrencyChange($event)" aria-label="Select Currency">
+          <option *ngFor="let c of currencies" [value]="c.code">
+            {{ c.flag }} {{ c.name }} ({{ c.symbol }})
+          </option>
+        </select>
+      </li>
+      
       <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
       <li><a routerLink="/destinations" (click)="closeMenu()">Destinations</a></li>
       
@@ -144,8 +165,13 @@
       
       <li><a routerLink="/about" (click)="closeMenu()">About</a></li>
       <li><a routerLink="/contact" (click)="closeMenu()">Contact</a></li>
+      <li>
+        <a routerLink="/my-bookings" (click)="closeMenu()">
+          🎫 My Bookings
+          <span class="bookings-badge" style="margin-left:6px;" *ngIf="bookingsCount > 0">{{ bookingsCount }}</span>
+        </a>
+      </li>
       <ng-container *ngIf="currentUser">
-        <li><a routerLink="/my-bookings" (click)="closeMenu()">🎫 My Bookings</a></li>
         <li><a (click)="logout(); closeMenu()" style="cursor:pointer; color:#ff6b6b">🚪 Sign Out</a></li>
       </ng-container>
       <ng-container *ngIf="!currentUser">
