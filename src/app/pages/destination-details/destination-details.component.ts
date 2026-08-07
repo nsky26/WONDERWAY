@@ -1288,7 +1288,7 @@ export class DestinationDetailsComponent implements OnInit, OnDestroy {
 
   getMapUrl(name: string, country: string): SafeResourceUrl {
     const query = encodeURIComponent(`${name}, ${country}`);
-    const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0QbZZZGyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${query}`;
+    const url = `https://maps.google.com/maps?q=${query}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
