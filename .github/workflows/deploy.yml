@@ -24,17 +24,19 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build Application to docs folder
+      - name: Build Application
         run: |
           npx ng build --configuration production --base-href /WONDERWAY/
           cp ./docs/index.csr.html ./docs/index.html || true
           cp ./docs/index.csr.html ./docs/404.html || true
+          cp ./docs/index.csr.html ./index.html || true
+          cp ./docs/index.csr.html ./404.html || true
           if [ -d "./docs/browser" ]; then cp -r ./docs/browser/* ./docs/ || true; fi
 
-      - name: Commit and Push Built Docs to Main
+      - name: Commit and Push Built Site to Main
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add docs/
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-build docs for GitHub Pages [skip ci]"
+          git add docs/ index.html 404.html
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update root & docs static build for GitHub Pages [skip ci]"
           git push origin main || true
