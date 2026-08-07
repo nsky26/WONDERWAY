@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:gh-pages": "ng build --configuration production --base-href /WONDERWAY/",
-    "deploy": "npm run build:gh-pages && gh-pages -d dist/my-frst-app/browser",
+    "deploy": "git push origin main",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:my-frst-app": "node dist/my-frst-app/server/server.mjs"
