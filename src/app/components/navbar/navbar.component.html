@@ -69,8 +69,17 @@
       </li>
     </ul>
 
-    <!-- Currency & Auth Actions -->
+    <!-- Currency & Language & Auth Actions -->
     <div class="navbar-actions">
+      <!-- Language Selector -->
+      <div class="currency-selector-wrap">
+        <select class="currency-select" [value]="selectedLanguageCode" (change)="onLanguageChange($event)" aria-label="Select Language">
+          <option *ngFor="let l of languages" [value]="l.code">
+            {{ l.flag }} {{ l.code.toUpperCase() }}
+          </option>
+        </select>
+      </div>
+
       <!-- Currency Selector -->
       <div class="currency-selector-wrap">
         <select class="currency-select" [value]="selectedCurrencyCode" (change)="onCurrencyChange($event)" aria-label="Select Currency">
@@ -117,6 +126,16 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" [class.active]="isMenuOpen">
     <ul>
+      <!-- Mobile Language Picker -->
+      <li class="mobile-currency-item">
+        <div class="mobile-currency-label">🗣️ Language:</div>
+        <select class="currency-select mobile-select" [value]="selectedLanguageCode" (change)="onLanguageChange($event)" aria-label="Select Language">
+          <option *ngFor="let l of languages" [value]="l.code">
+            {{ l.flag }} {{ l.name }}
+          </option>
+        </select>
+      </li>
+
       <!-- Mobile Currency Picker -->
       <li class="mobile-currency-item">
         <div class="mobile-currency-label">🌐 Currency:</div>

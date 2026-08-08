@@ -8,6 +8,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { Destination } from '../../models/destination.model';
 import { DestinationsService } from '../../services/destinations.service';
+import { CurrencyService } from '../../services/currency.service';
 import * as DestinationsActions from '../../store/destinations/destinations.actions';
 import { selectSelectedDestination } from '../../store/destinations/destinations.selectors';
 
@@ -1172,9 +1173,14 @@ export class DestinationDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private destinationsService: DestinationsService
+    private destinationsService: DestinationsService,
+    public currencyService: CurrencyService
   ) {
     this.destination$ = this.store.select(selectSelectedDestination);
+  }
+
+  formatPrice(price: number): string {
+    return this.currencyService.formatPrice(price);
   }
 
   ngOnInit() {

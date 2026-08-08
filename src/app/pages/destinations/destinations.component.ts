@@ -11,6 +11,7 @@ import { PageHeaderComponent } from '../../components/page-header/page-header.co
 
 import { Destination } from '../../models/destination.model';
 import { DestinationsService } from '../../services/destinations.service';
+import { CurrencyService } from '../../services/currency.service';
 import * as DestinationsActions from '../../store/destinations/destinations.actions';
 
 @Component({
@@ -93,7 +94,8 @@ export class DestinationsComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store,
     private router: Router,
-    private destinationsService: DestinationsService
+    private destinationsService: DestinationsService,
+    public currencyService: CurrencyService
   ) {}
 
   @HostListener('window:scroll')
@@ -506,6 +508,10 @@ export class DestinationsComponent implements OnInit, OnDestroy {
         price: destination.price
       }
     });
+  }
+
+  formatPrice(price: number): string {
+    return this.currencyService.formatPrice(price);
   }
 
   getStars(rating: number): number[] {

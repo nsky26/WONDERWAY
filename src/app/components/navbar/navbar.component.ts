@@ -4,6 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService, User } from '../../services/auth.service';
 import { CurrencyService, Currency } from '../../services/currency.service';
+import { LanguageService, Language } from '../../services/language.service';
 
 @Component({
   selector: 'app-navbar',
@@ -19,20 +20,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   showUserMenu = false;
   currencies: Currency[] = [];
+  languages: Language[] = [];
   selectedCurrencyCode: string = 'USD';
+  selectedLanguageCode: string = 'en';
   
   private sub!: Subscription;
   private currencySub!: Subscription;
+  private langSub!: Subscription;
 
   constructor(
     private auth: AuthService, 
     private router: Router,
-    public currencyService: CurrencyService
+    public currencyService: CurrencyService,
+    public languageService: LanguageService
   ) {}
 
   ngOnInit() {
     this.currencies = this.currencyService.currencies;
     this.selectedCurrencyCode = this.currencyService.getCurrentCurrency();
+
+    this.languages = this.languageService.languages;
+    this.selectedLanguageCode = this.languageService.getCurrentLanguage();
     
     this.sub = this.auth.currentUser$.subscribe(user => {
       this.currentUser = user;
@@ -43,12 +51,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.selectedCurrencyCode = code;
     });
 
+    this.langSub = this.languageService.currentLanguage$.subscribe(code => {
+      this.selectedLanguageCode = code;
+    });
+
     this.updateBookingsCount();
   }
 
   ngOnDestroy() { 
     this.sub?.unsubscribe(); 
     this.currencySub?.unsubscribe();
+    this.langSub?.unsubscribe();
   }
 
   updateBookingsCount() {
@@ -65,6 +78,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   onCurrencyChange(event: Event) {
     const code = (event.target as HTMLSelectElement).value;
     this.currencyService.setCurrentCurrency(code);
+  }
+
+  onLanguageChange(event: Event) {
+    const code = (event.target as HTMLSelectElement).value;
+    this.languageService.setLanguage(code);
   }
 
   logout() {

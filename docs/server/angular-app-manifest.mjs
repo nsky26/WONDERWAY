@@ -24,7 +24,7 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-GQSCD2J2.js",
+      "chunk-TFP3M6WA.js",
       "chunk-AUTGUEE3.js"
     ],
     "route": "/WONDERWAY/destinations"
@@ -32,7 +32,7 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-HLXW7UUI.js"
+      "chunk-74J7AZAO.js"
     ],
     "route": "/WONDERWAY/destinations/*"
   },
@@ -106,7 +106,7 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-5FYMXWNC.js",
+      "chunk-ZUYAFG3I.js",
       "chunk-PW6IALES.js",
       "chunk-FK6H3RFT.js"
     ],
@@ -153,8 +153,8 @@ export default {
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 2196, hash: 'cd27875422781af867bd9c1e5f6b19ddf0f25fbed6c12da499620a2967af9bed', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1940, hash: '76ac950e1d7535690b37605c8c2fc79eb2871def2b25558898acaa6171ad82c5', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 2196, hash: '843a87b8bd060b4cee75350069aba9a80ce015e47b6427611a801197f3c93397', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1940, hash: '68de728f8cf48f8860a2d998858fd0e05940c2e79fdabf21807eb1d935d71f34', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'styles-O4WK4OUO.css': {size: 2797, hash: 'QXZvOT55oao', text: () => import('./assets-chunks/styles-O4WK4OUO_css.mjs').then(m => m.default)}
   },
 };
