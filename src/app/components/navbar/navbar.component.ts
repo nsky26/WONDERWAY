@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { AuthService, User } from '../../services/auth.service';
 import { CurrencyService, Currency } from '../../services/currency.service';
 import { LanguageService, Language } from '../../services/language.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-navbar',
@@ -32,7 +33,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private auth: AuthService, 
     private router: Router,
     public currencyService: CurrencyService,
-    public languageService: LanguageService
+    public languageService: LanguageService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -77,12 +79,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   onCurrencyChange(event: Event) {
     const code = (event.target as HTMLSelectElement).value;
+    const curr = this.currencies.find(c => c.code === code);
     this.currencyService.setCurrentCurrency(code);
+    this.toastService.info(`Currency updated to ${code} (${curr?.symbol || '$'})`, curr?.flag || '💰');
   }
 
   onLanguageChange(event: Event) {
     const code = (event.target as HTMLSelectElement).value;
+    const lang = this.languages.find(l => l.code === code);
     this.languageService.setLanguage(code);
+    this.toastService.info(`Language updated to ${lang?.name || code}`, lang?.flag || '🌐');
   }
 
   t(key: string): string {

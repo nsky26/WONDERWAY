@@ -8,45 +8,45 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-DYN6LD4U.js",
-      "chunk-AUTGUEE3.js"
+      "chunk-QS77NWNY.js",
+      "chunk-ZEEZMETG.js"
     ],
     "route": "/WONDERWAY"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-DYN6LD4U.js",
-      "chunk-AUTGUEE3.js"
+      "chunk-QS77NWNY.js",
+      "chunk-ZEEZMETG.js"
     ],
     "route": "/WONDERWAY/home"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-TFP3M6WA.js",
-      "chunk-AUTGUEE3.js"
+      "chunk-A575FHJM.js",
+      "chunk-ZEEZMETG.js"
     ],
     "route": "/WONDERWAY/destinations"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-H5OSIPFU.js"
+      "chunk-4GOZ6IRP.js"
     ],
     "route": "/WONDERWAY/destinations/*"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-MNGBSHG6.js",
-      "chunk-ZPTHX7BJ.js",
-      "chunk-7B44O3WN.js",
-      "chunk-D2IDKKYR.js",
-      "chunk-KTZENVUF.js",
-      "chunk-HVHSU7I6.js",
-      "chunk-PW6IALES.js",
-      "chunk-AUTGUEE3.js",
+      "chunk-NNZM4PIN.js",
+      "chunk-A3ZRAD6Q.js",
+      "chunk-2CKCRMY4.js",
+      "chunk-PNF45WFN.js",
+      "chunk-IGTE7NUH.js",
+      "chunk-S5HFLVVU.js",
+      "chunk-2MIYCHAC.js",
+      "chunk-ZEEZMETG.js",
       "chunk-FK6H3RFT.js"
     ],
     "route": "/WONDERWAY/booking"
@@ -54,12 +54,12 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-2USBO3CT.js",
-      "chunk-46JTSNG5.js",
-      "chunk-ZPTHX7BJ.js",
-      "chunk-HVHSU7I6.js",
-      "chunk-PW6IALES.js",
-      "chunk-AUTGUEE3.js",
+      "chunk-TD5Y23WO.js",
+      "chunk-CDF66QWO.js",
+      "chunk-A3ZRAD6Q.js",
+      "chunk-S5HFLVVU.js",
+      "chunk-2MIYCHAC.js",
+      "chunk-ZEEZMETG.js",
       "chunk-FK6H3RFT.js"
     ],
     "route": "/WONDERWAY/flights"
@@ -67,12 +67,12 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-GW2G3XMS.js",
-      "chunk-46JTSNG5.js",
-      "chunk-7B44O3WN.js",
-      "chunk-HVHSU7I6.js",
-      "chunk-PW6IALES.js",
-      "chunk-AUTGUEE3.js",
+      "chunk-BP2A5H5H.js",
+      "chunk-CDF66QWO.js",
+      "chunk-2CKCRMY4.js",
+      "chunk-S5HFLVVU.js",
+      "chunk-2MIYCHAC.js",
+      "chunk-ZEEZMETG.js",
       "chunk-FK6H3RFT.js"
     ],
     "route": "/WONDERWAY/hotels"
@@ -80,12 +80,12 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-G5NARQYF.js",
-      "chunk-46JTSNG5.js",
-      "chunk-D2IDKKYR.js",
-      "chunk-HVHSU7I6.js",
-      "chunk-PW6IALES.js",
-      "chunk-AUTGUEE3.js",
+      "chunk-WA7UJPXP.js",
+      "chunk-CDF66QWO.js",
+      "chunk-PNF45WFN.js",
+      "chunk-S5HFLVVU.js",
+      "chunk-2MIYCHAC.js",
+      "chunk-ZEEZMETG.js",
       "chunk-FK6H3RFT.js"
     ],
     "route": "/WONDERWAY/buses"
@@ -93,12 +93,12 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-KXBT5WRT.js",
-      "chunk-46JTSNG5.js",
-      "chunk-KTZENVUF.js",
-      "chunk-HVHSU7I6.js",
-      "chunk-PW6IALES.js",
-      "chunk-AUTGUEE3.js",
+      "chunk-MGPHEBCO.js",
+      "chunk-CDF66QWO.js",
+      "chunk-IGTE7NUH.js",
+      "chunk-S5HFLVVU.js",
+      "chunk-2MIYCHAC.js",
+      "chunk-ZEEZMETG.js",
       "chunk-FK6H3RFT.js"
     ],
     "route": "/WONDERWAY/cars"
@@ -106,8 +106,8 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-ZUYAFG3I.js",
-      "chunk-PW6IALES.js",
+      "chunk-S72WBZRV.js",
+      "chunk-2MIYCHAC.js",
       "chunk-FK6H3RFT.js"
     ],
     "route": "/WONDERWAY/my-bookings"
@@ -115,33 +115,33 @@ export default {
   {
     "renderMode": 0,
     "preload": [
-      "chunk-MRTV25Z7.js",
-      "chunk-AUTGUEE3.js"
+      "chunk-HHP5LVIA.js",
+      "chunk-ZEEZMETG.js"
     ],
     "route": "/WONDERWAY/login"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-DU3LUOWR.js",
-      "chunk-AUTGUEE3.js"
+      "chunk-HRKENUSQ.js",
+      "chunk-ZEEZMETG.js"
     ],
     "route": "/WONDERWAY/signup"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-V5DOBB2H.js",
-      "chunk-46JTSNG5.js"
+      "chunk-SZZSTSE3.js",
+      "chunk-CDF66QWO.js"
     ],
     "route": "/WONDERWAY/about"
   },
   {
     "renderMode": 0,
     "preload": [
-      "chunk-4UWZX43U.js",
-      "chunk-46JTSNG5.js",
-      "chunk-AUTGUEE3.js"
+      "chunk-AN66XNIU.js",
+      "chunk-CDF66QWO.js",
+      "chunk-ZEEZMETG.js"
     ],
     "route": "/WONDERWAY/contact"
   },
@@ -153,8 +153,8 @@ export default {
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 2196, hash: 'debfa32eed75186a20e2a3bdb1135d4c6dfc0bf781f6d0fec4561216ebfffe00', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1940, hash: '25d08957f678d80d00e2291f228152e23fe335a929829b9a28afcad0232dacbc', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 2196, hash: '10181a4fac5e6d17c3f8b2c09cac4954dcd2412dab8be006679ecc2f1643d978', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1940, hash: 'ba1c2eace94810cdbe46284c53c77a382f0ea6ec196bff7c3da6ea6dbcf06818', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'styles-O4WK4OUO.css': {size: 2797, hash: 'QXZvOT55oao', text: () => import('./assets-chunks/styles-O4WK4OUO_css.mjs').then(m => m.default)}
   },
 };

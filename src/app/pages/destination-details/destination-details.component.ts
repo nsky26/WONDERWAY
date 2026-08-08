@@ -9,6 +9,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Destination } from '../../models/destination.model';
 import { DestinationsService } from '../../services/destinations.service';
 import { CurrencyService } from '../../services/currency.service';
+import { InteractiveMapComponent } from '../../components/interactive-map/interactive-map.component';
 import * as DestinationsActions from '../../store/destinations/destinations.actions';
 import { selectSelectedDestination } from '../../store/destinations/destinations.selectors';
 
@@ -17,7 +18,8 @@ import { selectSelectedDestination } from '../../store/destinations/destinations
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    InteractiveMapComponent
   ],
   templateUrl: './destination-details.component.html',
   styleUrls: ['./destination-details.component.css']

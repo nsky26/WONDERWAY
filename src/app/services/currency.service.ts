@@ -1,5 +1,5 @@
 // AI-Powered Multi-currency support service with real-time rates
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -28,6 +28,10 @@ export interface CountryInfo {
   providedIn: 'root'
 })
 export class CurrencyService {
+  // Angular 19/21 Signals modernization
+  public activeCurrencySignal = signal<string>('USD');
+  public activeSymbolSignal = computed(() => this.getCurrencySymbol(this.activeCurrencySignal()));
+
   private currentCurrencySubject = new BehaviorSubject<string>('USD');
   public currentCurrency$ = this.currentCurrencySubject.asObservable();
 
@@ -283,8 +287,11 @@ export class CurrencyService {
   }
 
   setCurrentCurrency(currencyCode: string): void {
+    this.activeCurrencySignal.set(currencyCode);
     this.currentCurrencySubject.next(currencyCode);
-    localStorage.setItem('selectedCurrency', currencyCode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('selectedCurrency', currencyCode);
+    }
   }
 
   getCurrencySymbol(code?: string): string {
