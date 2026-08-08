@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FlightsComponent } from './flights';
+import { provideRouter } from '@angular/router';
 
-import { Flights } from './flights';
-
-describe('Flights', () => {
-  let component: Flights;
-  let fixture: ComponentFixture<Flights>;
+describe('FlightsComponent', () => {
+  let component: FlightsComponent;
+  let fixture: ComponentFixture<FlightsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Flights]
-    })
-    .compileComponents();
+      imports: [FlightsComponent],
+      providers: [provideRouter([])]
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(Flights);
+    fixture = TestBed.createComponent(FlightsComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
