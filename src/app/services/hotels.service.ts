@@ -97,6 +97,6 @@ export class HotelsService {
       ];
     }
     
-    return of(hotels).pipe(delay(800));
+    return of(hotels).pipe(delay(150));
   }
 }

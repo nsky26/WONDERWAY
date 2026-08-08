@@ -75,6 +75,6 @@ export class BusesService {
       ];
     }
     
-    return of(buses).pipe(delay(800));
+    return of(buses).pipe(delay(150));
   }
 }

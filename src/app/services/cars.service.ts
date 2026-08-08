@@ -195,6 +195,6 @@ export class CarsService {
       }
     ];
 
-    return of(mockCars).pipe(delay(800));
+    return of(mockCars).pipe(delay(150));
   }
 }

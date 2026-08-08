@@ -39,8 +39,15 @@ export class LanguageService {
     'nav.home': { en: 'Home', es: 'Inicio', fr: 'Accueil', de: 'Startseite', hi: 'होम', zh: '首页', ja: 'ホーム', ar: 'الرئيسية' },
     'nav.destinations': { en: 'Destinations', es: 'Destinos', fr: 'Destinations', de: 'Reiseziele', hi: 'गंतव्य', zh: '目的地', ja: '目的地', ar: 'الوجهات' },
     'nav.booking': { en: 'Booking', es: 'Reserva', fr: 'Réservation', de: 'Buchung', hi: 'बुकिंग', zh: '预订', ja: '予約', ar: 'الحجز' },
+    'nav.flights': { en: 'Flights', es: 'Vuelos', fr: 'Vols', de: 'Flüge', hi: 'उड़ानें', zh: '航班', ja: 'フライト', ar: 'رحلات جوية' },
+    'nav.hotels': { en: 'Hotels', es: 'Hoteles', fr: 'Hôtels', de: 'Hotels', hi: 'होटल', zh: '酒店', ja: 'ホテル', ar: 'فنادق' },
+    'nav.buses': { en: 'Buses', es: 'Autobuses', fr: 'Bus', de: 'Busse', hi: 'बसें', zh: '巴士', ja: 'バス', ar: 'حافلات' },
+    'nav.cars': { en: 'Cars', es: 'Coches', fr: 'Voitures', de: 'Mietwagen', hi: 'कारें', zh: '租车', ja: 'レンタカー', ar: 'سيارات' },
     'nav.about': { en: 'About', es: 'Acerca de', fr: 'À propos', de: 'Über uns', hi: 'हमारे बारे में', zh: '关于', ja: '概要', ar: 'حول' },
     'nav.contact': { en: 'Contact', es: 'Contacto', fr: 'Contact', de: 'Kontakt', hi: 'संपर्क', zh: '联系', ja: '連絡先', ar: 'اتصل' },
+    'nav.my_bookings': { en: 'My Bookings', es: 'Mis Reservas', fr: 'Mes Réservations', de: 'Meine Buchungen', hi: 'मेरी बुकिंग', zh: '我的预订', ja: '私の予約', ar: 'حجوزاتي' },
+    'nav.signin': { en: 'Sign In', es: 'Iniciar Sesión', fr: 'Se Connecter', de: 'Anmelden', hi: 'साइन इन', zh: '登录', ja: 'サインイン', ar: 'تسجيل الدخول' },
+    'nav.signup': { en: 'Get Started', es: 'Empezar', fr: 'S\'inscrire', de: 'Registrieren', hi: 'शुरू करें', zh: '开始', ja: 'はじめる', ar: 'ابدأ الآن' },
     
     // Common
     'common.search': { en: 'Search', es: 'Buscar', fr: 'Rechercher', de: 'Suchen', hi: 'खोजें', zh: '搜索', ja: '検索', ar: 'بحث' },
@@ -60,15 +67,17 @@ export class LanguageService {
     // Filters
     'filter.sort_by': { en: 'Sort By', es: 'Ordenar por', fr: 'Trier par', de: 'Sortieren nach', hi: 'इसके अनुसार क्रमबद्ध करें', zh: '排序方式', ja: '並べ替え', ar: 'ترتيب حسب' },
     'filter.price_low_high': { en: 'Price: Low to High', es: 'Precio: Bajo a Alto', fr: 'Prix: Bas à Élevé', de: 'Preis: Niedrig bis Hoch', hi: 'मूल्य: कम से अधिक', zh: '价格：从低到高', ja: '価格：安い順', ar: 'السعر: من الأقل إلى الأعلى' },
-    'filter.price_high_low': { en: 'Price: High to Low', es: 'Precio: Alto a Bajo', fr: 'Prix: Élevé à Bas', de: 'Preis: Hoch bis Niedrig', hi: 'मूल्य: अधिक से कम', zh: '价格：从高到低', ja: '価格：高い順', ar: 'السعر: من الأعلى إلى الأقل' },
+    'filter.price_high_low': { en: 'Price: High to Low', es: 'Precio: Alto a Bajo', fr: 'Prix: Élevé à Bas', de: 'Precio: Hoch bis Niedrig', hi: 'मूल्य: अधिक से कम', zh: '价格：从高到低', ja: '価格：高い順', ar: 'السعر: من الأعلى إلى الأقل' },
     'filter.highest_rated': { en: 'Highest Rated', es: 'Mejor calificado', fr: 'Mieux noté', de: 'Am besten bewertet', hi: 'सर्वोच्च रेटेड', zh: '评分最高', ja: '評価が高い順', ar: 'الأعلى تقييماً' },
   };
 
   constructor() {
     // Load saved language from localStorage
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang) {
-      this.currentLanguageSubject.next(savedLang);
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('selectedLanguage');
+      if (savedLang) {
+        this.currentLanguageSubject.next(savedLang);
+      }
     }
   }
 
@@ -78,22 +87,20 @@ export class LanguageService {
 
   setLanguage(langCode: string): void {
     this.currentLanguageSubject.next(langCode);
-    localStorage.setItem('selectedLanguage', langCode);
-    
-    // Update HTML lang attribute
-    document.documentElement.lang = langCode;
-    
-    // Update direction for RTL languages
-    if (langCode === 'ar') {
-      document.documentElement.dir = 'rtl';
-    } else {
-      document.documentElement.dir = 'ltr';
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('selectedLanguage', langCode);
+      document.documentElement.lang = langCode;
+      if (langCode === 'ar') {
+        document.documentElement.dir = 'rtl';
+      } else {
+        document.documentElement.dir = 'ltr';
+      }
     }
   }
 
   translate(key: string): string {
     const currentLang = this.getCurrentLanguage();
-    return this.translations[key]?.[currentLang] || key;
+    return this.translations[key]?.[currentLang] || this.translations[key]?.['en'] || key;
   }
 
   getLanguageName(code: string): string {

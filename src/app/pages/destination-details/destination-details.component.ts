@@ -1184,6 +1184,11 @@ export class DestinationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Subscribe to currency changes to refresh price calculations
+    this.currencyService.currentCurrency$.subscribe(() => {
+      // Re-trigger view rendering
+    });
+
     // Get destination ID from route params
     this.route.params.subscribe(params => {
       const destinationId = params['id'];

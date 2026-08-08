@@ -90,6 +90,6 @@ export class FlightsService {
       ];
     }
     
-    return of(flights).pipe(delay(800));
+    return of(flights).pipe(delay(150));
   }
 }

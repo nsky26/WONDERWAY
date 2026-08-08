@@ -72,7 +72,7 @@
               <span class="info-card-icon">💰</span>
               <div class="info-card-content">
                 <span class="info-card-label">Starting From</span>
-                <span class="info-card-value">${{destination.price}}</span>
+                <span class="info-card-value">{{formatPrice(destination.price)}}</span>
               </div>
             </div>
             <div class="info-card-modern">
@@ -262,7 +262,7 @@
                     <h4 class="hotel-name">{{hotel.name}}</h4>
                     <div class="hotel-price">
                       <span class="price-label">From</span>
-                      <span class="price-value">₹{{hotel.pricePerNight}}</span>
+                      <span class="price-value">{{formatPrice(hotel.pricePerNight)}}</span>
                       <span class="price-unit">/night</span>
                     </div>
                     <div class="hotel-click-hint">Click for details & booking</div>
@@ -328,11 +328,11 @@
                     <div class="photographer-pricing">
                       <div class="pricing-option">
                         <span class="pricing-label">Hourly:</span>
-                        <span class="pricing-value">₹{{photographer.pricePerHour}}</span>
+                        <span class="pricing-value">{{formatPrice(photographer.pricePerHour)}}</span>
                       </div>
                       <div class="pricing-option">
                         <span class="pricing-label">Full Day:</span>
-                        <span class="pricing-value">₹{{photographer.pricePerDay}}</span>
+                        <span class="pricing-value">{{formatPrice(photographer.pricePerDay)}}</span>
                       </div>
                     </div>
                     <div class="photographer-click-hint">Click for details & contact</div>
@@ -350,11 +350,11 @@
             <div class="booking-price-section">
               <span class="price-label-modern">From</span>
               <div class="price-display-modern">
-                <span class="price-amount-modern">${{destination.price}}</span>
+                <span class="price-amount-modern">{{formatPrice(destination.price)}}</span>
                 <span class="price-per-modern">per person</span>
               </div>
               <div class="discount-info-modern" *ngIf="destination.discount">
-                <span class="original-price-modern">${{ (destination.price / (1 - destination.discount / 100)).toFixed(0) }}</span>
+                <span class="original-price-modern">{{ formatPrice(destination.price / (1 - destination.discount / 100)) }}</span>
                 <span class="save-amount-modern">Save {{destination.discount}}%</span>
               </div>
             </div>
@@ -711,7 +711,7 @@
             <p class="similar-dest-description">{{similar.shortDescription}}</p>
             <div class="similar-dest-meta">
               <span>⭐ {{similar.rating.toFixed(1)}}</span>
-              <span>From ${{similar.price}}</span>
+              <span>From {{formatPrice(similar.price)}}</span>
             </div>
             <button class="btn-similar-dest" (click)="viewDestination(similar); $event.stopPropagation()">
               View Details →
@@ -729,7 +729,7 @@
             <p>Discover hundreds of amazing places</p>
             <div class="similar-dest-meta">
               <span>⭐ 4.8</span>
-              <span>From $299</span>
+              <span>From {{formatPrice(299)}}</span>
             </div>
             <a routerLink="/destinations" class="btn-similar-dest">View All Destinations →</a>
           </div>
@@ -796,7 +796,7 @@
             
             <div class="guide-pricing-actions">
               <div class="guide-price-small">
-                <span class="price-value-small">₹{{guide.pricePerDay}}</span>
+                <span class="price-value-small">{{formatPrice(guide.pricePerDay)}}</span>
                 <span class="price-unit-small">/day</span>
               </div>
               <div class="guide-contact-buttons-small">
@@ -872,11 +872,11 @@
               <div class="vehicle-pricing-modal">
                 <div class="pricing-item">
                   <span class="pricing-label">Per Day:</span>
-                  <span class="pricing-value">₹{{pkg.pricePerDay}}</span>
+                  <span class="pricing-value">{{formatPrice(pkg.pricePerDay)}}</span>
                 </div>
                 <div class="pricing-item" *ngIf="pkg.pricePerKm">
                   <span class="pricing-label">Per KM:</span>
-                  <span class="pricing-value">₹{{pkg.pricePerKm}}</span>
+                  <span class="pricing-value">{{formatPrice(pkg.pricePerKm)}}</span>
                 </div>
               </div>
               
@@ -927,7 +927,7 @@
       <div class="guide-detail-section">
         <h3>Pricing</h3>
         <div class="pricing-box">
-          <span class="price-large">₹{{selectedGuide.pricePerDay}}</span>
+          <span class="price-large">{{formatPrice(selectedGuide.pricePerDay)}}</span>
           <span class="price-unit-large">/day</span>
         </div>
       </div>
@@ -1094,7 +1094,7 @@
       <div class="hotel-detail-section">
         <h3>Pricing</h3>
         <div class="pricing-box-large">
-          <span class="price-large">₹{{selectedHotel.pricePerNight}}</span>
+          <span class="price-large">{{formatPrice(selectedHotel.pricePerNight)}}</span>
           <span class="price-unit-large">/night</span>
         </div>
       </div>
@@ -1196,7 +1196,7 @@
         <div class="pricing-timings-grid">
           <div class="info-box">
             <div class="info-label">Average Cost for Two</div>
-            <div class="info-value">₹{{selectedRestaurant.avgCostForTwo}}</div>
+            <div class="info-value">{{formatPrice(selectedRestaurant.avgCostForTwo)}}</div>
           </div>
           <div class="info-box">
             <div class="info-label">Opening Hours</div>
@@ -1300,10 +1300,10 @@
         <div class="pricing-options-grid">
           <div class="pricing-option-card">
             <div class="pricing-label-large">Hourly Rate</div>
-            <div class="pricing-value-large">₹{{selectedPhotographer.pricePerHour}}</div>
+            <div class="pricing-value-large">{{formatPrice(selectedPhotographer.pricePerHour)}}</div>
             <div class="pricing-note">Perfect for short sessions</div>
           </div>
-          <div class="pricing-option-card">
+          <div class="pricing-option-card" *ngIf="selectedPhotographer.pricePerDay">
             <div class="pricing-label-large">Full Day</div>
             <div class="pricing-value-large">₹{{selectedPhotographer.pricePerDay}}</div>
             <div class="pricing-note">Best value for full coverage</div>
