@@ -10,14 +10,14 @@
     <!-- Desktop Navigation -->
     <ul class="navbar-menu">
       <li>
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ t('nav.home') }}</a>
       </li>
       <li>
-        <a routerLink="/destinations" routerLinkActive="active">Destinations</a>
+        <a routerLink="/destinations" routerLinkActive="active">{{ t('nav.destinations') }}</a>
       </li>
       <li class="has-dropdown">
         <span class="nav-link dropdown-trigger">
-          Book
+          {{ t('nav.booking') }}
           <svg class="chevron" viewBox="0 0 10 6" fill="none">
             <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
@@ -26,7 +26,7 @@
           <a routerLink="/booking" class="dropdown-item highlight-item">
             <span class="di-icon">🎫</span>
             <span class="di-text">
-              <strong>Book Now</strong>
+              <strong>{{ t('common.book_now') }}</strong>
               <small>Quick booking - select your destination</small>
             </span>
           </a>
@@ -34,38 +34,38 @@
           <a routerLink="/flights" class="dropdown-item">
             <span class="di-icon">✈️</span>
             <span class="di-text">
-              <strong>Flights</strong>
+              <strong>{{ t('nav.flights') }}</strong>
               <small>Domestic & International</small>
             </span>
           </a>
           <a routerLink="/hotels" class="dropdown-item">
             <span class="di-icon">🏨</span>
             <span class="di-text">
-              <strong>Hotels</strong>
+              <strong>{{ t('nav.hotels') }}</strong>
               <small>Best stays, best prices</small>
             </span>
           </a>
           <a routerLink="/buses" class="dropdown-item">
             <span class="di-icon">🚌</span>
             <span class="di-text">
-              <strong>Buses</strong>
+              <strong>{{ t('nav.buses') }}</strong>
               <small>Comfortable intercity travel</small>
             </span>
           </a>
           <a routerLink="/cars" class="dropdown-item">
             <span class="di-icon">🚗</span>
             <span class="di-text">
-              <strong>Cars</strong>
+              <strong>{{ t('nav.cars') }}</strong>
               <small>Self-drive & chauffeur</small>
             </span>
           </a>
         </div>
       </li>
       <li>
-        <a routerLink="/about" routerLinkActive="active">About</a>
+        <a routerLink="/about" routerLinkActive="active">{{ t('nav.about') }}</a>
       </li>
       <li>
-        <a routerLink="/contact" routerLinkActive="active">Contact</a>
+        <a routerLink="/contact" routerLinkActive="active">{{ t('nav.contact') }}</a>
       </li>
     </ul>
 
@@ -91,14 +91,14 @@
 
       <!-- My Bookings (Available to all visitors) -->
       <a routerLink="/my-bookings" class="btn-my-bookings">
-        🎫 My Bookings
+        🎫 {{ t('nav.my_bookings') }}
         <span class="bookings-badge" *ngIf="bookingsCount > 0">{{ bookingsCount }}</span>
       </a>
 
       <!-- Logged out -->
       <ng-container *ngIf="!currentUser">
-        <a routerLink="/login" class="btn-login">Sign In</a>
-        <a routerLink="/signup" class="btn-signup">Get Started</a>
+        <a routerLink="/login" class="btn-login">{{ t('nav.signin') }}</a>
+        <a routerLink="/signup" class="btn-signup">{{ t('nav.signup') }}</a>
       </ng-container>
 
       <!-- Logged in -->
@@ -146,13 +146,13 @@
         </select>
       </li>
       
-      <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
-      <li><a routerLink="/destinations" (click)="closeMenu()">Destinations</a></li>
+      <li><a routerLink="/" (click)="closeMenu()">{{ t('nav.home') }}</a></li>
+      <li><a routerLink="/destinations" (click)="closeMenu()">{{ t('nav.destinations') }}</a></li>
       
       <!-- Book Dropdown in Mobile -->
       <li class="mobile-dropdown">
         <div class="mobile-dropdown-trigger" (click)="toggleMobileBookDropdown()">
-          <span>🎫 Book</span>
+          <span>🎫 {{ t('nav.booking') }}</span>
           <svg class="mobile-chevron" [class.rotated]="isMobileBookOpen" viewBox="0 0 10 6" fill="none">
             <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
@@ -160,33 +160,33 @@
         <ul class="mobile-dropdown-menu" [class.open]="isMobileBookOpen">
           <li><a routerLink="/booking" (click)="closeMenu()" class="mobile-highlight">
             <span class="mobile-menu-icon">🎫</span>
-            <span>Book Now</span>
+            <span>{{ t('common.book_now') }}</span>
             <span class="mobile-menu-badge">Quick</span>
           </a></li>
           <li><a routerLink="/flights" (click)="closeMenu()">
             <span class="mobile-menu-icon">✈️</span>
-            <span>Flights</span>
+            <span>{{ t('nav.flights') }}</span>
           </a></li>
           <li><a routerLink="/hotels" (click)="closeMenu()">
             <span class="mobile-menu-icon">🏨</span>
-            <span>Hotels</span>
+            <span>{{ t('nav.hotels') }}</span>
           </a></li>
           <li><a routerLink="/buses" (click)="closeMenu()">
             <span class="mobile-menu-icon">🚌</span>
-            <span>Buses</span>
+            <span>{{ t('nav.buses') }}</span>
           </a></li>
           <li><a routerLink="/cars" (click)="closeMenu()">
             <span class="mobile-menu-icon">🚗</span>
-            <span>Cars</span>
+            <span>{{ t('nav.cars') }}</span>
           </a></li>
         </ul>
       </li>
       
-      <li><a routerLink="/about" (click)="closeMenu()">About</a></li>
-      <li><a routerLink="/contact" (click)="closeMenu()">Contact</a></li>
+      <li><a routerLink="/about" (click)="closeMenu()">{{ t('nav.about') }}</a></li>
+      <li><a routerLink="/contact" (click)="closeMenu()">{{ t('nav.contact') }}</a></li>
       <li>
         <a routerLink="/my-bookings" (click)="closeMenu()">
-          🎫 My Bookings
+          🎫 {{ t('nav.my_bookings') }}
           <span class="bookings-badge" style="margin-left:6px;" *ngIf="bookingsCount > 0">{{ bookingsCount }}</span>
         </a>
       </li>
@@ -194,8 +194,8 @@
         <li><a (click)="logout(); closeMenu()" style="cursor:pointer; color:#ff6b6b">🚪 Sign Out</a></li>
       </ng-container>
       <ng-container *ngIf="!currentUser">
-        <li><a routerLink="/login" (click)="closeMenu()">Sign In</a></li>
-        <li><a routerLink="/signup" (click)="closeMenu()" class="mobile-signup">Get Started</a></li>
+        <li><a routerLink="/login" (click)="closeMenu()">{{ t('nav.signin') }}</a></li>
+        <li><a routerLink="/signup" (click)="closeMenu()" class="mobile-signup">{{ t('nav.signup') }}</a></li>
       </ng-container>
     </ul>
   </div>

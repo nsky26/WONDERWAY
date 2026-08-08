@@ -85,6 +85,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.languageService.setLanguage(code);
   }
 
+  t(key: string): string {
+    return this.languageService.translate(key);
+  }
+
   logout() {
     this.auth.logout();
     this.showUserMenu = false;
