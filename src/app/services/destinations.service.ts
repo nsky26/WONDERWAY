@@ -1,6 +1,6 @@
 // Service for managing destination data
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Destination } from '../models/destination.model';
 import { indianCities, indianStates } from '../data/indian-cities';
 import { internationalDestinations } from '../data/international-cities';
@@ -9,213 +9,110 @@ import { internationalDestinations } from '../data/international-cities';
   providedIn: 'root'
 })
 export class DestinationsService {
-  
   private mockDestinations: Destination[] = [];
 
   constructor() {
     this.generateDestinations();
   }
 
+  private getRealDestinationImage(name: string, country: string, category: string): string {
+    const normName = name.toLowerCase().trim();
+
+    // Curated High-Definition Unsplash Images for Iconic Places
+    const exactImageMap: { [key: string]: string } = {
+      'paris': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80',
+      'london': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80',
+      'tokyo': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80',
+      'new york': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1200&q=80',
+      'rome': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80',
+      'agra': 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
+      'taj mahal': 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
+      'dubai': 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80',
+      'goa': 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
+      'jaipur': 'https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=80',
+      'bali': 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80',
+      'sydney': 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80',
+      'singapore': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1200&q=80',
+      'maldives': 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1200&q=80',
+      'venice': 'https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1200&q=80',
+      'barcelona': 'https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=1200&q=80',
+      'switzerland': 'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=1200&q=80',
+      'cairo': 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1200&q=80',
+      'srinagar': 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=1200&q=80',
+      'kashmir': 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=1200&q=80',
+      'kerala': 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80',
+      'ladakh': 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
+      'varanasi': 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80',
+      'udaipur': 'https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?auto=format&fit=crop&w=1200&q=80',
+      'manali': 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
+      'bangkok': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      'amsterdam': 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=1200&q=80',
+      'santorini': 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1200&q=80',
+      'rio de janeiro': 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1200&q=80',
+      'mumbai': 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80',
+      'delhi': 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1200&q=80',
+      'bangalore': 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1200&q=80',
+      'hyderabad': 'https://images.unsplash.com/photo-1605379399642-870262d3d051?auto=format&fit=crop&w=1200&q=80',
+      'chennai': 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1200&q=80',
+      'kolkata': 'https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=1200&q=80'
+    };
+
+    if (exactImageMap[normName]) return exactImageMap[normName];
+
+    // Category fallback high quality travel photos
+    const categoryImages: { [key: string]: string[] } = {
+      'Beach': [
+        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80'
+      ],
+      'Heritage': [
+        'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
+      ],
+      'Nature': [
+        'https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80'
+      ],
+      'Adventure': [
+        'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80'
+      ],
+      'Spiritual': [
+        'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80'
+      ],
+      'City': [
+        'https://images.unsplash.com/photo-1477959858617-67f30ac4ce78?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80'
+      ]
+    };
+
+    const pool = categoryImages[category] || categoryImages['City'];
+    const hash = normName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return pool[hash % pool.length];
+  }
+
   private generateDestinations(): void {
     let id = 1;
 
-    // Helper function to generate unique image ID from string
-    const getImageId = (str: string, index: number): number => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-        hash = hash & hash; // Convert to 32bit integer
-      }
-      // Ensure positive number between 1-1000
-      return Math.abs(hash % 1000) + 1 + (index * 3);
-    };
-
-    // Smart function to determine best time to visit based on location and category
     const getBestTimeToVisit = (country: string, category: string, index: number): string => {
-      // India-specific timing based on regions and categories
       if (country === 'India') {
-        // Beach destinations - avoid monsoon
-        if (category === 'Beach') {
-          const beachSeasons = [
-            'October to March',
-            'November to February',
-            'December to March',
-            'October to April'
-          ];
-          return beachSeasons[index % beachSeasons.length];
-        }
-        
-        // Hill stations and mountain destinations - summer and autumn
-        if (category === 'Nature' || category === 'Adventure') {
-          const mountainSeasons = [
-            'March to June',
-            'April to October',
-            'May to September',
-            'September to November',
-            'October to March'
-          ];
-          return mountainSeasons[index % mountainSeasons.length];
-        }
-        
-        // Heritage and spiritual - avoid extreme summer
-        if (category === 'Heritage' || category === 'Spiritual') {
-          const heritageSeasons = [
-            'October to March',
-            'November to February',
-            'September to March',
-            'October to April',
-            'Year-round'
-          ];
-          return heritageSeasons[index % heritageSeasons.length];
-        }
-        
-        // City destinations - mostly year-round with preferences
-        if (category === 'City') {
-          const citySeasons = [
-            'October to March',
-            'November to February',
-            'Year-round',
-            'September to April'
-          ];
-          return citySeasons[index % citySeasons.length];
-        }
+        if (category === 'Beach') return 'October to March';
+        if (category === 'Nature' || category === 'Adventure') return 'March to June';
+        if (category === 'Heritage' || category === 'Spiritual') return 'October to March';
+        return 'Year-round';
       }
-      
-      // International destinations - varied by region
-      // European destinations
-      if (['France', 'Germany', 'Italy', 'Spain', 'United Kingdom', 'Netherlands', 
-           'Belgium', 'Austria', 'Switzerland', 'Greece', 'Portugal', 'Ireland'].includes(country)) {
-        const europeanSeasons = [
-          'April to October',
-          'May to September',
-          'June to August',
-          'April to September',
-          'May to October',
-          'Year-round'
-        ];
-        return europeanSeasons[index % europeanSeasons.length];
-      }
-      
-      // Southeast Asian destinations
-      if (['Thailand', 'Vietnam', 'Indonesia', 'Malaysia', 'Singapore', 'Philippines',
-           'Cambodia', 'Laos', 'Myanmar'].includes(country)) {
-        const seAsiaSeasons = [
-          'November to March',
-          'December to April',
-          'November to February',
-          'October to March',
-          'Year-round'
-        ];
-        return seAsiaSeasons[index % seAsiaSeasons.length];
-      }
-      
-      // Middle Eastern destinations
-      if (['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Oman', 'Jordan', 'Egypt'].includes(country)) {
-        const middleEastSeasons = [
-          'November to March',
-          'October to April',
-          'December to February',
-          'November to April'
-        ];
-        return middleEastSeasons[index % middleEastSeasons.length];
-      }
-      
-      // East Asian destinations
-      if (['Japan', 'China', 'South Korea', 'Taiwan', 'Hong Kong'].includes(country)) {
-        const eastAsiaSeasons = [
-          'March to May',
-          'September to November',
-          'April to June',
-          'October to December',
-          'March to November'
-        ];
-        return eastAsiaSeasons[index % eastAsiaSeasons.length];
-      }
-      
-      // Australian and New Zealand
-      if (['Australia', 'New Zealand'].includes(country)) {
-        const oceaniaSeasons = [
-          'September to March',
-          'November to February',
-          'October to April',
-          'December to March',
-          'Year-round'
-        ];
-        return oceaniaSeasons[index % oceaniaSeasons.length];
-      }
-      
-      // North American destinations
-      if (['United States', 'Canada', 'Mexico'].includes(country)) {
-        const northAmericaSeasons = [
-          'April to October',
-          'May to September',
-          'June to August',
-          'March to November',
-          'Year-round'
-        ];
-        return northAmericaSeasons[index % northAmericaSeasons.length];
-      }
-      
-      // South American destinations
-      if (['Brazil', 'Argentina', 'Chile', 'Peru', 'Colombia', 'Ecuador'].includes(country)) {
-        const southAmericaSeasons = [
-          'December to March',
-          'November to April',
-          'September to March',
-          'October to April',
-          'Year-round'
-        ];
-        return southAmericaSeasons[index % southAmericaSeasons.length];
-      }
-      
-      // African destinations
-      if (['South Africa', 'Kenya', 'Tanzania', 'Morocco', 'Egypt', 'Mauritius'].includes(country)) {
-        const africaSeasons = [
-          'May to October',
-          'June to September',
-          'April to October',
-          'May to September',
-          'Year-round'
-        ];
-        return africaSeasons[index % africaSeasons.length];
-      }
-      
-      // Caribbean and tropical islands
-      if (['Maldives', 'Seychelles', 'Fiji', 'Bali'].includes(country)) {
-        const tropicalSeasons = [
-          'November to April',
-          'December to March',
-          'November to March',
-          'Year-round'
-        ];
-        return tropicalSeasons[index % tropicalSeasons.length];
-      }
-      
-      // Default for other destinations
-      const defaultSeasons = [
-        'Year-round',
-        'March to November',
-        'April to October',
-        'May to September',
-        'October to March'
-      ];
-      return defaultSeasons[index % defaultSeasons.length];
+      return 'April to October';
     };
 
     // Generate Indian destinations (250+)
     indianCities.forEach((city, index) => {
       const state = indianStates[city] || 'India';
       const categories = ['Heritage', 'Nature', 'Adventure', 'Spiritual', 'Beach', 'City'];
-      const category = categories[Math.floor(Math.random() * categories.length)];
+      const category = categories[index % categories.length];
       
-      // Use Picsum Photos - reliable and always works
-      // Generate unique seed based on city name for consistent images
-      const seed = city.toLowerCase().replace(/\s+/g, '-');
-      const imageUrl = `https://picsum.photos/seed/${seed}-${index}/800/600`;
-      
-      const overallRating = Math.round((4.3 + Math.random() * 0.6) * 10) / 10;
-      
-      // Get smart best time to visit
+      const imageUrl = this.getRealDestinationImage(city, 'India', category);
+      const overallRating = Math.round((4.3 + (index % 6) * 0.1) * 10) / 10;
       const bestTime = getBestTimeToVisit('India', category, index);
       
       this.mockDestinations.push({
@@ -226,22 +123,22 @@ export class DestinationsService {
         description: `Explore the beauty of ${city} in ${state}. Experience rich culture, heritage, and natural wonders.`,
         shortDescription: `${category} destination in ${state}`,
         imageUrl: imageUrl,
-        price: 299 + Math.floor(Math.random() * 600),
+        price: 299 + (index % 10) * 50,
         rating: overallRating,
-        reviews: Math.floor(Math.random() * 5000) + 500,
+        reviews: 800 + (index % 20) * 150,
         detailedRatings: {
           overall: overallRating,
-          hotel: Math.round((4.0 + Math.random() * 0.9) * 10) / 10,
-          place: Math.round((4.2 + Math.random() * 0.7) * 10) / 10,
-          comfort: Math.round((4.1 + Math.random() * 0.8) * 10) / 10,
-          travel: Math.round((4.0 + Math.random() * 0.9) * 10) / 10,
-          guestService: Math.round((4.3 + Math.random() * 0.6) * 10) / 10,
-          communication: Math.round((4.2 + Math.random() * 0.7) * 10) / 10
+          hotel: 4.5,
+          place: 4.6,
+          comfort: 4.4,
+          travel: 4.3,
+          guestService: 4.5,
+          communication: 4.4
         },
         isPopular: index < 20,
         isNew: index < 10,
         isTrending: index >= 10 && index < 25,
-        discount: index < 15 ? Math.floor(Math.random() * 30) + 10 : undefined,
+        discount: index < 15 ? 15 : undefined,
         highlights: ['Local culture', 'Great food', 'Beautiful scenery', 'Historical sites'],
         bestTimeToVisit: bestTime,
         duration: '3-5 days',
@@ -252,16 +149,10 @@ export class DestinationsService {
     // Generate International destinations (300+)
     internationalDestinations.forEach((dest, index) => {
       const categories = ['City & Culture', 'Beach & Luxury', 'Adventure', 'Heritage', 'Nature'];
-      const category = categories[Math.floor(Math.random() * categories.length)];
+      const category = categories[index % categories.length];
       
-      // Use Picsum Photos - reliable and always works
-      // Generate unique seed based on destination name for consistent images
-      const seed = dest.name.toLowerCase().replace(/\s+/g, '-');
-      const imageUrl = `https://picsum.photos/seed/${seed}-${dest.country}-${index}/800/600`;
-      
-      const overallRating = Math.round((4.5 + Math.random() * 0.4) * 10) / 10;
-      
-      // Get smart best time to visit based on country
+      const imageUrl = this.getRealDestinationImage(dest.name, dest.country, category);
+      const overallRating = Math.round((4.5 + (index % 5) * 0.1) * 10) / 10;
       const bestTime = getBestTimeToVisit(dest.country, category, index);
       
       this.mockDestinations.push({
@@ -274,20 +165,20 @@ export class DestinationsService {
         imageUrl: imageUrl,
         price: dest.price,
         rating: overallRating,
-        reviews: Math.floor(Math.random() * 8000) + 1000,
+        reviews: 1200 + (index % 30) * 200,
         detailedRatings: {
           overall: overallRating,
-          hotel: Math.round((4.3 + Math.random() * 0.6) * 10) / 10,
-          place: Math.round((4.4 + Math.random() * 0.5) * 10) / 10,
-          comfort: Math.round((4.3 + Math.random() * 0.6) * 10) / 10,
-          travel: Math.round((4.2 + Math.random() * 0.7) * 10) / 10,
-          guestService: Math.round((4.4 + Math.random() * 0.5) * 10) / 10,
-          communication: Math.round((4.3 + Math.random() * 0.6) * 10) / 10
+          hotel: 4.7,
+          place: 4.8,
+          comfort: 4.6,
+          travel: 4.5,
+          guestService: 4.7,
+          communication: 4.6
         },
         isPopular: index < 30,
         isNew: index < 15,
         isTrending: index >= 15 && index < 40,
-        discount: index < 20 ? Math.floor(Math.random() * 35) + 15 : undefined,
+        discount: index < 20 ? 20 : undefined,
         highlights: ['World-class attractions', 'Rich culture', 'Great cuisine', 'Iconic landmarks'],
         bestTimeToVisit: bestTime,
         duration: '5-7 days',
@@ -296,43 +187,62 @@ export class DestinationsService {
     });
   }
 
-  // Get all destinations - NO DELAY
   getDestinations(): Observable<Destination[]> {
     return of(this.mockDestinations);
   }
 
-  // Get destination by ID
   getDestinationById(id: string): Observable<Destination | undefined> {
-    const destination = this.mockDestinations.find(d => d.id === id);
-    return of(destination);
+    const dest = this.mockDestinations.find(d => d.id === id);
+    return of(dest);
   }
 
-  // Get popular destinations
-  getPopularDestinations(): Observable<Destination[]> {
-    const popular = this.mockDestinations.filter(d => d.isPopular);
-    return of(popular);
-  }
-
-  // Get trending destinations
-  getTrendingDestinations(): Observable<Destination[]> {
-    const trending = this.mockDestinations.filter(d => d.isTrending);
-    return of(trending);
-  }
-
-  // Get destinations by region
-  getDestinationsByRegion(region: 'National' | 'International'): Observable<Destination[]> {
-    const filtered = this.mockDestinations.filter(d => d.region === region);
-    return of(filtered).pipe(delay(300));
-  }
-
-  // Search destinations
   searchDestinations(query: string): Observable<Destination[]> {
-    const lowerQuery = query.toLowerCase();
+    const q = query.toLowerCase().trim();
+    if (!q) return of(this.mockDestinations);
+    
     const filtered = this.mockDestinations.filter(d => 
-      d.name.toLowerCase().includes(lowerQuery) ||
-      d.country.toLowerCase().includes(lowerQuery) ||
-      d.category.toLowerCase().includes(lowerQuery)
+      d.name.toLowerCase().includes(q) ||
+      d.country.toLowerCase().includes(q) ||
+      d.category.toLowerCase().includes(q)
     );
-    return of(filtered).pipe(delay(300));
+    return of(filtered);
+  }
+
+  filterDestinations(region?: string, category?: string, minPrice?: number, maxPrice?: number): Observable<Destination[]> {
+    let filtered = this.mockDestinations;
+
+    if (region && region !== 'All') {
+      filtered = filtered.filter(d => d.region === region);
+    }
+
+    if (category && category !== 'All') {
+      filtered = filtered.filter(d => d.category === category);
+    }
+
+    if (minPrice !== undefined) {
+      filtered = filtered.filter(d => d.price >= minPrice);
+    }
+
+    if (maxPrice !== undefined) {
+      filtered = filtered.filter(d => d.price <= maxPrice);
+    }
+
+    return of(filtered);
+  }
+
+  getTrendingDestinations(): Observable<Destination[]> {
+    return of(this.mockDestinations.filter(d => d.isTrending));
+  }
+
+  getPopularDestinations(): Observable<Destination[]> {
+    return of(this.mockDestinations.filter(d => d.isPopular));
+  }
+
+  getNewDestinations(): Observable<Destination[]> {
+    return of(this.mockDestinations.filter(d => d.isNew));
+  }
+
+  getFeaturedDestinations(): Observable<Destination[]> {
+    return of(this.mockDestinations.slice(0, 8));
   }
 }
